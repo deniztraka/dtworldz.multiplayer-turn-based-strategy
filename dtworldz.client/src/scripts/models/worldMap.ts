@@ -1,6 +1,7 @@
 import { PathFinder } from "../helpers/pathfinder"
 import { WorldMapHelper } from "../helpers/worldMapHelper"
 import { GameScene } from "../scenes/GameScene"
+import { WorldTile } from "./tilemap/tile"
 
 export class WorldMap {
     game: Phaser.Scene
@@ -10,7 +11,7 @@ export class WorldMap {
     pathfinder: PathFinder
     data: number[][]
 
-    constructor(game:GameScene) {
+    constructor(game: GameScene) {
         this.game = game
         this.height = game.room.state.mapHeight
         this.width = game.room.state.mapWidth
@@ -19,7 +20,7 @@ export class WorldMap {
         this.pathfinder = new PathFinder(this.data);
     }
 
-    build(){
+    build() {
         const mapData = new Phaser.Tilemaps.MapData({
             width: 10,
             height: 10,
@@ -41,8 +42,9 @@ export class WorldMap {
         this.data.forEach(row => {
 
             row.forEach((index, x) => {
-
-                this.floorLayer.putTileAt(index, x, y);
+                let worldTile = new WorldTile(this.floorLayer.layer, index, x, y);
+                
+                this.floorLayer.putTileAt(worldTile, x, y);
 
             });
 

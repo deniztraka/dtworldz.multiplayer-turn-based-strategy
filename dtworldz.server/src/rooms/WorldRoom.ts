@@ -1,7 +1,7 @@
 import { Room, Client } from "colyseus";
 import { WorldState, Player, Tile } from "./WorldState";
 import { MathUtils } from "../utils/mathUtils";
-import { ClientEvents } from "dtworldz.shared-lib"
+import { ClientEvents, BaseCommandPayload } from "dtworldz.shared-lib"
 import { CommandFactory } from "../factories/commandFactory";
 
 export class WorldRoom extends Room<WorldState> {
@@ -65,7 +65,7 @@ export class WorldRoom extends Room<WorldState> {
     });
   }
 
-  handleInput(client: Client, inputCommand: ICommandPayload){
+  handleInput(client: Client, inputCommand: BaseCommandPayload){
       // handle player input
       const player = this.state.players.get(client.sessionId);
 

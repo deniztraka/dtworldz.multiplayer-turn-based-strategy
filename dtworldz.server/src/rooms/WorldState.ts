@@ -1,9 +1,5 @@
 import { Schema, Context, type, MapSchema, ArraySchema } from "@colyseus/schema";
-
-// export interface ICommand {
-//   commandId: number;
-//   tick: number;
-// }
+import { BaseCommandPayload } from "dtworldz.shared-lib"
 
 export class Player extends Schema {
   @type("number") worldX: number;
@@ -12,7 +8,7 @@ export class Player extends Schema {
   @type("number") tileY: number;
   @type("number") tick: number;
 
-  commandPayloadQueue: any[] = [];
+  commandPayloadQueue: BaseCommandPayload[] = [];
 }
 
 export class Tile extends Schema {

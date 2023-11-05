@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
-      "module": "commonjs",
-      "target": "es6",
-      "declaration": true,
-      "outDir": "./dist",
-      "strict": true,
-      "allowJs": true,
-      "strictNullChecks": false,
-      "esModuleInterop": true,
-      "experimentalDecorators": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "strictPropertyInitialization": false,
+    "target": "es6",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "strict": true,
+    "allowJs": true,
+    "strictNullChecks": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
   },
   "include": [
-      "src/**/*"
+    "src/**/*"
   ]
 }
