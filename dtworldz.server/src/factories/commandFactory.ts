@@ -1,5 +1,6 @@
 import { Commands } from "dtworldz.shared-lib";
-import { TileSelectedCommand } from "../commands/tileSelectedCommand";
+import { CmdTileSelected } from "../commands/cmdTileSelected";
+import { ICommand } from "../commands/iCommand";
 
 export class CommandFactory {
     constructor() {
@@ -9,7 +10,7 @@ export class CommandFactory {
     get(commandPayload:any) : ICommand {
             switch (commandPayload.id) {
                 case Commands.TileSelected:
-                    return new TileSelectedCommand(commandPayload)
+                    return new CmdTileSelected(commandPayload)
             }
     }
 }

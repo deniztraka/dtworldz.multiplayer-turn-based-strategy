@@ -13,39 +13,21 @@ export class WorldRoom extends Room<WorldState> {
     this.state.mapWidth = 10;
     this.state.mapHeight = 10;
     this.buildWorld();
+    this.attachGameEvents();
 
-    this.onMessage(ClientEvents.Input, (client, command) => {
-      // handle player input
-      const player = this.state.players.get(client.sessionId);
-
-      console.log(command);
-
-      // enqueue command to player command buffer.
-      player.commandPayloadQueue.push(command);
-    });
-
-    // this.onMessage(ClientEvents.TileSelected, (client, tile: { x: number; y: number; }) => {
-    //   // handle player input
-    //   const player = this.state.players.get(client.sessionId);
-
-    //   console.log(tile);
-    // });
-
+    // defining fixed update loop in here
     let elapsedTime = 0;
     this.setSimulationInterval((deltaTime) => {
       elapsedTime += deltaTime;
 
       while (elapsedTime >= this.fixedTimeStep) {
         elapsedTime -= this.fixedTimeStep;
-        this.fixedTick(this.fixedTimeStep);
+        this.fixedUpdate(this.fixedTimeStep);
       }
     });
   }
 
-
-  fixedTick(timeStep: number) {
-    // const velocity = 2;
-
+  fixedUpdate(timeStep: number) {
     this.state.players.forEach(player => {
       let commandPayload: any;
 
@@ -53,9 +35,7 @@ export class WorldRoom extends Room<WorldState> {
       while (commandPayload = player.commandPayloadQueue.shift()) {
         var commandFactory = new CommandFactory()
         var playerCommand = commandFactory.get(commandPayload);
-
-        //player.tick = commandPayload.tick;
-        playerCommand.execute();
+        playerCommand.execute(this, player); // bu parameterleri, factory.get methoduna koy ki defaultta gelsin. execute parametresiz olsn.
       }
     });
   }
@@ -77,6 +57,20 @@ export class WorldRoom extends Room<WorldState> {
 
   onDispose() {
     console.log("room", this.roomId, "disposing...");
+  }
+
+  attachGameEvents(){
+    this.onMessage(ClientEvents.Input, (client, commandPayload) => {
+      this.handleInput(client, commandPayload)
+    });
+  }
+
+  handleInput(client: Client, inputCommand: ICommandPayload){
+      // handle player input
+      const player = this.state.players.get(client.sessionId);
+
+      // enqueue command to player command buffer.
+      player.commandPayloadQueue.push(inputCommand);
   }
 
   // TODO: extract to another place

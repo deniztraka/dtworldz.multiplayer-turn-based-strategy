@@ -22,7 +22,7 @@ export class MouseHandler {
     }
 
     onTileClick(tile: Phaser.Tilemaps.Tile) {
-        this.game.room.send(ClientEvents.Input, {id: 0, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y }})
+        this.game.room.send(ClientEvents.Input, {id: Commands.TileSelected, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y }})
         // this.game.worldMap.pathfinder.find(new Phaser.Math.Vector2(0, 0), new Phaser.Math.Vector2(tile.x, tile.y), function (path: { x: number; y: number; }[]) {
         //     console.log(path);
         // })
