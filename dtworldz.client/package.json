@@ -1,0 +1,26 @@
+{
+  "name": "dtworldz.client",
+  "version": "1.0.0",
+  "description": "Colyseus + Phaser: Client-side",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
+  },
+  "keywords": [
+    "colyseus",
+    "phaser"
+  ],
+  "author": "Endel Dreyer",
+  "license": "MIT",
+  "devDependencies": {
+    "process": "^0.11.10",
+    "typescript": "^4.6.3",
+    "vite": "^4.5.0"
+  },
+  "dependencies": {
+    "colyseus.js": "^0.15.9",
+    "easystarjs": "^0.4.4",
+    "phaser": "^3.60.0"
+  }
+}
