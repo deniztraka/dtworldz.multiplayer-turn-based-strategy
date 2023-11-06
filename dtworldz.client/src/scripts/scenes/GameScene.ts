@@ -46,7 +46,10 @@ export class GameScene extends Phaser.Scene {
         await this.connect();
 
         this.room.state.players.onAdd((client: any, sessionId: any) => {
-            this.worldMap = new WorldMap(this);
+            if(!this.worldMap){
+                this.worldMap = new WorldMap(this);
+            }
+
             const player = this.instantiatePlayer(client);
             this.players[sessionId] = player;
 
@@ -55,13 +58,13 @@ export class GameScene extends Phaser.Scene {
                 this.currentPlayer = player;
             } else {
                 // listening for server updates
-                client.onChange(() => {
-                    //
-                    // we're going to LERP the positions during the render loop.
-                    //
-                    player.setData('serverWorldX', client.worldX);
-                    player.setData('serverWorldY', client.worldY);
-                });
+                // client.onChange(() => {
+                //     //
+                //     // we're going to LERP the positions during the render loop.
+                //     //
+                //     player.setData('serverWorldX', client.worldX);
+                //     player.setData('serverWorldY', client.worldY);
+                // });
 
             }
 
@@ -133,11 +136,11 @@ export class GameScene extends Phaser.Scene {
                 continue;
             }
 
-            const entity = this.players[sessionId];
-            const { serverWorldX, serverWorldY } = entity.data.values;
+            const remotePlayers = this.players[sessionId];
+            // const { serverWorldX, serverWorldY } = entity.data.values;
 
-            entity.x = Phaser.Math.Linear(entity.x, serverWorldX, 0.2);
-            entity.y = Phaser.Math.Linear(entity.y, serverWorldY, 0.2);
+            // entity.x = Phaser.Math.Linear(entity.x, serverWorldX, 0.2);
+            // entity.y = Phaser.Math.Linear(entity.y, serverWorldY, 0.2);
         }
 
     }

@@ -33,6 +33,7 @@ export class WorldRoom extends Room<WorldState> {
 
       // dequeue player commandPayloads and create commands to execute
       while (commandPayload = player.commandPayloadQueue.shift()) {
+        console.log(commandPayload);
         var commandFactory = new CommandFactory()
         var playerCommand = commandFactory.get(commandPayload);
         playerCommand.execute(this, player); // bu parameterleri, factory.get methoduna koy ki defaultta gelsin. execute parametresiz olsn.

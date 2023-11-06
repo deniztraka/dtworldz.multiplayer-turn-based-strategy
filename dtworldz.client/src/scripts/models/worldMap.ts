@@ -1,7 +1,7 @@
 import { PathFinder } from "../helpers/pathfinder"
 import { WorldMapHelper } from "../helpers/worldMapHelper"
 import { GameScene } from "../scenes/GameScene"
-import { WorldTile } from "./tilemap/tile"
+
 
 export class WorldMap {
     game: Phaser.Scene
@@ -42,10 +42,8 @@ export class WorldMap {
         this.data.forEach(row => {
 
             row.forEach((index, x) => {
-                let worldTile = new WorldTile(this.floorLayer.layer, index, x, y);
-                
-                this.floorLayer.putTileAt(worldTile, x, y);
-
+                let tile = this.floorLayer.putTileAt(index, x, y);
+                tile.properties.isSelected = false;
             });
 
             y++;
