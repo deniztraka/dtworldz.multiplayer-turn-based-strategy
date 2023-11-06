@@ -28,17 +28,18 @@ export class MouseHandler {
         var alreadySelectedTile = this.game.currentPlayer.getSelectedTile();
         this.game.currentPlayer.setSelectedTile(tile);
 
-        
-
+        // there is no previously selected tile, request path for selected tile
         if(!alreadySelectedTile){
             this.game.room.send(ClientEvents.Input, { id: Commands.TileSelected, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y } })
             return;
         }
 
-
         // same tile is selected so request move
         if (alreadySelectedTile.x == tile.x && alreadySelectedTile.y == tile.y) {
             this.game.room.send(ClientEvents.Input, { id: Commands.MoveToTile, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y } })
+            this.game.currentPlayer.setSelectedTile(null);
+
+        // new tile is selected so request path
         } else {
             this.game.room.send(ClientEvents.Input, { id: Commands.TileSelected, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y } })
         }
