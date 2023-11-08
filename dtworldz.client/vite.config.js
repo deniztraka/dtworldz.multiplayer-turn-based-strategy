@@ -11,5 +11,11 @@ export default {
   },
   optimizeDeps: {
     include: ['dtworldz.shared-lib']
-  }
+  },
+  resolve: {
+    alias: {
+      'dtworldz.shared-lib': 'dtworldz.shared-lib/dist/index.js',
+    },
+    preserveSymlinks: true,
+  },
 }

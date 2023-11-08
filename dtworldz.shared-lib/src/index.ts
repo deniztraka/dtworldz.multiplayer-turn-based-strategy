@@ -1,2 +1,10 @@
-export { ServerEvents, ClientEvents } from './events'
-export { Commands, BaseCommandPayload } from './models'
+export {
+    ClientEvents,
+    ServerEvents,
+} from './events'
+export {
+    Commands,
+    BaseCommandPayload,
+    CmdPayloadMoveToTile,
+    CmdPayloadTileSelected,
+} from './models'

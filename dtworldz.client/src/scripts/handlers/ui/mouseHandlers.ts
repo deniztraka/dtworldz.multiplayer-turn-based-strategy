@@ -1,6 +1,6 @@
 import { GameScene } from "../../scenes/GameScene";
-import { ClientEvents, Commands } from "dtworldz.shared-lib"
-import { BaseCommandPayload } from "dtworldz.shared-lib";
+import { ClientEvents } from "dtworldz.shared-lib"
+import { CmdPayloadMoveToTile, CmdPayloadTileSelected } from "dtworldz.shared-lib";
 
 export class MouseHandler {
 
@@ -25,30 +25,25 @@ export class MouseHandler {
     }
 
     onTileClick(tile: Phaser.Tilemaps.Tile) {
-        var alreadySelectedTile = this.game.currentPlayer.getSelectedTile();
+        const alreadySelectedTile = this.game.currentPlayer.getSelectedTile();
         this.game.currentPlayer.setSelectedTile(tile);
 
+        const tileSelectedCommandPayload = new CmdPayloadTileSelected(this.game.currentTick, { x: tile.x, y: tile.y });
+
         // there is no previously selected tile, request path for selected tile
-        if(!alreadySelectedTile){
-            this.game.room.send(ClientEvents.Input, { id: Commands.TileSelected, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y } })
+        if (!alreadySelectedTile) {
+            this.game.room.send(ClientEvents.Input, tileSelectedCommandPayload);
             return;
         }
 
         // same tile is selected so request move
-        if (alreadySelectedTile.x == tile.x && alreadySelectedTile.y == tile.y) {
-            this.game.room.send(ClientEvents.Input, { id: Commands.MoveToTile, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y } })
+        if (alreadySelectedTile.x === tile.x && alreadySelectedTile.y === tile.y) {
+            this.game.room.send(ClientEvents.Input, new CmdPayloadMoveToTile(this.game.currentTick, { x: tile.x, y: tile.y }));
             this.game.currentPlayer.setSelectedTile(null);
-
-        // new tile is selected so request path
+            // new tile is selected so request path
         } else {
-            this.game.room.send(ClientEvents.Input, { id: Commands.TileSelected, tick: this.game.currentTick, payload: { x: tile.x, y: tile.y } })
+            this.game.room.send(ClientEvents.Input, tileSelectedCommandPayload);
         }
-
-
-
-
-
-
 
         // this.game.worldMap.pathfinder.find(new Phaser.Math.Vector2(0, 0), new Phaser.Math.Vector2(tile.x, tile.y), function (path: { x: number; y: number; }[]) {
         //     console.log(path);
