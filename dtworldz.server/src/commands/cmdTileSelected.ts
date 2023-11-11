@@ -1,7 +1,8 @@
+import { ServerError } from "colyseus";
 import { WorldRoom } from "../rooms/WorldRoom";
 import { Player } from "../rooms/WorldState";
 import { ICommand } from "./iCommand"
-import { BaseCommandPayload } from "dtworldz.shared-lib"
+import { BaseCommandPayload, ServerEvents } from "dtworldz.shared-lib"
 
 export class CmdTileSelected implements ICommand {
     tick: number;
@@ -11,7 +12,15 @@ export class CmdTileSelected implements ICommand {
         this.payload = commandPayload.payload
     }
     execute(worldRoom: WorldRoom, player: Player): void {
-        console.log("Tle selected job is executed");
+
+        worldRoom.pathfinder.findPath(player.mapPos.x, player.mapPos.y, this.payload.x, this.payload.y)
+        .then(result => {
+            player.client.send(ServerEvents.PathCalculated, result.path);
+        })
+        .catch(error => {
+            player.client.send(ServerEvents.PathCalculated, []);
+        });
+        console.log("Tile selected job is executed for player " + player.client.sessionId);
     }
 
 }

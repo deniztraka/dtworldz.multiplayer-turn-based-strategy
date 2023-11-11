@@ -1,14 +1,31 @@
 import { Schema, Context, type, MapSchema, ArraySchema } from "@colyseus/schema";
+import { Client } from "colyseus";
 import { BaseCommandPayload } from "dtworldz.shared-lib"
 
+export class MapPos extends Schema {
+  @type("number") x: number;
+  @type("number") y: number;
+  constructor(x: number = 0, y: number = 0) {
+    super();
+    this.x = x;
+    this.y = y;
+  }
+}
+
 export class Player extends Schema {
-  @type("number") worldX: number;
-  @type("number") worldY: number;
-  @type("number") tileX: number;
-  @type("number") tileY: number;
+  @type(MapPos) mapPos: MapPos;
   @type("number") tick: number;
+  @type("number") test: number;
 
   commandPayloadQueue: BaseCommandPayload[] = [];
+  client: Client;
+
+  constructor(client: Client) {
+    super();
+    this.client = client;
+    this.mapPos = new MapPos();
+    this.test = 0;
+  }
 }
 
 export class Tile extends Schema {

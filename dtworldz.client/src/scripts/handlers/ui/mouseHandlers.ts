@@ -44,9 +44,5 @@ export class MouseHandler {
         } else {
             this.game.room.send(ClientEvents.Input, tileSelectedCommandPayload);
         }
-
-        // this.game.worldMap.pathfinder.find(new Phaser.Math.Vector2(0, 0), new Phaser.Math.Vector2(tile.x, tile.y), function (path: { x: number; y: number; }[]) {
-        //     console.log(path);
-        // })
     }
 }

@@ -3,9 +3,11 @@ import { WorldState, Player, Tile } from "./WorldState";
 import { MathUtils } from "../utils/mathUtils";
 import { ClientEvents, BaseCommandPayload } from "dtworldz.shared-lib"
 import { CommandFactory } from "../factories/commandFactory";
+import { Pathfinder } from "../engines/pathfinder";
 
 export class WorldRoom extends Room<WorldState> {
   fixedTimeStep = 1000 / 60;
+  pathfinder: Pathfinder;
 
   onCreate (options: any) {
     this.setState(new WorldState());
@@ -33,20 +35,19 @@ export class WorldRoom extends Room<WorldState> {
 
       // dequeue player commandPayloads and create commands to execute
       while (commandPayload = player.commandPayloadQueue.shift()) {
-        console.log(commandPayload);
         var commandFactory = new CommandFactory()
         var playerCommand = commandFactory.get(commandPayload);
-        playerCommand.execute(this, player); // bu parameterleri, factory.get methoduna koy ki defaultta gelsin. execute parametresiz olsn.
+        playerCommand.execute(this, player);
       }
     });
   }
 
-  onJoin (client: Client, options: any) {
+  onJoin (client: Client, _options: any) {
     console.log(client.sessionId, "joined!");
 
-    const player = new Player();
-    player.tileX = MathUtils.getRandomInt(this.state.mapWidth)
-    player.tileY = MathUtils.getRandomInt(this.state.mapHeight)
+    const player = new Player(client);
+    player.mapPos.x = MathUtils.getRandomInt(this.state.mapWidth)
+    player.mapPos.y = MathUtils.getRandomInt(this.state.mapHeight)
 
     this.state.players.set(client.sessionId, player);
   }
@@ -88,6 +89,8 @@ export class WorldRoom extends Room<WorldState> {
       [ 12, 10, 16, 13, 14, 104, 16, 16, 13, 12 ],
       [ 10, 11, 12, 13, 14, 15, 16, 10, 11, 12 ]
   ];
+
+  this.pathfinder = new Pathfinder(data);
 
     for (let x = 0; x < this.state.mapWidth; x++) {
       for (let y = 0; y < this.state.mapHeight; y++) {

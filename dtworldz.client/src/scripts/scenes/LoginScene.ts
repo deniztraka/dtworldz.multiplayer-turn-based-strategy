@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import heroImageUrl from "./../../public/assets/images/hero.png"
+import markerUrl from "./../../public/assets/images/tilemaps/marker.png"
 
 export class LoginScene extends Phaser.Scene {
     constructor() {
@@ -12,7 +13,7 @@ export class LoginScene extends Phaser.Scene {
 
         // preload demo assets
         this.load.image('heroImage', heroImageUrl);
-        // this.load.image('ship_0001', 'https://cdn.glitch.global/3e033dcd-d5be-4db4-99e8-086ae90969ec/ship_0001.png?v=1649945243288');
+        this.load.image('markerImage', markerUrl);
     }
 
     create() {

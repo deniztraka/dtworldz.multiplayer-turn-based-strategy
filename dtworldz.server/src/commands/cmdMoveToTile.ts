@@ -1,5 +1,5 @@
 import { WorldRoom } from "../rooms/WorldRoom";
-import { Player } from "../rooms/WorldState";
+import { Player, MapPos } from "../rooms/WorldState";
 import { ICommand } from "./iCommand"
 import { BaseCommandPayload } from "dtworldz.shared-lib"
 
@@ -11,7 +11,8 @@ export class CmdMoveToTile implements ICommand {
         this.payload = commandPayload.payload
     }
     execute(worldRoom: WorldRoom, player: Player): void {
-        console.log("Move to tile command is executed");
+        player.mapPos = new MapPos(this.payload.x, this.payload.y);
+        console.log("Move to tile command is executed for player " + player.client.sessionId);
     }
 
 }

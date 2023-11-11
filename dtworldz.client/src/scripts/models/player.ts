@@ -1,10 +1,48 @@
+import { IPoint } from "../interfaces/ipoint";
+import { GameScene } from "../scenes/GameScene";
+
 export class Player extends Phaser.GameObjects.Sprite {
+    
     private selectedTile: Phaser.Tilemaps.Tile;
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    client: any;
+    sessionId: any;
+    currentPath: IPoint[];
+    constructor(scene: GameScene, client:any, sessionId:any, x: number, y: number) {
         super(scene, x, y, 'heroImage');
+        this.client = client;
+        this.sessionId = sessionId;
         this.setOrigin(0.5, 1);
         this.tint = Phaser.Display.Color.RandomRGB().color;
+        this.currentPath = [];
         scene.add.existing(this);
+    }
+
+    setPath(currentPath: IPoint[]) {
+        this.currentPath = currentPath;
+    }
+
+    // moves the player to the next point in the path
+    followPath() {
+        if (this.currentPath.length > 0) {
+            this.scene.events.emit('pausePlayerInput');
+            const nextPoint = this.currentPath.shift();
+
+            const tile = (<GameScene>this.scene).worldMap.floorLayer.getTileAt(nextPoint.x, nextPoint.y);
+
+            const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
+            const duration = distance * 10;
+            this.scene.tweens.add({
+                targets: this,
+                x:  tile.getCenterX(),
+                y: tile.getCenterY(),
+                duration: duration,
+                onComplete: () => {
+                    this.followPath();
+                }
+            });
+        } else {
+            this.scene.events.emit('releasePlayerInput');
+        }
     }
 
     setSelectedTile(tile: Phaser.Tilemaps.Tile) {
