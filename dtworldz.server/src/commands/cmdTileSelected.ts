@@ -15,10 +15,10 @@ export class CmdTileSelected implements ICommand {
 
         worldRoom.pathfinder.findPath(player.mapPos.x, player.mapPos.y, this.payload.x, this.payload.y)
         .then(result => {
-            player.client.send(ServerEvents.PathCalculated, result.path);
+            worldRoom.broadcast(ServerEvents.PathCalculated, {sessionId: player.client.sessionId, path: result.path});
         })
         .catch(error => {
-            player.client.send(ServerEvents.PathCalculated, []);
+            worldRoom.broadcast(ServerEvents.PathCalculated, {sessionId: player.client.sessionId, path: []});
         });
         console.log("Tile selected job is executed for player " + player.client.sessionId);
     }

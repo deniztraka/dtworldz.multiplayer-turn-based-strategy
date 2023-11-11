@@ -7,6 +7,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     client: any;
     sessionId: any;
     currentPath: IPoint[];
+    markers: any;
     constructor(scene: GameScene, client:any, sessionId:any, x: number, y: number) {
         super(scene, x, y, 'heroImage');
         this.client = client;
@@ -37,6 +38,14 @@ export class Player extends Phaser.GameObjects.Sprite {
                 y: tile.getCenterY(),
                 duration: duration,
                 onComplete: () => {
+                    if(this.markers){
+                        let marker = this.markers.shift();
+                        if(marker){
+                            marker.destroy();
+                        }
+                    }
+                    
+
                     this.followPath();
                 }
             });

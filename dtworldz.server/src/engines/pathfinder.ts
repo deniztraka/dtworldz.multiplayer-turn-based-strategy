@@ -9,7 +9,7 @@ class Pathfinder {
   private easystar: easystarjs.js;
   constructor(grid: number[][]) {
     this.easystar = new easystarjs.js();
-    this.easystar.disableDiagonals();
+    this.easystar.enableDiagonals();
     this.easystar.disableCornerCutting();
     this.easystar.setGrid(grid);
     this.easystar.setAcceptableTiles([10, 11, 12, 13, 14, 15, 16]);

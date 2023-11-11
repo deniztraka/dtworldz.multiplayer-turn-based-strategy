@@ -54,19 +54,15 @@ export class GameScene extends Phaser.Scene {
             }
 
             const player = this.instantiatePlayer(client, sessionId);
+            console.log(`player is ${sessionId} joined`);
             this.players[sessionId] = player;
 
             // is current player
             if (sessionId === this.room.sessionId) {
                 this.currentPlayer = player;
-                this.attachServerEvents();
-            } else {
-                // listening for server updates
-                // client.onChange(() => {
-                // });
             }
 
-            
+            this.attachServerEvents(player);
         });
 
         // remove local reference when entity is removed from the server
@@ -78,43 +74,38 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
-        // this.cameras.main.startFollow(this.ship, true, 0.2, 0.2);
-        // this.cameras.main.setZoom(1);
-        this.cameras.main.setBounds(0, 0, 800, 600);
-
-
         this.mouseHandler.attachEvents()
     }
-    attachServerEvents() {
-        this.room.onMessage(ServerEvents.PathCalculated, (path: IPoint[]) => {
-            this.currentPlayer.setPath(path);
+    attachServerEvents(player: Player) {
+        this.room.onMessage(ServerEvents.PathCalculated, (payload:{sessionId:number, path: IPoint[]}) => {
+            this.players[payload.sessionId].setPath(payload.path);
             this.drawPath();
         });
 
         //register currentPlayer's position change event
-        this.currentPlayer.client.listen("mapPos", (currentValue:any, previousValue:any) => {
-            if(previousValue)
-                console.log(`previous position was: ${previousValue.x},${previousValue.y}`);
+        player.client.listen("mapPos", (currentValue:any, previousValue:any) => {
+            // if(previousValue)
+            //     console.log(`previous position of player ${player.sessionId} was: ${previousValue.x},${previousValue.y}`);
 
             // check if there is a path to follow and last point in the path equals to the current position
-            if(this.currentPlayer.currentPath.length > 0 && this.currentPlayer.currentPath[this.currentPlayer.currentPath.length-1].x === currentValue.x && this.currentPlayer.currentPath[this.currentPlayer.currentPath.length-1].y === currentValue.y){
-                // this.currentPlayer.currentPath = [];
-                this.currentPlayer.followPath();
+            if(player.currentPath.length > 0 && player.currentPath[player.currentPath.length-1].x === currentValue.x && player.currentPath[player.currentPath.length-1].y === currentValue.y){
+                // console.log(`moving player ${player.sessionId} to next point`);
+                player.followPath();
             }
 
-            if(currentValue)
-                console.log(`current position is now ${currentValue.x},${currentValue.y}`);
+            // if(currentValue)
+            //     console.log(`current position of player ${player.sessionId} is now ${currentValue.x},${currentValue.y}`);
         });
     }
 
     drawPath() {
         // clear markers
-        if (this.markers) {
-            this.markers.forEach((marker: any) => {
+        if (this.currentPlayer.markers) {
+            this.currentPlayer.markers.forEach((marker: any) => {
                 marker.destroy();
             });
         }
-        this.markers = [];
+        this.currentPlayer.markers = [];
 
         // draw markers
         this.currentPlayer.currentPath.forEach((pathItem: IPoint, index: number) => {
@@ -140,7 +131,7 @@ export class GameScene extends Phaser.Scene {
                         marker.setAngle(angle);
                     }
                 }
-                this.markers.push(marker);
+                this.currentPlayer.markers.push(marker);
             }
         });
     }
@@ -182,23 +173,19 @@ export class GameScene extends Phaser.Scene {
     fixedTick(_time: any, _delta: any) {
         this.currentTick++;
 
-        //this.room.send(ClientEvents.Input, this.inputPayload);
+        // //this.room.send(ClientEvents.Input, this.inputPayload);
 
 
 
-        for (let sessionId in this.players) {
-            // interpolate all player entities
-            // (except the current player)
-            if (sessionId === this.room.sessionId) {
-                continue;
-            }
+        // for (let sessionId in this.players) {
+        //     // interpolate all player entities
+        //     // (except the current player)
+        //     if (sessionId === this.room.sessionId) {
+        //         continue;
+        //     }
 
-            const remotePlayers = this.players[sessionId];
-            // const { serverWorldX, serverWorldY } = entity.data.values;
-
-            // entity.x = Phaser.Math.Linear(entity.x, serverWorldX, 0.2);
-            // entity.y = Phaser.Math.Linear(entity.y, serverWorldY, 0.2);
-        }
+        //     const remotePlayers = this.players[sessionId];
+        // }
 
     }
 }
