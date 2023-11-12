@@ -5,13 +5,14 @@ import tileAtlasUrl from "./../../public/assets/images/tilemaps/tileatlas-64x64.
 import { MouseHandler } from "../handlers/ui/mouseHandlers";
 import { WorldMap } from "../models/worldMap"
 import { Player } from "../models/player"
-import { ServerEvents } from "dtworldz.shared-lib";
+import { ClientEvents, ServerEvents } from "dtworldz.shared-lib";
 import { IPoint } from "../interfaces/ipoint";
 
 export class GameScene extends Phaser.Scene {
     room: Room | undefined;
 
     currentPlayer: Player | undefined;
+    currentTurnSessionId: string | undefined;
     players: { [sessionId: string]: Player } = {};
 
     debugFPS: Phaser.GameObjects.Text | undefined;
@@ -25,10 +26,15 @@ export class GameScene extends Phaser.Scene {
     mouseHandler: MouseHandler
     worldMap: WorldMap
     markers: any;
+    playerName: string;
 
     constructor() {
         super({ key: "GameScene" });
         this.mouseHandler = new MouseHandler(this);
+    }
+
+    init(data: { playerName: string; }) {
+        this.playerName = data.playerName;
     }
 
     preload() {
@@ -38,6 +44,17 @@ export class GameScene extends Phaser.Scene {
     instantiatePlayer(client: any, sessionId: any) {
         var playerMapPosition = this.worldMap.floorLayer.getTileAt(client.mapPos.x, client.mapPos.y);
         let player = new Player(this, client, sessionId, playerMapPosition.getCenterX(), playerMapPosition.getCenterY());
+
+        this.players[sessionId] = player;
+
+        // is current player
+        if (sessionId === this.room.sessionId) {
+            player.setPlayerName(this.playerName);
+            this.currentPlayer = player;
+            this.room.send(ClientEvents.InitPlayerData, { sessionId: sessionId, name: this.playerName });
+        }
+
+
         return player
     }
 
@@ -48,20 +65,19 @@ export class GameScene extends Phaser.Scene {
         // connect with the room
         await this.connect();
 
+        this.attachRoomEvents();
+
+        this.mouseHandler.attachEvents()
+    }
+    attachRoomEvents() {
         this.room.state.players.onAdd((client: any, sessionId: any) => {
             if (!this.worldMap) {
                 this.worldMap = new WorldMap(this);
             }
 
             const player = this.instantiatePlayer(client, sessionId);
-            console.log(`player is ${sessionId} joined`);
-            this.players[sessionId] = player;
 
-            // is current player
-            if (sessionId === this.room.sessionId) {
-                this.currentPlayer = player;
-            }
-
+            console.log(`${player.playerName} is joined`);
             this.attachServerEvents(player);
         });
 
@@ -74,27 +90,37 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
-        this.mouseHandler.attachEvents()
-    }
-    attachServerEvents(player: Player) {
-        this.room.onMessage(ServerEvents.PathCalculated, (payload:{sessionId:number, path: IPoint[]}) => {
+        this.room.state.listen("currentPlayerSessionId", (currentPlayerSessionId: string) => {
+            console.log(`now player ${currentPlayerSessionId}'s turn`);
+            this.currentTurnSessionId = currentPlayerSessionId;
+
+        });
+
+        this.room.onMessage(ServerEvents.PathCalculated, (payload: { sessionId: number, path: IPoint[] }) => {
             this.players[payload.sessionId].setPath(payload.path);
             this.drawPath();
         });
 
-        //register currentPlayer's position change event
-        player.client.listen("mapPos", (currentValue:any, previousValue:any) => {
-            // if(previousValue)
-            //     console.log(`previous position of player ${player.sessionId} was: ${previousValue.x},${previousValue.y}`);
+        this.room.onMessage(99, (payload: { sessionId: number, name: string }) => {
+            const player = this.players[payload.sessionId]
+            if(player){
+                player.setPlayerName(payload.name);
+            }
+        });
 
+        this.room.onMessage(ServerEvents.TurnTimeSecondsLeft, (currentPlayerSessionId: any) => {
+            console.log(currentPlayerSessionId);
+        });
+    }
+    attachServerEvents(player: Player) {
+
+        //register currentPlayer's position change event
+        player.client.listen("mapPos", (currentValue: any, previousValue: any) => {
             // check if there is a path to follow and last point in the path equals to the current position
-            if(player.currentPath.length > 0 && player.currentPath[player.currentPath.length-1].x === currentValue.x && player.currentPath[player.currentPath.length-1].y === currentValue.y){
+            if (player.currentPath.length > 0 && player.currentPath[player.currentPath.length - 1].x === currentValue.x && player.currentPath[player.currentPath.length - 1].y === currentValue.y) {
                 // console.log(`moving player ${player.sessionId} to next point`);
                 player.followPath();
             }
-
-            // if(currentValue)
-            //     console.log(`current position of player ${player.sessionId} is now ${currentValue.x},${currentValue.y}`);
         });
     }
 
@@ -168,24 +194,10 @@ export class GameScene extends Phaser.Scene {
         }
 
         this.debugFPS.text = `Frame rate: ${this.game.loop.actualFps}`;
+
     }
 
     fixedTick(_time: any, _delta: any) {
         this.currentTick++;
-
-        // //this.room.send(ClientEvents.Input, this.inputPayload);
-
-
-
-        // for (let sessionId in this.players) {
-        //     // interpolate all player entities
-        //     // (except the current player)
-        //     if (sessionId === this.room.sessionId) {
-        //         continue;
-        //     }
-
-        //     const remotePlayers = this.players[sessionId];
-        // }
-
     }
 }

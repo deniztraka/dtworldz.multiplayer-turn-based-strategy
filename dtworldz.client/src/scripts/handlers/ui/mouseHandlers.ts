@@ -28,6 +28,11 @@ export class MouseHandler {
         const alreadySelectedTile = this.game.currentPlayer.getSelectedTile();
         this.game.currentPlayer.setSelectedTile(tile);
 
+        // prevent sending commands if it is not current player's turn
+        if(this.game.currentTurnSessionId !== this.game.currentPlayer.sessionId){
+            return;
+        }
+
         const tileSelectedCommandPayload = new CmdPayloadTileSelected(this.game.currentTick, { x: tile.x, y: tile.y });
 
         // there is no previously selected tile, request path for selected tile

@@ -21,6 +21,7 @@
   "dependencies": {
     "colyseus.js": "^0.15.9",
     "easystarjs": "^0.4.4",
-    "phaser": "^3.60.0"
+    "phaser": "^3.60.0",
+    "phaser3-rex-plugins": "^1.60.7"
   }
 }

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 
+
 import { LoginScene } from "./scripts/scenes/LoginScene";
 import { GameScene } from "./scripts/scenes/GameScene";
 
@@ -20,6 +21,9 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     pixelArt: true,
     scene: [LoginScene, GameScene],
+    dom: {
+        createContainer: true
+    },
 };
 
 new Phaser.Game(config);
