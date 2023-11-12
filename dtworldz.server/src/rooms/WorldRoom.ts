@@ -1,16 +1,22 @@
-import { Room, Client } from "colyseus";
-import { WorldState, Player, Tile } from "./WorldState";
+import { Room, Client, ServerError } from "colyseus";
+import { WorldState, Player, Tile, MapPos } from "./WorldState";
 import { MathUtils } from "../utils/mathUtils";
-import { ClientEvents, BaseCommandPayload } from "dtworldz.shared-lib"
+import { ClientEvents, BaseCommandPayload, ServerEvents } from "dtworldz.shared-lib"
 import { CommandFactory } from "../factories/commandFactory";
 import { Pathfinder } from "../engines/pathfinder";
 
 export class WorldRoom extends Room<WorldState> {
+  turnTime = 10000; // 60,000 milliseconds = 1 minute
+  turnTimeLeftBroadcastTime = 1000; // 1,000 milliseconds = 1 second
   fixedTimeStep = 1000 / 60;
   pathfinder: Pathfinder;
+  turnTimeCounter = 0;
+  turnTimeLeftCounter = 0
+  currentPlayerIndex: number;
 
-  onCreate (options: any) {
+  onCreate(options: any) {
     this.setState(new WorldState());
+    this.currentPlayerIndex = 0;
     // set map dimensions
     this.state.mapWidth = 10;
     this.state.mapHeight = 10;
@@ -27,9 +33,22 @@ export class WorldRoom extends Room<WorldState> {
         this.fixedUpdate(this.fixedTimeStep);
       }
     });
+
+    this.onMessage(ClientEvents.InitPlayerData, (client, commandPayload) => {
+      // set player name in here from the command payload
+      const player = this.state.players.get(client.sessionId);
+      player.name = commandPayload.name;
+      console.log(`player ${player.name} joined the game`);
+      this.broadcast(99, { sessionId: client.sessionId, name: player.name }, { except: client });
+    });
   }
 
   fixedUpdate(timeStep: number) {
+    this.handlePlayerTurn(timeStep);
+    this.handleCommands();
+  }
+
+  handleCommands() {
     this.state.players.forEach(player => {
       let commandPayload: any;
 
@@ -42,17 +61,62 @@ export class WorldRoom extends Room<WorldState> {
     });
   }
 
-  onJoin (client: Client, _options: any) {
-    console.log(client.sessionId, "joined!");
+  handlePlayerTurn(timeStep: number) {
+    // Add the timeStep to the turn time counter
+    this.turnTimeCounter += timeStep;
+    this.turnTimeLeftCounter += timeStep;
+
+    if (this.turnTimeLeftCounter >= this.turnTimeLeftBroadcastTime) {
+      this.informClientsAboutTurnTimeLeft();
+      this.turnTimeLeftCounter = 0;
+    }
+
+    // Check if a minute has passed
+    if (this.turnTimeCounter >= this.turnTime) {
+      this.changeTurn();
+      this.turnTimeCounter = 0;
+    }
+  }
+
+  informClientsAboutTurnTimeLeft() {
+    // Calculate the remaining time in seconds
+    let secondsLeft = Math.ceil((this.turnTime - this.turnTimeCounter) / 1000);
+
+    if (secondsLeft < 5) {
+      // Broadcast the remaining time
+      this.broadcast(ServerEvents.TurnTimeSecondsLeft, secondsLeft);
+    }
+  }
+
+  changeTurn() {
+    let index = 0
+    // set the current player session id
+    this.state.players.forEach(player => {
+      if (index === this.currentPlayerIndex) {
+        this.state.currentPlayerSessionId = player.client.sessionId;
+        console.log(`now player ${player.client.sessionId}'s turn`)
+      }
+      index++;
+    });
+
+    if (this.currentPlayerIndex === this.state.players.size - 1) {
+      this.currentPlayerIndex = 0;
+    } else {
+      this.currentPlayerIndex++;
+    }
+
+    return;
+  }
+
+  onJoin(client: Client, _options: any) {
+    //console.log(client.sessionId, "joined!");
 
     const player = new Player(client);
-    player.mapPos.x = MathUtils.getRandomInt(this.state.mapWidth)
-    player.mapPos.y = MathUtils.getRandomInt(this.state.mapHeight)
-
+    player.mapPos = new MapPos(MathUtils.getRandomInt(this.state.mapWidth), MathUtils.getRandomInt(this.state.mapHeight));
     this.state.players.set(client.sessionId, player);
   }
 
-  onLeave (client: Client, consented: boolean) {
+  onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
     this.state.players.delete(client.sessionId);
   }
@@ -61,36 +125,41 @@ export class WorldRoom extends Room<WorldState> {
     console.log("room", this.roomId, "disposing...");
   }
 
-  attachGameEvents(){
+  attachGameEvents() {
     this.onMessage(ClientEvents.Input, (client, commandPayload) => {
-      this.handleInput(client, commandPayload)
+      console.log(`received input from ${client.sessionId}`)
+
+      // ignore input from other players
+      if (client.sessionId == this.state.currentPlayerSessionId) {
+        this.handleInput(client, commandPayload)
+      }
     });
   }
 
-  handleInput(client: Client, inputCommand: BaseCommandPayload){
-      // handle player input
-      const player = this.state.players.get(client.sessionId);
+  handleInput(client: Client, inputCommand: BaseCommandPayload) {
+    // handle player input
+    const player = this.state.players.get(client.sessionId);
 
-      // enqueue command to player command buffer.
-      player.commandPayloadQueue.push(inputCommand);
+    // enqueue command to player command buffer.
+    player.commandPayloadQueue.push(inputCommand);
   }
 
   // TODO: extract to another place
   buildWorld() {
     var data = [
-      [ 10, 11, 12, 13, 14, 15, 16, 10, 11, 12 ],
-      [ 13, 11, 10, 12, 12, 104, 16, 10, 16, 10 ],
-      [ 12, 10, 16, 13, 14, 104, 16, 16, 13, 12 ],
-      [ 10, 11, 12, 104, 104, 104, 16, 10, 11, 12 ],
-      [ 13, 11, 10, 104, 12, 15, 16, 10, 16, 10 ],
-      [ 12, 10, 16, 104, 14, 15, 16, 16, 13, 12 ],
-      [ 10, 11, 12, 13, 104, 15, 16, 10, 11, 12 ],
-      [ 13, 11, 10, 12, 12, 104, 16, 10, 16, 10 ],
-      [ 12, 10, 16, 13, 14, 104, 16, 16, 13, 12 ],
-      [ 10, 11, 12, 13, 14, 15, 16, 10, 11, 12 ]
-  ];
+      [10, 11, 12, 13, 14, 15, 16, 10, 11, 12],
+      [13, 11, 10, 12, 12, 104, 16, 10, 16, 10],
+      [12, 10, 16, 13, 14, 104, 16, 16, 13, 12],
+      [10, 11, 12, 104, 104, 104, 16, 10, 11, 12],
+      [13, 11, 10, 104, 12, 15, 16, 10, 16, 10],
+      [12, 10, 16, 104, 14, 15, 16, 16, 13, 12],
+      [10, 11, 12, 13, 104, 15, 16, 10, 11, 12],
+      [13, 11, 10, 12, 12, 104, 16, 10, 16, 10],
+      [12, 10, 16, 13, 14, 104, 16, 16, 13, 12],
+      [10, 11, 12, 13, 14, 15, 16, 10, 11, 12]
+    ];
 
-  this.pathfinder = new Pathfinder(data);
+    this.pathfinder = new Pathfinder(data);
 
     for (let x = 0; x < this.state.mapWidth; x++) {
       for (let y = 0; y < this.state.mapHeight; y++) {

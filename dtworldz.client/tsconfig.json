@@ -14,6 +14,7 @@
     "strictPropertyInitialization": false,
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "types/phaser3-rex-plugins.d.ts"
   ]
 }

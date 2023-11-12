@@ -1,6 +1,7 @@
 enum ServerEvents {
     PathCalculated = 0,
-    Test = 1
+    TurnTimeSecondsLeft = 1,
+    TurnChanged = 2,
   }
 
   export {

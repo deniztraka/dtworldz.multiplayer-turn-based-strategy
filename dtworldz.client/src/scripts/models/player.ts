@@ -1,25 +1,38 @@
 import { IPoint } from "../interfaces/ipoint";
 import { GameScene } from "../scenes/GameScene";
 
-export class Player extends Phaser.GameObjects.Sprite {
+export class Player extends Phaser.GameObjects.Container {
     
     private selectedTile: Phaser.Tilemaps.Tile;
     client: any;
     sessionId: any;
     currentPath: IPoint[];
     markers: any;
+    playerName: any;
+    characterSprite: any;
+    playerNameText: Phaser.GameObjects.Text;
     constructor(scene: GameScene, client:any, sessionId:any, x: number, y: number) {
-        super(scene, x, y, 'heroImage');
+        super(scene, x, y);
+        let add = scene.add;
         this.client = client;
         this.sessionId = sessionId;
-        this.setOrigin(0.5, 1);
-        this.tint = Phaser.Display.Color.RandomRGB().color;
+        this.playerName = client.name;
         this.currentPath = [];
+        this.characterSprite = (add as any).sprite(0, 0, 'heroImage');
+        this.characterSprite.setOrigin(0.5, 1);
+        this.characterSprite.tint = client.color;
+        this.playerNameText = add.text(0, -32, this.playerName, { color: "#000000", fontSize: "12px", fontFamily: 'Arial', padding: { left: 40, right: 40, top: 5, bottom: 5, } }).setOrigin(0.5, 1);
+        this.add(this.playerNameText);
+        this.add(this.characterSprite);
         scene.add.existing(this);
     }
 
     setPath(currentPath: IPoint[]) {
         this.currentPath = currentPath;
+    }
+    setPlayerName(playerName: string) {
+        this.playerName = playerName;
+        this.playerNameText.setText(playerName);
     }
 
     // moves the player to the next point in the path
