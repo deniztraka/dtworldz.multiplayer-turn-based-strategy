@@ -101,7 +101,7 @@ export class GameScene extends Phaser.Scene {
             this.drawPath();
         });
 
-        this.room.onMessage(99, (payload: { sessionId: number, name: string }) => {
+        this.room.onMessage(ServerEvents.PlayerDataInitialized, (payload: { sessionId: number, name: string }) => {
             const player = this.players[payload.sessionId]
             if(player){
                 player.setPlayerName(payload.name);

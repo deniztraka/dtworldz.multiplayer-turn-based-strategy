@@ -13,8 +13,6 @@ export class LoginScene extends Phaser.Scene {
         // update menu background color
         this.cameras.main.setBackgroundColor(0x000000);
 
-        this.load.html("form", "form.html");
-
         // preload demo assets
         this.load.image('heroImage', heroImageUrl);
         this.load.image('markerImage', markerUrl);
