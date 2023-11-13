@@ -1,5 +1,6 @@
 import Phaser from "phaser";
-import heroImageUrl from "./../../public/assets/images/hero.png"
+import heroImageUrl from "./../../public/assets/images/wanderer.png"
+
 import markerUrl from "./../../public/assets/images/tilemaps/marker.png"
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import Button from 'phaser3-rex-plugins/plugins/button.js';
@@ -13,9 +14,10 @@ export class LoginScene extends Phaser.Scene {
         // update menu background color
         this.cameras.main.setBackgroundColor(0x000000);
 
-        // preload demo assets
+        // preload
         this.load.image('heroImage', heroImageUrl);
         this.load.image('markerImage', markerUrl);
+        
     }
 
     create() {
