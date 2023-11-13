@@ -11,11 +11,9 @@ import { IPoint } from "../interfaces/ipoint";
 export class GameScene extends Phaser.Scene {
     room: Room | undefined;
 
-    currentPlayer: Player | undefined;
+    public currentPlayer: Player | undefined;
     currentTurnSessionId: string | undefined;
     players: { [sessionId: string]: Player } = {};
-
-    debugFPS: Phaser.GameObjects.Text | undefined;
 
     cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
 
@@ -52,7 +50,11 @@ export class GameScene extends Phaser.Scene {
             player.setPlayerName(this.playerName);
             this.currentPlayer = player;
             this.room.send(ClientEvents.InitPlayerData, { sessionId: sessionId, name: this.playerName });
+            this.events.emit('characterInitialized');
         }
+
+        this.cameras.main.startFollow(player, true, 0.05, 0.05);
+        this.cameras.main.setZoom(1);
 
 
         return player
@@ -60,7 +62,7 @@ export class GameScene extends Phaser.Scene {
 
     async create() {
         this.cursorKeys = this.input.keyboard.createCursorKeys();
-        this.debugFPS = this.add.text(4, 4, "", { color: "#ff0000", });
+        this.scene.launch('UIScene', { playerName: this.playerName })
 
         // connect with the room
         await this.connect();
@@ -101,7 +103,7 @@ export class GameScene extends Phaser.Scene {
             this.drawPath();
         });
 
-        this.room.onMessage(99, (payload: { sessionId: number, name: string }) => {
+        this.room.onMessage(ServerEvents.PlayerDataInitialized, (payload: { sessionId: number, name: string }) => {
             const player = this.players[payload.sessionId]
             if(player){
                 player.setPlayerName(payload.name);
@@ -192,8 +194,6 @@ export class GameScene extends Phaser.Scene {
             this.elapsedTime -= this.fixedTimeStep;
             this.fixedTick(time, this.fixedTimeStep);
         }
-
-        this.debugFPS.text = `Frame rate: ${this.game.loop.actualFps}`;
 
     }
 

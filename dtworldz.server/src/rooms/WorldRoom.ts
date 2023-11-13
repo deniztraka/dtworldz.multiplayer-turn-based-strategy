@@ -39,7 +39,7 @@ export class WorldRoom extends Room<WorldState> {
       const player = this.state.players.get(client.sessionId);
       player.name = commandPayload.name;
       console.log(`player ${player.name} joined the game`);
-      this.broadcast(99, { sessionId: client.sessionId, name: player.name }, { except: client });
+      this.broadcast(ServerEvents.PlayerDataInitialized, { sessionId: client.sessionId, name: player.name }, { except: client });
     });
   }
 

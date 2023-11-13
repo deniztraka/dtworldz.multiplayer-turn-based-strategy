@@ -1,8 +1,9 @@
+import { Game } from "phaser";
 import { IPoint } from "../interfaces/ipoint";
 import { GameScene } from "../scenes/GameScene";
 
 export class Player extends Phaser.GameObjects.Container {
-    
+
     private selectedTile: Phaser.Tilemaps.Tile;
     client: any;
     sessionId: any;
@@ -11,7 +12,7 @@ export class Player extends Phaser.GameObjects.Container {
     playerName: any;
     characterSprite: any;
     playerNameText: Phaser.GameObjects.Text;
-    constructor(scene: GameScene, client:any, sessionId:any, x: number, y: number) {
+    constructor(scene: GameScene, client: any, sessionId: any, x: number, y: number) {
         super(scene, x, y);
         let add = scene.add;
         this.client = client;
@@ -19,9 +20,9 @@ export class Player extends Phaser.GameObjects.Container {
         this.playerName = client.name;
         this.currentPath = [];
         this.characterSprite = (add as any).sprite(0, 0, 'heroImage');
-        this.characterSprite.setOrigin(0.5, 1);
+        this.characterSprite.setOrigin(0.5, 0.75);
         this.characterSprite.tint = client.color;
-        this.playerNameText = add.text(0, -32, this.playerName, { color: "#000000", fontSize: "12px", fontFamily: 'Arial', padding: { left: 40, right: 40, top: 5, bottom: 5, } }).setOrigin(0.5, 1);
+        this.playerNameText = add.text(0, -48, this.playerName, { color: "#000000", fontSize: "12px", fontFamily: 'Arial', padding: { left: 40, right: 40, top: 5, bottom: 5, } }).setOrigin(0.5, 1);
         this.add(this.playerNameText);
         this.add(this.characterSprite);
         scene.add.existing(this);
@@ -32,7 +33,9 @@ export class Player extends Phaser.GameObjects.Container {
     }
     setPlayerName(playerName: string) {
         this.playerName = playerName;
-        this.playerNameText.setText(playerName);
+        
+            this.playerNameText.setText(playerName);
+        
     }
 
     // moves the player to the next point in the path
@@ -45,19 +48,28 @@ export class Player extends Phaser.GameObjects.Container {
 
             const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
             const duration = distance * 10;
+
+            // set player rotation to match movement
+            var radRotation = Phaser.Math.Angle.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
+            let angle = Phaser.Math.RadToDeg(radRotation);
+            angle += 90;
+            angle = Math.ceil(angle);
+            //this.characterSprite.angle = angle;
+
+            this.characterSprite.flipX = [-63, 244, 270].indexOf(angle) > -1
+
             this.scene.tweens.add({
                 targets: this,
-                x:  tile.getCenterX(),
+                x: tile.getCenterX(),
                 y: tile.getCenterY(),
                 duration: duration,
                 onComplete: () => {
-                    if(this.markers){
+                    if (this.markers) {
                         let marker = this.markers.shift();
-                        if(marker){
+                        if (marker) {
                             marker.destroy();
                         }
                     }
-                    
 
                     this.followPath();
                 }
