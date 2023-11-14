@@ -32,9 +32,9 @@ export class WorldMap {
 
         const map = new Phaser.Tilemaps.Tilemap(this.game, mapData);
 
-        const tileset = map.addTilesetImage('tileatlas-64x64', 'tiles');
+        const tilesetImage = map.addTilesetImage('tilesetImage', 'tileAtlas', 64, 96,0,0);
 
-        this.floorLayer = map.createBlankLayer('floorLayer', tileset, 350, 200);
+        this.floorLayer = map.createBlankLayer('floorLayer', tilesetImage, 350, 200);
 
 
         let y = 0;
@@ -49,5 +49,9 @@ export class WorldMap {
             y++;
 
         });
+
+        // const map = this.game.make.tilemap({ key:'testMapJSON'});
+        // const tileSet = map.addTilesetImage('newworldinit', 'tileAtlas');
+        // this.floorLayer = map.createLayer(0, tileSet, 350, 200);
     }
 }

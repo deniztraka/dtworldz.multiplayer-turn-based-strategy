@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Room, Client } from "colyseus.js";
 import { BACKEND_URL } from "../../backend";
 import tileAtlasUrl from "./../../public/assets/images/tilemaps/tileatlas-64x64.png";
+import dirtTile from "./../../public/assets/images/tilemaps/tile.png";
 import { MouseHandler } from "../handlers/ui/mouseHandlers";
 import { WorldMap } from "../models/worldMap"
 import { Player } from "../models/player"
@@ -37,6 +38,7 @@ export class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image('tiles', tileAtlasUrl);
+        this.load.image('dirtTile', dirtTile);
     }
 
     instantiatePlayer(client: any, sessionId: any) {
@@ -111,7 +113,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.room.onMessage(ServerEvents.TurnTimeSecondsLeft, (currentPlayerSessionId: any) => {
-            console.log(currentPlayerSessionId);
+            //console.log(currentPlayerSessionId);
         });
     }
     attachServerEvents(player: Player) {

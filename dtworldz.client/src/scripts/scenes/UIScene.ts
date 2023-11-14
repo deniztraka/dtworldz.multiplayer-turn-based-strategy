@@ -21,7 +21,6 @@ export class UIScene extends Phaser.Scene {
     }
 
 
-
     async create() {
         this.add.image(0, 0, 'charPanel').setOrigin(0, 0);
         this.gameScene.events.on('characterInitialized', () => {

@@ -15,7 +15,7 @@ export class MouseHandler {
     attachEvents() {
         this.game.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
             const { worldX, worldY } = pointer
-            var tile = this.game.worldMap.floorLayer.getIsoTileAtWorldXY(worldX, worldY);
+            var tile = this.game.worldMap.floorLayer.getIsoTileAtWorldXY(worldX , worldY - 32);
             if (tile) {
                 this.eventEmitter.emit('tileClick', tile);
             } else {
@@ -29,9 +29,9 @@ export class MouseHandler {
         this.game.currentPlayer.setSelectedTile(tile);
 
         // prevent sending commands if it is not current player's turn
-        if(this.game.currentTurnSessionId !== this.game.currentPlayer.sessionId){
-            return;
-        }
+        // if(this.game.currentTurnSessionId !== this.game.currentPlayer.sessionId){
+        //     return;
+        // }
 
         const tileSelectedCommandPayload = new CmdPayloadTileSelected(this.game.currentTick, { x: tile.x, y: tile.y });
 

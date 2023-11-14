@@ -13,6 +13,7 @@ export class WorldRoom extends Room<WorldState> {
   turnTimeCounter = 0;
   turnTimeLeftCounter = 0
   currentPlayerIndex: number;
+  isStarted: boolean = false;
 
   onCreate(options: any) {
     this.setState(new WorldState());
@@ -44,7 +45,7 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   fixedUpdate(timeStep: number) {
-    this.handlePlayerTurn(timeStep);
+    //this.handlePlayerTurn(timeStep);
     this.handleCommands();
   }
 
@@ -130,9 +131,11 @@ export class WorldRoom extends Room<WorldState> {
       console.log(`received input from ${client.sessionId}`)
 
       // ignore input from other players
-      if (client.sessionId == this.state.currentPlayerSessionId) {
-        this.handleInput(client, commandPayload)
-      }
+      // if (client.sessionId !== this.state.currentPlayerSessionId) {
+      //   return;
+      // }
+
+      this.handleInput(client, commandPayload)
     });
   }
 
@@ -147,16 +150,16 @@ export class WorldRoom extends Room<WorldState> {
   // TODO: extract to another place
   buildWorld() {
     var data = [
-      [10, 11, 12, 13, 14, 15, 16, 10, 11, 12],
-      [13, 11, 10, 12, 12, 104, 16, 10, 16, 10],
-      [12, 10, 16, 13, 14, 104, 16, 16, 13, 12],
-      [10, 11, 12, 104, 104, 104, 16, 10, 11, 12],
-      [13, 11, 10, 104, 12, 15, 16, 10, 16, 10],
-      [12, 10, 16, 104, 14, 15, 16, 16, 13, 12],
-      [10, 11, 12, 13, 104, 15, 16, 10, 11, 12],
-      [13, 11, 10, 12, 12, 104, 16, 10, 16, 10],
-      [12, 10, 16, 13, 14, 104, 16, 16, 13, 12],
-      [10, 11, 12, 13, 14, 15, 16, 10, 11, 12]
+      [0, 2, 2, 5, 0, 5, 6, 1, 5, 0],
+      [5, 4, 1, 7, 4, 0, 0, 0, 5, 1],
+      [2, 1, 2, 0, 5, 7, 2, 3, 4, 6],
+      [3, 7, 0, 2, 6, 7, 5, 0, 2, 4],
+      [6, 6, 2, 2, 1, 3, 4, 2, 4, 5],
+      [5, 2, 6, 7, 6, 5, 7, 7, 1, 5],
+      [0, 4, 0, 7, 2, 3, 3, 6, 6, 1],
+      [2, 2, 5, 7, 2, 2, 7, 5, 2, 6],
+      [5, 5, 0, 4, 3, 5, 6, 2, 3, 7],
+      [5, 6, 7, 5, 5, 1, 3, 6, 2, 5]
     ];
 
     this.pathfinder = new Pathfinder(data);

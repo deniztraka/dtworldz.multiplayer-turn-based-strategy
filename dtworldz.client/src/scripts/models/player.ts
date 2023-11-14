@@ -21,8 +21,8 @@ export class Player extends Phaser.GameObjects.Container {
         this.currentPath = [];
         this.characterSprite = (add as any).sprite(0, 0, 'heroImage');
         this.characterSprite.setOrigin(0.5, 0.75);
-        this.characterSprite.tint = client.color;
-        this.playerNameText = add.text(0, -48, this.playerName, { color: "#000000", fontSize: "12px", fontFamily: 'Arial', padding: { left: 40, right: 40, top: 5, bottom: 5, } }).setOrigin(0.5, 1);
+        //this.characterSprite.tint = client.color;
+        this.playerNameText = add.text(0, -90, this.playerName, { color: "#000000", fontSize: "12px", fontStyle:'bold', fontFamily: 'Arial', padding: { left: 40, right: 40, top: 5, bottom: 5, } }).setOrigin(0.5, 1);
         this.add(this.playerNameText);
         this.add(this.characterSprite);
         scene.add.existing(this);
