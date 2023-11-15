@@ -1,5 +1,5 @@
 import { WorldRoom } from "../rooms/WorldRoom";
-import { Player, MapPos } from "../rooms/WorldState";
+import { Player, MapPos } from "../schema/WorldState";
 import { ICommand } from "./iCommand"
 import { BaseCommandPayload } from "dtworldz.shared-lib"
 

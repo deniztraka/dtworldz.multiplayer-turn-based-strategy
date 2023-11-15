@@ -1,6 +1,6 @@
 import { ServerError } from "colyseus";
 import { WorldRoom } from "../rooms/WorldRoom";
-import { Player } from "../rooms/WorldState";
+import { Player } from "../schema/WorldState";
 import { ICommand } from "./iCommand"
 import { BaseCommandPayload, ServerEvents } from "dtworldz.shared-lib"
 

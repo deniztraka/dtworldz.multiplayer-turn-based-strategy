@@ -1,5 +1,5 @@
 import { Room, Client, ServerError } from "colyseus";
-import { WorldState, Player, Tile, MapPos } from "./WorldState";
+import { WorldState, Player, Tile, MapPos } from "../schema/WorldState";
 import { MathUtils } from "../utils/mathUtils";
 import { ClientEvents, BaseCommandPayload, ServerEvents } from "dtworldz.shared-lib"
 import { CommandFactory } from "../factories/commandFactory";
