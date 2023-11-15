@@ -52,7 +52,7 @@ const config: Phaser.Types.Core.GameConfig = {
         default: "arcade"
     },
     pixelArt: true,
-    scene: [LoginScene, GameScene, UIScene],
+    scene: [LoginScene, UIScene, GameScene, ],
     dom: {
         createContainer: true
     },

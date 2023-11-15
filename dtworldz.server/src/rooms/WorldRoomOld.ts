@@ -5,7 +5,7 @@ import { ClientEvents, BaseCommandPayload, ServerEvents } from "dtworldz.shared-
 import { CommandFactory } from "../factories/commandFactory";
 import { Pathfinder } from "../engines/pathfinder";
 
-export class WorldRoom extends Room<WorldState> {
+export class WorldRoomOld extends Room<WorldState> {
   turnTime = 10000; // 60,000 milliseconds = 1 minute
   turnTimeLeftBroadcastTime = 1000; // 1,000 milliseconds = 1 second
   fixedTimeStep = 1000 / 60;

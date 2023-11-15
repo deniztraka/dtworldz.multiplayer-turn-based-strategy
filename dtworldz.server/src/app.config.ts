@@ -5,7 +5,8 @@ import { Server } from "colyseus";
 /**
  * Import your Room files
  */
-import { WorldRoom } from "./rooms/WorldRoom";
+import { WorldRoomOld } from "./rooms/WorldRoomOld";
+import { WorldRoom } from "./rooms/dtWorldz";
 
 let gameServerRef: Server;
 let latencySimulationMs: number = 0;

@@ -1,20 +1,23 @@
 import { Room, Client } from "colyseus";
 import { DTWorldzState } from "../schema/dtWorldzState";
 import { Player } from "../schema/mobiles/player";
+import { BaseGameLogicState } from "../states/baseGameLogicState";
+import { ActionManager } from "../actions/actionManager";
+import { LobbyGameLogicState } from "../states/lobbyGameLogicState";
 import * as http from 'http';
 
 export class WorldRoom extends Room<DTWorldzState> {
     fixedTimeStep = 1000 / 60;
+    currentGameLogicState: BaseGameLogicState;
+    actionManager: ActionManager;
 
-    onCreate(_options: {clientName: string}) {
-        this.setState(new DTWorldzState());
-        
+    onCreate(_options: { clientName: string }) {
+        this.setState(new DTWorldzState(10, 10));
+        this.actionManager = new ActionManager(this);
+        this.currentGameLogicState = new LobbyGameLogicState(this);
+
         // set some options to show in the rooms list
         // this.setMetadata({ friendlyFire: true });
-
-        // set map dimensions
-        this.state.width = 10;
-        this.state.height = 10;
 
         // defining fixed update loop in here
         let elapsedTime = 0;
@@ -31,15 +34,16 @@ export class WorldRoom extends Room<DTWorldzState> {
     /**
      * This method is called on every fixed time step.
      *
-     * @param {number} _timeStep
+     * @param {number} timeStep
      * @memberof WorldRoom
      */
-    fixedUpdate(_timeStep: number) {
-
+    fixedUpdate(timeStep: number) {
+        this.currentGameLogicState.update(timeStep);
+        this.actionManager.updateActions(timeStep);
     }
 
     // Authorize client based on provided options before WebSocket handshake is complete
-    onAuth (_client: Client, _options: any, _request: http.IncomingMessage) { return true; }
+    onAuth(_client: Client, _options: any, _request: http.IncomingMessage) { return true; }
 
     /**
      * This is the callback function when a client joins the room.
@@ -48,7 +52,7 @@ export class WorldRoom extends Room<DTWorldzState> {
      * @param {*} options
      * @memberof WorldRoom
      */
-    onJoin(client: Client, options: {clientName: string}, _auth: any) {
+    onJoin(client: Client, options: { clientName: string }, _auth: any) {
         console.log(`${client.sessionId} | ${options.clientName} is joined!`);
 
         // add player to the state
@@ -77,6 +81,18 @@ export class WorldRoom extends Room<DTWorldzState> {
      */
     onDispose() {
         console.log("room", this.roomId, "disposing...");
+    }
+
+    /**
+     * Changes the state of the room.
+     *
+     * @param {BaseGameLogicState} newState
+     * @memberof WorldRoom
+     */
+    changeState(newState: BaseGameLogicState) {
+        this.currentGameLogicState.exit();
+        this.currentGameLogicState = newState;
+        this.currentGameLogicState.enter();
     }
 
 }
