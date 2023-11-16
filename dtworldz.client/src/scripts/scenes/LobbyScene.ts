@@ -52,7 +52,7 @@ export class LobbyScene extends Phaser.Scene {
         this.room.state.players.onRemove((_player: any, sessionId: any) => {
             console.log(`${sessionId} is removed`);
             const client = this.clients[sessionId]
-            
+
             if (client) {
                 delete this.clients[sessionId]
                 this.createUI();
