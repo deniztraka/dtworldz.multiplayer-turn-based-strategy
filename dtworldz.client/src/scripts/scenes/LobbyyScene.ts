@@ -53,7 +53,7 @@ export class LobbyScene extends Phaser.Scene {
             console.log(`${sessionId} is removed`);
             const client = this.clients[sessionId]
 
-            if (client) {
+            if (client) { 
                 delete this.clients[sessionId]
                 this.createUI();
             }

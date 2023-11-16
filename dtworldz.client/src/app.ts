@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-import { LobbyScene } from "./scripts/scenes/LobbyScene";
+import { LobbyScene } from "./scripts/scenes/LobbyyScene";
 import { CreateOrJoinScene } from "./scripts/scenes/CreateOrJoinScene";
 
 const config: Phaser.Types.Core.GameConfig = {
