@@ -1,6 +1,6 @@
 import { Game } from "phaser";
 import { IPoint } from "../interfaces/ipoint";
-import { GameScene } from "../scenes/GameScene";
+import { GameScene } from "../scenes/GameSceneOld";
 
 export class Player extends Phaser.GameObjects.Container {
 

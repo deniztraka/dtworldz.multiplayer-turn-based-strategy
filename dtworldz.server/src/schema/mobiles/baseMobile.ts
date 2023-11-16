@@ -6,8 +6,9 @@ export class BaseMobile extends Schema {
     @type("boolean") isReady: boolean = false;
     @type(Position) position: Position | undefined;
 
-    constructor(position: Position | undefined) {
+    constructor(name:string, position: Position | undefined) {
         super();
+        this.name = name;
         this.position = position;
     }
 }

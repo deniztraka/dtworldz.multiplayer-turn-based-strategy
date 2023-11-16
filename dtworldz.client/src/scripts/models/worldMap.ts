@@ -1,6 +1,6 @@
 import { PathFinder } from "../helpers/pathfinder"
 import { WorldMapHelper } from "../helpers/worldMapHelper"
-import { GameScene } from "../scenes/GameScene"
+import { GameScene } from "../scenes/GameSceneOld"
 
 
 export class WorldMap {

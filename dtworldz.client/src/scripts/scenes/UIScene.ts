@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import characterPanelUrl from "./../../public/assets/images/characterPanel.png"
-import { GameScene } from "./GameScene";
+import { GameScene } from "./GameSceneOld";
 
 export class UIScene extends Phaser.Scene {
     gameScene: GameScene;

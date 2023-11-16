@@ -1,9 +1,7 @@
 import Phaser from "phaser";
 
-
-import { LoginScene } from "./scripts/scenes/LoginScene";
-import { GameScene } from "./scripts/scenes/GameScene";
-import { UIScene } from "./scripts/scenes/UIScene";
+import { LobbyScene } from "./scripts/scenes/LobbyScene";
+import { CreateOrJoinScene } from "./scripts/scenes/CreateOrJoinScene";
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -52,7 +50,7 @@ const config: Phaser.Types.Core.GameConfig = {
         default: "arcade"
     },
     pixelArt: true,
-    scene: [LoginScene, UIScene, GameScene, ],
+    scene: [CreateOrJoinScene, LobbyScene, ],
     dom: {
         createContainer: true
     },

@@ -8,7 +8,7 @@ import Button from 'phaser3-rex-plugins/plugins/button.js';
 
 export class LoginScene extends Phaser.Scene {
     constructor() {
-        super({ key: "selector", active: true });
+        super({ key: "selector"});
     }
 
     preload() {
@@ -50,7 +50,7 @@ export class LoginScene extends Phaser.Scene {
             }
         };
 
-        var joinButtonText = this.add.text(this.scale.width/2, this.scale.height/2 + 100 , "JOIN", textStyle);
+        var joinButtonText = this.add.text(this.scale.width/2, this.scale.height/2 + 100 , "CREATE", textStyle);
         joinButtonText.setOrigin(0.5, 0.5);
 
         var button = new Button(joinButtonText, {

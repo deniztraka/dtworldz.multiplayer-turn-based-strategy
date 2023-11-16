@@ -1,4 +1,4 @@
-import { GameScene } from "../../scenes/GameScene";
+import { GameScene } from "../../scenes/GameSceneOld";
 import { ClientEvents } from "dtworldz.shared-lib"
 import { CmdPayloadMoveToTile, CmdPayloadTileSelected } from "dtworldz.shared-lib";
 

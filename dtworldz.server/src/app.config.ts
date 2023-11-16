@@ -20,7 +20,7 @@ export default config({
         /**
          * Define your room handlers:
          */
-        gameServer.define('world_room', WorldRoom);
+        gameServer.define('dtworldz', WorldRoom);
 
         //
         // keep gameServer reference, so we can

@@ -10,6 +10,22 @@ export class LobbyGameLogicState extends BaseGameLogicState {
 
     enter() {
         console.log("GameLogicState: Entering Lobby");
+
+        this.attachLobbyEvents();
+    }
+
+    attachLobbyEvents() {
+        this.gameRoom.onMessage('isReady', (client, message) => {
+            const player = this.gameRoom.state.players.get(client.sessionId)
+            player.isReady = message.isReady;
+        });
+
+        this.gameRoom.onMessage('chat', (client, message) => {
+            const player = this.gameRoom.state.players.get(client.sessionId)
+            console.log(`${player.name}: ${message}`);  // print the message to console
+            // Broadcast message to all clients
+            this.gameRoom.broadcast('chat', { sender: player.name, text: message });
+        })
     }
 
     update(deltaTime: number) {

@@ -14,7 +14,7 @@ export class WorldRoom extends Room<DTWorldzState> {
     onCreate(_options: { clientName: string }) {
         this.setState(new DTWorldzState(10, 10));
         this.actionManager = new ActionManager(this);
-        this.currentGameLogicState = new LobbyGameLogicState(this);
+        this.changeState(new LobbyGameLogicState(this));
 
         // set some options to show in the rooms list
         // this.setMetadata({ friendlyFire: true });
@@ -38,6 +38,7 @@ export class WorldRoom extends Room<DTWorldzState> {
      * @memberof WorldRoom
      */
     fixedUpdate(timeStep: number) {
+
         this.currentGameLogicState.update(timeStep);
         this.actionManager.updateActions(timeStep);
     }
@@ -56,7 +57,7 @@ export class WorldRoom extends Room<DTWorldzState> {
         console.log(`${client.sessionId} | ${options.clientName} is joined!`);
 
         // add player to the state
-        this.state.players.set(client.sessionId, new Player(undefined));
+        this.state.players.set(client.sessionId, new Player(options.clientName, undefined));
     }
 
     /**
@@ -90,7 +91,9 @@ export class WorldRoom extends Room<DTWorldzState> {
      * @memberof WorldRoom
      */
     changeState(newState: BaseGameLogicState) {
-        this.currentGameLogicState.exit();
+        if (this.currentGameLogicState) {
+            this.currentGameLogicState.exit();
+        }
         this.currentGameLogicState = newState;
         this.currentGameLogicState.enter();
     }
