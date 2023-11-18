@@ -1,8 +1,8 @@
 import Phaser from "phaser";
-import heroImageUrl from "./../../public/assets/images/characters/hero1.png"
-import testMapUrl from "../../public/assets/maps/testmap.json"
-import tileAtlasUrl from "../../public/assets/images/tilemaps/tileatlas.png"
-import markerUrl from "./../../public/assets/images/tilemaps/marker.png"
+import heroImageUrl from "../../../assets/images/characters/hero1.png"
+import testMapUrl from "../../../assets/maps/testmap.json"
+import tileAtlasUrl from "../../../assets/images/tilemaps/tileatlas.png"
+import markerUrl from "../../../assets/images/tilemaps/marker.png"
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 

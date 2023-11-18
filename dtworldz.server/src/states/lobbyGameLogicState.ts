@@ -3,6 +3,7 @@ import { StartingGameLogicState } from "./startingGameLogicState";
 
 // Concrete states
 export class LobbyGameLogicState extends BaseGameLogicState {
+    isReadyToStart: boolean = false;
 
     exit(): void {
         console.log("GameLogicState: Exiting Lobby");
@@ -18,6 +19,14 @@ export class LobbyGameLogicState extends BaseGameLogicState {
         this.gameRoom.onMessage('isReady', (client, message) => {
             const player = this.gameRoom.state.players.get(client.sessionId)
             player.isReady = message.isReady;
+            console.log(`${player.name} set itself as ${player.isReady}. `)
+            this.sendReadyStatus();
+        });
+
+        this.gameRoom.onMessage('charIndex', (client, message) => {
+            const player = this.gameRoom.state.players.get(client.sessionId)
+            player.charIndex = message.charIndex;
+            console.log(`${player.name} set itself as character ${player.charIndex}. `)
         });
 
         this.gameRoom.onMessage('chat', (client, message) => {
@@ -26,12 +35,29 @@ export class LobbyGameLogicState extends BaseGameLogicState {
             // Broadcast message to all clients
             this.gameRoom.broadcast('chat', { sender: player.name, text: message });
         })
+
+        this.gameRoom.onMessage('startGame', (client, message) => {
+            console.log(`Game is starting...`);
+            this.gameRoom.changeState(new StartingGameLogicState(this.gameRoom));
+        })
     }
 
     update(deltaTime: number) {
-        // Check if enough players are ready, then transition to Starting state
-        if (this.areAllPlayersReady()) {
+        // check if ready to start, then transition to Starting state
+        if(this.isReadyToStart && this.areAllPlayersReady() && this.gameRoom.state.players.size >= this.gameRoom.maxClients){
             this.gameRoom.changeState(new StartingGameLogicState(this.gameRoom));
+        }
+    }
+
+    sendReadyStatus() {
+        // Check if enough players are ready, then transition to Starting state
+        if (this.areAllPlayersReady() && this.gameRoom.state.players.size >= this.gameRoom.maxClients) {
+            this.gameRoom.creatorClient.send('canBeStarted', { canBeStarted: true });
+            
+            console.log("All players are ready. Game can be started.");
+        } else {
+            this.gameRoom.creatorClient.send('canBeStarted', { canBeStarted: false });
+            console.log("Not all players are ready. Game can't be started.");
         }
     }
 

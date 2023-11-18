@@ -1,5 +1,6 @@
 const textStyles = {
     'H1': {
+        fontFamily: 'DTTitleFontFamily',
         fontSize: '64px',
         align: 'center',
         fixedWidth: 0,
@@ -12,6 +13,7 @@ const textStyles = {
         }
     },
     'H2': {
+        fontFamily: 'DTTitleFontFamily',
         fontSize: '48px',
         align: 'center',
         fixedWidth: 0,
@@ -24,6 +26,7 @@ const textStyles = {
         }
     },
     'H3': {
+        fontFamily: 'DTTitleFontFamily',
         fontSize: '32px',
         align: 'center',
         fixedWidth: 0,
@@ -36,6 +39,7 @@ const textStyles = {
         }
     },
     'H4': {
+        fontFamily: 'DTSubTitleFontFamily',
         fontSize: '24px',
         align: 'center',
         fixedWidth: 0,
@@ -48,6 +52,7 @@ const textStyles = {
         }
     },
     'H5': {
+        fontFamily: 'DTSubTitleFontFamily',
         fontSize: '18px',
         align: 'center',
         fixedWidth: 0,
@@ -60,6 +65,20 @@ const textStyles = {
         }
     },
     'H6': {
+        fontFamily: 'DTSubTitleFontFamily',
+        fontSize: '16px',
+        align: 'center',
+        fixedWidth: 0,
+        fixedHeight: 0,
+        padding: {
+            left: 40,
+            right: 40,
+            top: 5,
+            bottom: 5,
+        }
+    },
+    'BodyText': {
+        fontFamily: 'DTBodyFontFamily',
         fontSize: '16px',
         align: 'center',
         fixedWidth: 0,

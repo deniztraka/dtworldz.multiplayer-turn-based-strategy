@@ -1,8 +1,8 @@
 import Phaser from "phaser";
 import { Room, Client } from "colyseus.js";
 import { BACKEND_URL } from "../../backend";
-import tileAtlasUrl from "./../../public/assets/images/tilemaps/tileatlas-64x64.png";
-import dirtTile from "./../../public/assets/images/tilemaps/tile.png";
+import tileAtlasUrl from "../../../assets/images/tilemaps/tileatlas-64x64.png";
+import dirtTile from "../../../assets/images/tilemaps/tile.png";
 import { MouseHandler } from "../handlers/ui/mouseHandlers";
 import { WorldMap } from "../models/worldMap"
 import { Player } from "../models/player"

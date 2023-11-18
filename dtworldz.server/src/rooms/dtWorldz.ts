@@ -10,12 +10,14 @@ export class WorldRoom extends Room<DTWorldzState> {
     fixedTimeStep = 1000 / 60;
     currentGameLogicState: BaseGameLogicState;
     actionManager: ActionManager;
+    creatorClient: Client | undefined;
 
     onCreate(options: { clientName: string, maxPlayers: number }) {
         this.setState(new DTWorldzState(10, 10));
         this.actionManager = new ActionManager(this);
         this.changeState(new LobbyGameLogicState(this));
         this.maxClients = options.maxPlayers;
+        this.creatorClient = null;
         console.log(options);
 
         // set some options to show in the rooms list
@@ -57,6 +59,10 @@ export class WorldRoom extends Room<DTWorldzState> {
      */
     onJoin(client: Client, options: { clientName: string }, _auth: any) {
         console.log(`${client.sessionId} | ${options.clientName} is joined!`);
+
+        if(this.creatorClient === null){
+            this.creatorClient = client;
+        }
 
         // add player to the state
         this.state.players.set(client.sessionId, new Player(options.clientName, undefined));

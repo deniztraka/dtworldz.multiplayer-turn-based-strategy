@@ -8,8 +8,8 @@ export class DTButton extends DTLabel {
     constructor(scene: Phaser.Scene, x: number, y: number, text: string, callback?: Function) {
         super(scene, x, y, text);
         this.setOrigin(0.5, 0.5)
-        this.setBackgroundColor('#cccccc');
-        this.setPadding(40, 10, 40, 10);
+        this.setBackgroundColor('#A5A078');
+        this.setPadding(30, 5, 30, 5);
         this.setColor('#333333');
 
         let button = new Button(this, {

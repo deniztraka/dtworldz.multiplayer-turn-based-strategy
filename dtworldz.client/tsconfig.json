@@ -17,5 +17,5 @@
   "include": [
     "src/**/*",
     "types/phaser3-rex-plugins.d.ts"
-  ]
+, "assets"  ]
 }

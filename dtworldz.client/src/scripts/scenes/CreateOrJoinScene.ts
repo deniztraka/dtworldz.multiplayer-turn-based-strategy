@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 
-import Button from 'phaser3-rex-plugins/plugins/button.js';
+
 import { Room, Client } from "colyseus.js";
 import { BACKEND_URL } from "../../backend";
 import { DTLabel } from "../utils/ui/dtLabel";
@@ -9,7 +9,6 @@ import { DTTextInput } from "../utils/ui/dtTextInput";
 import { DTButton } from "../utils/ui/dtButton";
 import { DTDrowpDownList } from "../utils/ui/dtDrowpDownList";
 import { DTDialog } from "../utils/ui/dtDialog";
-import loginBackgroundUrl from "../../public/assets/images/loginBackground.png"
 
 export class CreateOrJoinScene extends Phaser.Scene {
     room: Room | undefined;
@@ -23,6 +22,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
     joinDialog: DTDialog;
     errorText: DTLabel;
     roomId: any;
+    subTitleText: DTLabel;
 
     constructor() {
         super({ key: "CreateOrJoinScene" });
@@ -30,7 +30,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
     preload() {
         // update menu background color
-        this.load.image('loginBackground', loginBackgroundUrl);
+        this.load.image('loginBackground', '/assets/images/loginBackground.png');
         this.cameras.main.setBackgroundColor(0x000000);
         this.load.scenePlugin({
             key: 'rexuiplugin',
@@ -40,26 +40,33 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     create() {
+        //this.scene.start('LobbyScene', { room: this.room, playerName: 'deniz' });
+
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
-        .setOrigin(0.5, 0.5)
-        .setAlpha(0.2)
-        .setDisplaySize(this.scale.width, this.scale.height);
+            .setOrigin(0.5, 0.5)
+            .setAlpha(0.2)
+            .setDisplaySize(this.scale.width, this.scale.height);
 
 
-        this.titleText = new DTLabel(this, this.scale.width / 2, 100, "The Dark Lands").setStyle(TextStyles.H1);
-        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 50, "DTWorldz").setStyle(TextStyles.H4);
-        this.nickNameText = new DTTextInput(this, this.scale.width / 2, 250, "your name?").setStyle(TextStyles.H3);
-        this.dropdownList = new DTDrowpDownList(this, this.scale.width / 2, 325, 'Select Max Players', [
+        this.titleText = new DTLabel(this, this.scale.width / 2, 100, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
+        this.subTitleText = new DTLabel(this, this.scale.width / 2, 160, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
+        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 50, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
+
+        this.add.existing(this.titleText);
+        this.add.existing(this.subTitleText);
+        this.add.existing(this.brandText);
+
+        this.nickNameText = new DTTextInput(this, this.scale.width / 2, 300, "your name?").setStyle(TextStyles.BodyText);
+        this.dropdownList = new DTDrowpDownList(this, this.scale.width / 2, 340, 'max players ?', [
             { text: '2 players', value: 2 },
             { text: '3 players', value: 3 },
             { text: '4 players', value: 4 },
             { text: '5 players', value: 5 },
         ], this.onMaxPlayerCountSelected.bind(this));
-        this.createButton = new DTButton(this, this.scale.width / 2, 400, " CREATE ", this.onCreateClicked.bind(this)).setStyle(TextStyles.H3);
-        this.joinButton = new DTButton(this, this.scale.width / 2, 475, " JOIN ", this.onJoinClicked.bind(this)).setStyle(TextStyles.H5);
+        this.createButton = new DTButton(this, this.scale.width / 2, 400, "CREATE", this.onCreateClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);;
+        this.joinButton = new DTButton(this, this.scale.width / 2, 440, " JOIN ", this.onJoinClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);
 
-        this.add.existing(this.titleText);
-        this.add.existing(this.brandText);
+
         this.add.existing(this.nickNameText);
         this.add.existing(this.createButton);
         this.add.existing(this.joinButton);
@@ -68,6 +75,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
             .setStyle(TextStyles.H5)
             .setColor("#ff0000");
         this.add.existing(this.errorText);
+
     }
 
     async onCreateClicked() {

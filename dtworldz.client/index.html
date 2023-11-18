@@ -1,24 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colyseus + Phaser Example</title>
     <style>
-        * { margin: 0; padding: 0;}
-        html, body { background-color:white; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+        }
 
-        a { color: red; }
-        input { outline: none; }
+        @font-face {
+            font-family: 'DTTitleFontFamily';
+            src: url('/assets/fonts/BlackCloverFont.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'DTSubTitleFontFamily';
+            src: url('/assets/fonts/BirchLeaf.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'DTBodyFontFamily';
+            src: url('/assets/fonts/Code.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
-        div.menu { padding: 1em; }
-        div.menu > div { margin-bottom: 0.1em; }
+        .fontload {
+            font-family: "DTTitleFontFamily";
+            visibility: hidden;
+            position: absolute;
+            left: -9999px;
+        }
     </style>
 </head>
-<body>
 
+<body>
+    <div class="fontload" style="font-family: 'DTTitleFontFamily';">.</div>
+    <div class="fontload" style="font-family: 'DTSubTitleFontFamily';">.</div>
+    <div class="fontload" style="font-family: 'DTBodyFontFamily';">.</div>
     <script src="src/app.ts" type="module"></script>
 
 </body>
+
 </html>

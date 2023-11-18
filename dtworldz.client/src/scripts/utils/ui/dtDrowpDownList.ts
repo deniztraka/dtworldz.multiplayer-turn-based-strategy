@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 
 import { DropDownList } from 'phaser3-rex-plugins/templates/ui/ui-components.js';
 
-const COLOR_PRIMARY = 0xcccccc;
+const COLOR_PRIMARY = 0xA5A078;
 const COLOR_LIGHT = 0x999999;
 const COLOR_DARK = 0x333333;
 
@@ -14,20 +14,21 @@ export class DTDrowpDownList extends DropDownList {
 
         var style = {
             label: {
-                space: { left: 10, right: 10, top: 10, bottom: 10 },
+                space: { left: 10, right: 10, top: 5, bottom: 5 },
                 background: {
                     color: COLOR_PRIMARY
                 },
                 text: {
-                    fontSize: 18,
-                    fixedWidth: 210,
+                    fontSize: 12,
+                    fixedWidth: 140,
                     color: COLOR_DARK,
                     align: 'center',
+                    fontFamily: 'DTBodyFontFamily',
                 },
             },
 
             button: {
-                space: { left: 20, right: 10, top: 20, bottom: 10 },
+                space: { left: 10, right: 10, top: 5, bottom: 5 },
                 background: {
                     color: COLOR_DARK,
                     strokeWidth: 5,
@@ -35,8 +36,9 @@ export class DTDrowpDownList extends DropDownList {
                     'hover.strokeWidth': 5,
                 },
                 text: {
-                    fontSize: 18,
+                    fontSize: 12,
                     align: 'center',
+                    fontFamily: 'DTBodyFontFamily',
                 },
             }
         }
@@ -45,6 +47,7 @@ export class DTDrowpDownList extends DropDownList {
             .resetDisplayContent(defaultText)
             .setOptions(options)
             .setPosition(x, y)
+            .setAlpha(0.75)
             .layout()
 
         dropDownList
