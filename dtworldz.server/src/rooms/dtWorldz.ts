@@ -11,10 +11,12 @@ export class WorldRoom extends Room<DTWorldzState> {
     currentGameLogicState: BaseGameLogicState;
     actionManager: ActionManager;
 
-    onCreate(_options: { clientName: string }) {
+    onCreate(options: { clientName: string, maxPlayers: number }) {
         this.setState(new DTWorldzState(10, 10));
         this.actionManager = new ActionManager(this);
         this.changeState(new LobbyGameLogicState(this));
+        this.maxClients = options.maxPlayers;
+        console.log(options);
 
         // set some options to show in the rooms list
         // this.setMetadata({ friendlyFire: true });
