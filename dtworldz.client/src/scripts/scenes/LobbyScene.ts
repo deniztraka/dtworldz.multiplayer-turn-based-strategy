@@ -20,23 +20,24 @@ export class LobbyScene extends Phaser.Scene {
 
     cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
 
-    playerName: string;
     chatBox: Phaser.GameObjects.Text | undefined;
+
     titleText: any;
     subTitleText: any;
     brandText: any;
     roomIdText: DTLabel;
-    gridSizer: any;
+
     heroImages: any;
-    currentPlayerImage: Phaser.GameObjects.Image;
-    charIndex: number;
-    isReadyImage: Phaser.GameObjects.Image;
-    currentClient: any;
+    heroIcons: any;
+
+    localClient: any;
+
     startButton: DTButton;
     startGame: boolean;
     lobbyClientList: LobbyClient[] = [];
-    roomIdButton: DTButton;
-    isHost: boolean;
+
+    currentPlayerImage: Phaser.GameObjects.Image;
+    isReadyImage: Phaser.GameObjects.Image;
 
     constructor() {
         super({ key: "LobbyScene" })
@@ -44,13 +45,19 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     init(data: { room: Room, playerName: string }) {
-        this.playerName = data.playerName;
+
         this.room = data.room;
         this.heroImages = {
             0: 'hero0',
             1: 'hero1',
             2: 'hero2',
             3: 'hero3'
+        };
+        this.heroIcons = {
+            0: 'heroIcon0',
+            1: 'heroIcon1',
+            2: 'heroIcon2',
+            3: 'heroIcon3'
         };
     }
 
@@ -84,13 +91,16 @@ export class LobbyScene extends Phaser.Scene {
 
             // set currentClient if room id and session id matches
             if (this.room.sessionId === sessionId) {
-                this.currentClient = client;
+                this.localClient = client;
+
+                this.addChangeCharacterButton(client);
+                this.addReadyButton(client);
+                this.addPlayerName(client);
             }
 
             this.attachClientEvents(client, sessionId);
-            this.refreshPlayerList(sessionId);
-            this.addChangeCharacterButton(client);
-            this.addReadyButton(client);
+            this.refreshPlayerList();
+
         });
 
         this.room.onMessage('chat', (message) => {
@@ -141,14 +151,14 @@ export class LobbyScene extends Phaser.Scene {
 
         this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
         this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
-        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 50, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
+        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 25, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
         this.add.existing(this.titleText);
         this.add.existing(this.subTitleText);
         this.add.existing(this.brandText);
         /** General UI Branding Ends **/
 
         /** Room Id **/
-        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height - 100, "" + this.room.id).setStyle(TextStyles.BodyText).setColor("#E8D9A1");
+        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height - 60, "" + this.room.id).setStyle(TextStyles.BodyText).setColor("#E8D9A1");
         this.add.existing(this.roomIdText);
         let buttonRoomId = new Button(this.roomIdText, {
             clickInterval: 100,
@@ -163,23 +173,21 @@ export class LobbyScene extends Phaser.Scene {
                 scene.roomIdText.setText(scene.room.id)
             })
 
-
-        /** Player List Table Content **/
-        this.refreshPlayerList();
-
         /** Start Button **/
         this.startGame = false;
-        this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height - 140, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
+        this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height  - 92, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
         this.startButton.disableInteractive();
 
         this.add.existing(this.startButton);
     }
 
+    addPlayerName(client: any) {
+        this.add.text(this.scale.width / 2 - 140, this.scale.height / 2 + 200, client.name, TextStyles.H5).setOrigin(0.5, 0.5).setColor("#cccccc").setAlpha(0.75);
+    }
+
     addChangeCharacterButton(client: any) {
         let scene: any = this;
-
-        this.charIndex = client.charIndex;
-        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 150, this.scale.height / 2 + 75, this.heroImages[this.charIndex]).setDisplaySize(256,256);
+        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 140, this.scale.height / 2 + 110, this.heroImages[client.charIndex]).setDisplaySize(256, 256);
 
         let button = new Button(this.currentPlayerImage, {
             clickInterval: 100,
@@ -192,7 +200,7 @@ export class LobbyScene extends Phaser.Scene {
 
     addReadyButton(client: any) {
         let scene: any = this;
-        this.isReadyImage = this.add.image(this.scale.width / 2 - 150, this.scale.height / 2 + 175, client.isReady ? 'ready' : 'notready').setDisplaySize(25, 25);
+        this.isReadyImage = this.add.image(this.scale.width / 2 - 140, this.scale.height / 2 + 240, client.isReady ? 'ready' : 'notready').setDisplaySize(25, 25).setAlpha(0.75);
         let isReadyButton = new Button(this.isReadyImage, {
             clickInterval: 100,
             mode: 1
@@ -216,10 +224,9 @@ export class LobbyScene extends Phaser.Scene {
         this.room.send('startGame', { startGame: this.startGame });
     }
 
-    refreshPlayerList(sessionId?: any) {
+    refreshPlayerList() {
         let offset = 50;
         const clientPositions = this.calculateClientPositions();
-        console.log(clientPositions);
 
         for (let index = 0; index < this.lobbyClientList.length; index++) {
             let element = this.lobbyClientList[index] as any;
@@ -227,9 +234,13 @@ export class LobbyScene extends Phaser.Scene {
         }
 
         let counter = 0
-        for (const key in this.clients) {
-            if (Object.prototype.hasOwnProperty.call(this.clients, key)) {
-                const client = this.clients[key];
+        for (const sessionId in this.clients) {
+            if (Object.prototype.hasOwnProperty.call(this.clients, sessionId)) {
+                const client = this.clients[sessionId];
+
+                if (this.room.sessionId === sessionId) {
+                    continue;
+                }
 
                 const clientPosition = clientPositions[counter];
                 this.lobbyClientList.push(new LobbyClient(this, client, clientPosition + offset, 150));
@@ -241,7 +252,7 @@ export class LobbyScene extends Phaser.Scene {
     calculateClientPositions() {
         const clientWidth = 100;
         const screenWidth = this.scale.width;
-        const clientCount = Object.keys(this.clients).length;
+        const clientCount = Object.keys(this.clients).length - 1;
         const totalClientsWidth = clientCount * clientWidth;
         const startingX = (screenWidth / 2) - (totalClientsWidth / 2);
 
@@ -256,43 +267,18 @@ export class LobbyScene extends Phaser.Scene {
         return clientPositions;
     }
 
-    addNewPlayerRow(client: any) {
-        // Display a colored square based on the player's ready status
-        const size = 25; // Size of the square
-
-        const clientCharIndex = client.charIndex !== undefined ? client.charIndex : this.charIndex;
-        const playerName = client.name !== undefined ? client.name : this.playerName;
-        const isReady = client.isReady !== undefined ? client.isReady : false;
-
-        this.gridSizer.add(
-            this.add.image(0, 0, 'heroIcon' + clientCharIndex).setDisplaySize(25, 25),
-            { expand: false, align: 'left' }
-        )
-            .add(
-                this.add.text(0, 0, playerName),
-                { expand: false, align: 'left' }
-            )
-            .add(
-                this.add.image(0, 0, isReady ? 'ready' : 'notready').setDisplaySize(10, 10),
-                { expand: false, align: 'right' }
-            )
-            .layout();
-    }
-
-
-
-    setPlayerReady() { 
-        this.currentClient.isReady = !this.currentClient.isReady;
-        this.isReadyImage.setTexture(this.currentClient.isReady ? 'ready' : 'notready');
-        this.room.send('isReady', { isReady: this.currentClient.isReady });
+    setPlayerReady() {
+        this.localClient.isReady = !this.localClient.isReady;
+        this.isReadyImage.setTexture(this.localClient.isReady ? 'ready' : 'notready');
+        this.room.send('isReady', { isReady: this.localClient.isReady });
         this.refreshPlayerList();
     }
 
     setPlayerCharacter() {
         //change charIndex between 0 and the length of heroImages
-        this.currentClient.charIndex = (this.currentClient.charIndex + 1) % Object.keys(this.heroImages).length;
-        this.currentPlayerImage.setTexture(this.heroImages[this.currentClient.charIndex]);
-        this.room.send('charIndex', { charIndex: this.currentClient.charIndex });
+        this.localClient.charIndex = (this.localClient.charIndex + 1) % Object.keys(this.heroImages).length;
+        this.currentPlayerImage.setTexture(this.heroImages[this.localClient.charIndex]);
+        this.room.send('charIndex', { charIndex: this.localClient.charIndex });
         this.refreshPlayerList();
     }
 

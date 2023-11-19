@@ -1,7 +1,7 @@
 const textStyles = {
     'H1': {
         fontFamily: 'DTTitleFontFamily',
-        fontSize: '64px',
+        fontSize: '56px',
         align: 'center',
         fixedWidth: 0,
         fixedHeight: 0,
