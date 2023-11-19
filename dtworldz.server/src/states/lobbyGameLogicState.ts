@@ -1,5 +1,5 @@
 import { BaseGameLogicState } from "./baseGameLogicState";
-import { StartingGameLogicState } from "./startingGameLogicState";
+import { LoadingGameLogicState } from "./loadingGameLogicState";
 
 // Concrete states
 export class LobbyGameLogicState extends BaseGameLogicState {
@@ -37,15 +37,16 @@ export class LobbyGameLogicState extends BaseGameLogicState {
         })
 
         this.gameRoom.onMessage('startGame', (client, message) => {
-            console.log(`Game is starting...`);
-            this.gameRoom.changeState(new StartingGameLogicState(this.gameRoom));
+            console.log(`Game is loading...`);
+            //this.gameRoom.changeState(new LoadingGameLogicState(this.gameRoom));
+            this.isReadyToStart = true;
         })
     }
 
     update(deltaTime: number) {
         // check if ready to start, then transition to Starting state
-        if(this.isReadyToStart && this.areAllPlayersReady() && this.gameRoom.state.players.size >= this.gameRoom.maxClients){
-            this.gameRoom.changeState(new StartingGameLogicState(this.gameRoom));
+        if (this.isReadyToStart && this.areAllPlayersReady() && this.gameRoom.state.players.size >= this.gameRoom.maxClients) {
+            this.gameRoom.changeState(new LoadingGameLogicState(this.gameRoom));
         }
     }
 
@@ -53,7 +54,7 @@ export class LobbyGameLogicState extends BaseGameLogicState {
         // Check if enough players are ready, then transition to Starting state
         if (this.areAllPlayersReady() && this.gameRoom.state.players.size >= this.gameRoom.maxClients) {
             this.gameRoom.creatorClient.send('canBeStarted', { canBeStarted: true });
-            
+
             console.log("All players are ready. Game can be started.");
         } else {
             this.gameRoom.creatorClient.send('canBeStarted', { canBeStarted: false });

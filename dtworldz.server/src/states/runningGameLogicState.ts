@@ -7,7 +7,8 @@ export class RunningGameLogicState extends BaseGameLogicState {
 
     }
     enter() {
-
+        this.gameRoom.broadcast('gameIsRunning', {});
+        console.log("GameLogicState: Game Is Started and Running");
     }
 
     update(deltaTime: number) {

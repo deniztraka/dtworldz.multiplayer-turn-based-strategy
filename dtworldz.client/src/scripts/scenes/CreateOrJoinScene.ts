@@ -58,6 +58,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
         this.nickNameText = new DTTextInput(this, this.scale.width / 2, 300, "your name?").setStyle(TextStyles.BodyText);
         this.dropdownList = new DTDrowpDownList(this, this.scale.width / 2, 340, 'max players ?', [
+            { text: 'single player', value: 1 },
             { text: '2 players', value: 2 },
             { text: '3 players', value: 3 },
             { text: '4 players', value: 4 },
@@ -66,8 +67,6 @@ export class CreateOrJoinScene extends Phaser.Scene {
         this.createButton = new DTButton(this, this.scale.width / 2, 400, "CREATE", this.onCreateClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);;
         this.joinButton = new DTButton(this, this.scale.width / 2, 440, " JOIN ", this.onJoinClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);
 
-
-        
         this.add.existing(this.createButton);
         this.add.existing(this.joinButton);
 
@@ -173,16 +172,14 @@ export class CreateOrJoinScene extends Phaser.Scene {
 var CreateDialog = function (scene: any) {
 
 
-    let textInput = new DTTextInput(scene, 0, 0, "enter room id").setStyle(TextStyles.H5)
-        .setColor("#333333")
-        .setBackgroundColor("#999999")
+
 
 
 
 
 
     var dialog = scene.rexUI.add.dialog({
-        background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 1, 0xcccccc),
+        background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 1, 0xC3B68D),
 
         title: scene.rexUI.add.label({
             background: scene.rexUI.add.roundRectangle(0, 0, 100, 40, 1, 0x333333),
@@ -197,7 +194,7 @@ var CreateDialog = function (scene: any) {
             }
         }),
 
-        content: textInput,
+        content: new DTTextInput(scene, 0, 0, "enter room id").setStyle(TextStyles.H5),
 
         actions: [
             CreateLabel(scene, 'Yes'),
@@ -229,7 +226,7 @@ var CreateDialog = function (scene: any) {
         .on('button.out', function (button: { getElement: (arg0: string) => { (): any; new(): any; setStrokeStyle: { (): void; new(): any; }; }; }, groupName: any, index: any, pointer: any, event: any) {
             button.getElement('background').setStrokeStyle();
         });
-    scene.add.existing(textInput);
+    
     return dialog;
 }
 

@@ -90,6 +90,7 @@ export class WorldRoom extends Room<DTWorldzState> {
      */
     onDispose() {
         console.log("room", this.roomId, "disposing...");
+        this.currentGameLogicState.elapsedTime = 0;
     }
 
     /**

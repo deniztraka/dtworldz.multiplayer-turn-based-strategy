@@ -108,6 +108,18 @@ export class LobbyChatPanel {
         for (let i = 0; i < this.maxEntries; i++) {
             this.addEntry('', '');
         }
+
+
+
+        scene.input.keyboard.on('keydown', function (event: any) { 
+            if (event.key === "Enter") {
+                // @ts-ignore: Unreachable code error
+                editor.open();
+            } else if (event.key === "Escape") {
+                // @ts-ignore: Unreachable code error
+                editor.close();
+            }
+         });
     }
 
     sendChatMessage(message: string) {

@@ -119,6 +119,10 @@ export class LobbyScene extends Phaser.Scene {
             }
         });
 
+        this.room.onMessage('loadGame', (message) => {
+            this.scene.start('GameLoadingScene', { room: this.room, clients: this.clients });
+        });
+
         // remove local reference when entity is removed from the server
         this.room.state.players.onRemove((_client: any, sessionId: any) => {
             console.log(`${sessionId} is removed`);
