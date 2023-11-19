@@ -48,8 +48,8 @@ export class CreateOrJoinScene extends Phaser.Scene {
             .setDisplaySize(this.scale.width, this.scale.height);
 
 
-        this.titleText = new DTLabel(this, this.scale.width / 2, 100, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
-        this.subTitleText = new DTLabel(this, this.scale.width / 2, 160, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
+        this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
+        this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
         this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 50, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
 
         this.add.existing(this.titleText);

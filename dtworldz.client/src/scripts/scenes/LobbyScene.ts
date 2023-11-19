@@ -12,6 +12,7 @@ import heroIcon2Url from "../../../assets/images/characters/heroIcon2.png";
 import heroIcon3Url from "../../../assets/images/characters/heroIcon3.png";
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { DTButton } from "../utils/ui/dtButton";
+import { LobbyClient } from "../models/lobbyClient";
 
 export class LobbyScene extends Phaser.Scene {
     room: Room | undefined;
@@ -33,9 +34,12 @@ export class LobbyScene extends Phaser.Scene {
     currentClient: any;
     startButton: DTButton;
     startGame: boolean;
+    lobbyClientList: LobbyClient[] = [];
+    roomIdButton: DTButton;
+    isHost: boolean;
 
     constructor() {
-        super({ key: "LobbyScene" });
+        super({ key: "LobbyScene" })
 
     }
 
@@ -84,7 +88,9 @@ export class LobbyScene extends Phaser.Scene {
             }
 
             this.attachClientEvents(client, sessionId);
-            this.refreshPlayerList();
+            this.refreshPlayerList(sessionId);
+            this.addChangeCharacterButton(client);
+            this.addReadyButton(client);
         });
 
         this.room.onMessage('chat', (message) => {
@@ -94,7 +100,7 @@ export class LobbyScene extends Phaser.Scene {
         });
 
         this.room.onMessage('canBeStarted', (message) => {
-            if(message.canBeStarted){
+            if (message.canBeStarted) {
                 this.startButton.setAlpha(1).setInteractive();
             } else {
                 this.startButton.setAlpha(0.25).disableInteractive();
@@ -133,8 +139,8 @@ export class LobbyScene extends Phaser.Scene {
             .setAlpha(0.2)
             .setDisplaySize(this.scale.width, this.scale.height);
 
-        this.titleText = new DTLabel(this, this.scale.width / 2, 100, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
-        this.subTitleText = new DTLabel(this, this.scale.width / 2, 160, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
+        this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
+        this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
         this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 50, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
         this.add.existing(this.titleText);
         this.add.existing(this.subTitleText);
@@ -142,39 +148,67 @@ export class LobbyScene extends Phaser.Scene {
         /** General UI Branding Ends **/
 
         /** Room Id **/
-        this.roomIdText = new DTLabel(this, this.scale.width / 2, 550, "RoomId: " + this.room.id).setStyle(TextStyles.BodyText).setColor("#E8D9A1");
+        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height - 100, "" + this.room.id).setStyle(TextStyles.BodyText).setColor("#E8D9A1");
         this.add.existing(this.roomIdText);
+        let buttonRoomId = new Button(this.roomIdText, {
+            clickInterval: 100,
+            mode: 1,
+        })
+            .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
+                scene.copyRoomIdToClipboard();
+                scene.roomIdText.setText("Copied!")
+            }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
+                scene.roomIdText.setText("Copy RoomId: " + scene.room.id)
+            }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
+                scene.roomIdText.setText(scene.room.id)
+            })
+
 
         /** Player List Table Content **/
         this.refreshPlayerList();
 
-        /** Current Player Content **/
-        this.charIndex = Math.floor(Math.random() * Object.keys(this.heroImages).length);
-        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 100, this.scale.height / 2 - 100, this.heroImages[this.charIndex]);
+        /** Start Button **/
+        this.startGame = false;
+        this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height - 140, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
+        this.startButton.disableInteractive();
+
+        this.add.existing(this.startButton);
+    }
+
+    addChangeCharacterButton(client: any) {
+        let scene: any = this;
+
+        this.charIndex = client.charIndex;
+        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 150, this.scale.height / 2 + 75, this.heroImages[this.charIndex]).setDisplaySize(256,256);
 
         let button = new Button(this.currentPlayerImage, {
             clickInterval: 100,
             mode: 1
         })
             .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
-
                 scene.setPlayerCharacter();
             })
+    }
 
-        this.isReadyImage = this.add.image(this.scale.width / 2 - 100, this.scale.height / 2 - 50 , 'notready').setDisplaySize(25, 25);
+    addReadyButton(client: any) {
+        let scene: any = this;
+        this.isReadyImage = this.add.image(this.scale.width / 2 - 150, this.scale.height / 2 + 175, client.isReady ? 'ready' : 'notready').setDisplaySize(25, 25);
         let isReadyButton = new Button(this.isReadyImage, {
             clickInterval: 100,
             mode: 1
         }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
             scene.setPlayerReady()
         })
+    }
 
-        /** Start Button **/
-        this.startGame = false;
-        this.startButton = new DTButton(this, this.scale.width / 2, 600, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.25);
-        this.startButton.disableInteractive();
-
-        this.add.existing(this.startButton);
+    copyRoomIdToClipboard() {
+        navigator.clipboard.writeText(this.room.id)
+            .then(() => {
+                console.log('RoomId copied to clipboard');
+            })
+            .catch((error) => {
+                console.error('Failed to copy RoomId to clipboard', error);
+            });
     }
 
     onStartClicked() {
@@ -182,40 +216,44 @@ export class LobbyScene extends Phaser.Scene {
         this.room.send('startGame', { startGame: this.startGame });
     }
 
-    refreshPlayerList() {
-        const x = this.scale.width / 2 - 50;
-        const y = this.scale.height / 2 - 175;
-        const backgroundColor = 0x000000;
-        const alpha = 0.25;
+    refreshPlayerList(sessionId?: any) {
+        let offset = 50;
+        const clientPositions = this.calculateClientPositions();
+        console.log(clientPositions);
 
-        let scene: any = this;
-        if (!this.gridSizer) {
-            this.gridSizer = scene.rexUI.add.gridSizer({
-                x: x, y: y,
-                width: 175, height: undefined,
-
-                column: 3, row: 5,
-                columnProportions: [0, 0, 1], rowProportions: 0,
-                space: {
-                    left: 10, right: 10, top: 10, bottom: 10,
-                    column: 5,
-                    row: 5
-                },
-            })
-                .setOrigin(0)
-                .addBackground(scene.rexUI.add.roundRectangle(0, 0, 1, 1, 0, backgroundColor).setAlpha(alpha));
+        for (let index = 0; index < this.lobbyClientList.length; index++) {
+            let element = this.lobbyClientList[index] as any;
+            element.destroy();
         }
 
-        this.gridSizer.clear(true);
+        let counter = 0
         for (const key in this.clients) {
             if (Object.prototype.hasOwnProperty.call(this.clients, key)) {
                 const client = this.clients[key];
-                this.addNewPlayerRow(client);
+
+                const clientPosition = clientPositions[counter];
+                this.lobbyClientList.push(new LobbyClient(this, client, clientPosition + offset, 150));
+                counter++;
             }
         }
-        scene.gridSizer.setOrigin(0)
-            .addBackground(scene.rexUI.add.roundRectangle(0, 0, 1, 1, 0, 0x000000).setAlpha(0.25));
-        this.gridSizer.layout();
+    }
+
+    calculateClientPositions() {
+        const clientWidth = 100;
+        const screenWidth = this.scale.width;
+        const clientCount = Object.keys(this.clients).length;
+        const totalClientsWidth = clientCount * clientWidth;
+        const startingX = (screenWidth / 2) - (totalClientsWidth / 2);
+
+        const clientPositions = [];
+        let currentX = startingX;
+
+        for (let i = 0; i < clientCount; i++) {
+            clientPositions.push(currentX);
+            currentX += clientWidth;
+        }
+
+        return clientPositions;
     }
 
     addNewPlayerRow(client: any) {
@@ -241,9 +279,9 @@ export class LobbyScene extends Phaser.Scene {
             .layout();
     }
 
-    
 
-    setPlayerReady() {
+
+    setPlayerReady() { 
         this.currentClient.isReady = !this.currentClient.isReady;
         this.isReadyImage.setTexture(this.currentClient.isReady ? 'ready' : 'notready');
         this.room.send('isReady', { isReady: this.currentClient.isReady });
