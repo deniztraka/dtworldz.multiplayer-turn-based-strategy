@@ -45,6 +45,7 @@ export class DTTextInput extends DTLabel {
 
         // @ts-ignore: Unreachable code error
         var editor = new TextEdit(this, editorConfig);
+        scene.add.existing(this);
     }
 
 

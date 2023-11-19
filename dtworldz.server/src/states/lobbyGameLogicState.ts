@@ -31,7 +31,7 @@ export class LobbyGameLogicState extends BaseGameLogicState {
 
         this.gameRoom.onMessage('chat', (client, message) => {
             const player = this.gameRoom.state.players.get(client.sessionId)
-            console.log(`${player.name}: ${message}`);  // print the message to console
+            //console.log(`${player.name}: ${message}`);  // print the message to console
             // Broadcast message to all clients
             this.gameRoom.broadcast('chat', { sender: player.name, text: message });
         })

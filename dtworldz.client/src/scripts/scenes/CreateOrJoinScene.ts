@@ -67,7 +67,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
         this.joinButton = new DTButton(this, this.scale.width / 2, 440, " JOIN ", this.onJoinClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);
 
 
-        this.add.existing(this.nickNameText);
+        
         this.add.existing(this.createButton);
         this.add.existing(this.joinButton);
 
@@ -85,7 +85,6 @@ export class CreateOrJoinScene extends Phaser.Scene {
         }
 
         await this.connect(this.nickNameText.text);
-        console.log("room: ", this.room.id);
     }
 
     onJoinClicked() {
@@ -172,12 +171,6 @@ export class CreateOrJoinScene extends Phaser.Scene {
 }
 
 var CreateDialog = function (scene: any) {
-
-
-    // let contentText = scene.add.text(0, 0, 'Please enter the id of the room', {
-    //     fontSize: '24px',
-    //     color: '#333333',
-    // })
 
 
     let textInput = new DTTextInput(scene, 0, 0, "enter room id").setStyle(TextStyles.H5)

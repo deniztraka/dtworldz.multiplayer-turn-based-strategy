@@ -13,6 +13,8 @@ import heroIcon3Url from "../../../assets/images/characters/heroIcon3.png";
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { DTButton } from "../utils/ui/dtButton";
 import { LobbyClient } from "../models/lobbyClient";
+import { LobbyChatEntry } from "../utils/ui/lobbyChatEntry";
+import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
 
 export class LobbyScene extends Phaser.Scene {
     room: Room | undefined;
@@ -38,6 +40,7 @@ export class LobbyScene extends Phaser.Scene {
 
     currentPlayerImage: Phaser.GameObjects.Image;
     isReadyImage: Phaser.GameObjects.Image;
+    chatPanel: LobbyChatPanel;
 
     constructor() {
         super({ key: "LobbyScene" })
@@ -96,6 +99,7 @@ export class LobbyScene extends Phaser.Scene {
                 this.addChangeCharacterButton(client);
                 this.addReadyButton(client);
                 this.addPlayerName(client);
+                this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2 + 50, this.scale.height / 2 + 100);
             }
 
             this.attachClientEvents(client, sessionId);
@@ -104,9 +108,7 @@ export class LobbyScene extends Phaser.Scene {
         });
 
         this.room.onMessage('chat', (message) => {
-            console.log('Received chat message: ', message.text);
-            // new message received from server
-            //this.updateChatBox(`${message.sender}: ${message.text}`);
+            this.chatPanel.addEntry(message.sender, message.text);
         });
 
         this.room.onMessage('canBeStarted', (message) => {
@@ -127,6 +129,8 @@ export class LobbyScene extends Phaser.Scene {
                 this.refreshPlayerList();
             }
         });
+
+        
     }
 
     attachClientEvents(client: any, sessionId: any) {
@@ -175,7 +179,7 @@ export class LobbyScene extends Phaser.Scene {
 
         /** Start Button **/
         this.startGame = false;
-        this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height  - 92, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
+        this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height - 92, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
         this.startButton.disableInteractive();
 
         this.add.existing(this.startButton);
@@ -282,44 +286,13 @@ export class LobbyScene extends Phaser.Scene {
         this.refreshPlayerList();
     }
 
-    createChatUI() {
-        // Chat display area
-        this.chatBox = this.add.text(400, 50, '').setStyle({ font: '12px Courier', fill: '#00ff00' });
-        this.chatBox.setWordWrapWidth(400);
-        this.chatBox.setScrollFactor(0);
+    // createChatUI() {
+    //     // Chat display area
+    //     this.chatBox = this.add.text(400, 50, '').setStyle({ font: '12px Courier', fill: '#00ff00' });
+    //     this.chatBox.setWordWrapWidth(400);
+    //     this.chatBox.setScrollFactor(0);
 
-        // HTML Input Element for chat messages
-        this.createChatInput();
-    }
-
-    createChatInput() {
-        let inputElement = document.createElement('input');
-        inputElement.type = 'text';
-        inputElement.style.position = 'absolute';
-        inputElement.style.bottom = '50px';
-        inputElement.style.left = '400px';
-        inputElement.style.width = '200px';
-
-        document.body.appendChild(inputElement);
-        inputElement.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                this.sendChatMessage(inputElement.value);
-                inputElement.value = '';
-            }
-        });
-    }
-
-    sendChatMessage(message: string) {
-        console.log('Sending chat message: ', message);
-        if (message.trim().length === 0) return; // Ignore empty messages
-
-        // Assuming 'this.room' is your Colyseus room instance
-        this.room.send('chat', message);
-    }
-
-    updateChatBox(text: string) {
-        this.chatBox.setText(this.chatBox.text + '\n' + text);
-        this.chatBox.scrollFactorY = this.chatBox.height;
-    }
-
+    //     // HTML Input Element for chat messages
+    //     this.createChatInput();
+    // }
 }
