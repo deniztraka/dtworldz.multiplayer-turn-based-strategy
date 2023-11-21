@@ -1,11 +1,10 @@
 import { Schema } from "@colyseus/schema";
 import { WorldRoom } from "../rooms/dtWorldz";
 
-export abstract class BaseGameLogicState extends Schema {
+export abstract class BaseGameLogicState {
     gameRoom: WorldRoom;
     elapsedTime: number;
     constructor(gameRoom: WorldRoom) {
-        super();
         this.elapsedTime = 0;
         this.gameRoom = gameRoom;
     }

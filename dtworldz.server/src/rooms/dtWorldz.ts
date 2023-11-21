@@ -5,19 +5,25 @@ import { BaseGameLogicState } from "../states/baseGameLogicState";
 import { ActionManager } from "../actions/actionManager";
 import { LobbyGameLogicState } from "../states/lobbyGameLogicState";
 import * as http from 'http';
+import { ActionFactory } from "../factories/actionFactory";
 
 export class WorldRoom extends Room<DTWorldzState> {
     fixedTimeStep = 1000 / 60;
     currentGameLogicState: BaseGameLogicState;
     actionManager: ActionManager;
     creatorClient: Client | undefined;
+    actionFactory: any;
 
     onCreate(options: { clientName: string, maxPlayers: number }) {
         this.setState(new DTWorldzState(10, 10));
-        this.actionManager = new ActionManager(this);
-        this.changeState(new LobbyGameLogicState(this));
         this.maxClients = options.maxPlayers;
+        this.actionManager = new ActionManager(this);
+        this.actionFactory = new ActionFactory();
+        this.changeState(new LobbyGameLogicState(this));
+
         this.creatorClient = null;
+
+        this.attachGameEvents();
         console.log(options);
 
         // set some options to show in the rooms list
@@ -32,6 +38,18 @@ export class WorldRoom extends Room<DTWorldzState> {
                 elapsedTime -= this.fixedTimeStep;
                 this.fixedUpdate(this.fixedTimeStep);
             }
+        });
+    }
+    attachGameEvents() {
+        this.onMessage('ca_action', (client, actionPayload) => {
+            console.log(`received action request from ${client.sessionId}`)
+
+            // get client's player
+            let player = this.state.players.get(client.sessionId);
+
+            // create action from payload and handle it (will be put in queue)
+            let action = this.actionFactory.get(player, actionPayload);
+            this.actionManager.handleNewAction(action);
         });
     }
 
@@ -60,7 +78,7 @@ export class WorldRoom extends Room<DTWorldzState> {
     onJoin(client: Client, options: { clientName: string }, _auth: any) {
         console.log(`${client.sessionId} | ${options.clientName} is joined!`);
 
-        if(this.creatorClient === null){
+        if (this.creatorClient === null) {
             this.creatorClient = client;
         }
 
@@ -91,6 +109,7 @@ export class WorldRoom extends Room<DTWorldzState> {
     onDispose() {
         console.log("room", this.roomId, "disposing...");
         this.currentGameLogicState.elapsedTime = 0;
+        this.currentGameLogicState.exit();
     }
 
     /**

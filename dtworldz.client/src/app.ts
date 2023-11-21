@@ -3,6 +3,7 @@ import Phaser from "phaser";
 import { LobbyScene } from "./scripts/scenes/LobbyScene";
 import { CreateOrJoinScene } from "./scripts/scenes/CreateOrJoinScene";
 import { GameLoadingScene } from "./scripts/scenes/GameLoadingScene";
+import { GameIsRunningScene } from "./scripts/scenes/GameIsRunningScene";
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -51,7 +52,7 @@ const config: Phaser.Types.Core.GameConfig = {
         default: "arcade"
     },
     pixelArt: true,
-    scene: [CreateOrJoinScene, LobbyScene, GameLoadingScene ],
+    scene: [CreateOrJoinScene, LobbyScene, GameLoadingScene, GameIsRunningScene ],
     dom: {
         createContainer: true
     },

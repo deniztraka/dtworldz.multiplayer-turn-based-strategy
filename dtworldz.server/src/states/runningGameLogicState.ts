@@ -3,6 +3,9 @@ import { WorldRoom } from "../rooms/dtWorldz";
 
 // Concrete states
 export class RunningGameLogicState extends BaseGameLogicState {
+    constructor(gameRoom: WorldRoom) {
+        super(gameRoom);
+    }
     exit(): void {
 
     }

@@ -6,9 +6,9 @@ export class BaseTile extends Schema {
     @type("number") id: number;
     @type("string") type: string;
     @type({ map: BaseTileComponent }) components = new MapSchema<BaseTileComponent>();
-    @type( BaseMovementStrategy ) movementStrategy: BaseMovementStrategy | undefined;
+    movementStrategy: BaseMovementStrategy;
 
-    constructor(id:number, type: string, movementStrategy: BaseMovementStrategy | undefined) {
+    constructor(id:number, type: string, movementStrategy: BaseMovementStrategy) {
       super();
       this.id = id;
       this.type = type;

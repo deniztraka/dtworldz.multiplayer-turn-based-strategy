@@ -2,8 +2,9 @@ import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
+import { WorldMapHelper } from "../helpers/worldMapHelper";
 
-export class GameLoadingScene extends Phaser.Scene {
+export class GameIsRunningScene extends Phaser.Scene {
     room: Room | undefined;
     clients: { [sessionId: string]: any } = {};
     titleText: DTLabel;
@@ -12,7 +13,7 @@ export class GameLoadingScene extends Phaser.Scene {
     loadingMessage: DTLabel;
 
     constructor() {
-        super({ key: "GameLoadingScene" })
+        super({ key: "GameIsRunningScene" })
 
     }
 
@@ -20,27 +21,28 @@ export class GameLoadingScene extends Phaser.Scene {
 
         this.room = data.room;
         this.clients = data.clients;
-        
+
     }
 
     preload() {
-        
+
     }
 
     create() {
         this.loadingUI();
         this.attachRoomEvents();
+        // console.log(Array.from(this.room.state.tilemap));
+
+        let data:any = Array.from(this.room.state.tilemap);
+
+        let a = WorldMapHelper.convertToMapData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
+        
+        console.log(a);
     }
 
     attachRoomEvents() {
 
-        this.room.onMessage("loadingGame", (payload) => {
-            this.loadingMessage.setText(payload.message + " (" + payload.progress + "%)");
-        });
 
-        this.room.onMessage("gameIsRunning", (payload) => {
-            this.scene.start('GameIsRunningScene', { room: this.room, clients: this.clients });
-        });
 
         // remove local reference when entity is removed from the server
         this.room.state.players.onRemove((_client: any, sessionId: any) => {
@@ -71,7 +73,7 @@ export class GameLoadingScene extends Phaser.Scene {
         this.add.existing(this.brandText);
         /** General UI Branding Ends **/
 
-        this.loadingMessage = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "creating the world..").setStyle(TextStyles.BodyText).setColor("#E8D9A1").setAlpha(0.5);
+        this.loadingMessage = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "Welcome to the Lowlands..").setStyle(TextStyles.BodyText).setColor("#E8D9A1").setAlpha(0.5);
         this.add.existing(this.loadingMessage);
     }
 

@@ -7,8 +7,8 @@ export abstract class OngoingAction extends BaseGameAction {
     startTime: any;
     elapsedTime: number;
     
-    constructor(player:Player, duration:number) {
-        super(player);
+    constructor(player:Player, actionPayload: any, duration:number) {
+        super(player, actionPayload);
         this.duration = duration;
         this.startTime = new Date().getTime();
         this.elapsedTime = 0;
