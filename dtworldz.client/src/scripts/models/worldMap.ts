@@ -15,7 +15,7 @@ export class WorldMap {
         this.game = game
         this.height = game.room.state.mapHeight
         this.width = game.room.state.mapWidth
-        this.data = WorldMapHelper.convertToMapData(game.room.state.mapData, this.width, this.height);
+        this.data = WorldMapHelper.getBiomeLayerData(game.room.state.mapData, this.width, this.height);
         this.build()
         this.pathfinder = new PathFinder(this.data);
     }
@@ -24,8 +24,8 @@ export class WorldMap {
         const mapData = new Phaser.Tilemaps.MapData({
             width: 10,
             height: 10,
-            tileWidth: 64,
-            tileHeight: 32,
+            tileWidth: 128,
+            tileHeight: 64,
             orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
             format: Phaser.Tilemaps.Formats.ARRAY_2D
         });

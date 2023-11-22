@@ -3,6 +3,7 @@ import { WorldRoom } from "../rooms/dtWorldz";
 import { RunningGameLogicState } from "./runningGameLogicState";
 import { WorldMapGenerator } from "../engines/proceduralGeneration/worldMapGenerator";
 import { TileFactory } from "../factories/tileFactory";
+import { Natures } from "../models/tilemap/tiles/Natures";
 
 // Define the type for a loading step
 type LoadingStep = {
@@ -125,19 +126,20 @@ async function loadMap(gameLogicState: LoadingGameLogicState): Promise<void> {
 function generateBiomes(gameLogicState: LoadingGameLogicState): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         try {
+            
             // get rid of reference to the old map
             const biomesData = gameLogicState.generator.generateBiomes();
-
+            
             for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
                 for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
                     gameLogicState.gameRoom.state.tilemap.push(TileFactory.createTile(biomesData[x][y]));
                 }
             }
 
-            // to be able to send the data to the client in time
             resolve();
-        } catch (error) {
+        } catch (error:any) {
             // If there's an error during the load, call reject()
+            console.log(error.message);
             reject(new Error("LoadingGameLogicState: Failed to generate biomes"));
         }
     });
@@ -151,14 +153,20 @@ function generateNature(gameLogicState: LoadingGameLogicState): Promise<void> {
 
             for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
                 for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
-                    let tile = gameLogicState.gameRoom.state.getTile(x, y);
-                    tile.setNature(natureData[x][y]);
+                    const tile = gameLogicState.gameRoom.state.getTile(x, y);
+
+                    const data = natureData[x][y];
+                    if(data > 0.75){
+                        tile.setNature(Natures.Mountain);
+                    } else if(data > 0.6){
+                        tile.setNature(Natures.Forest);
+                    }
                 }
             }
 
-            // to be able to send the data to the client in time
             resolve();
-        } catch (error) {
+        } catch (error:any) {
+            console.log(error.message);
             // If there's an error during the load, call reject()
             reject(new Error("LoadingGameLogicState: Failed to generate nature"));
         }

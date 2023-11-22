@@ -15,7 +15,7 @@ export class WorldRoom extends Room<DTWorldzState> {
     actionFactory: any;
 
     onCreate(options: { clientName: string, maxPlayers: number }) {
-        this.setState(new DTWorldzState(10, 10));
+        this.setState(new DTWorldzState(100, 100));
         this.maxClients = options.maxPlayers;
         this.actionManager = new ActionManager(this);
         this.actionFactory = new ActionFactory();

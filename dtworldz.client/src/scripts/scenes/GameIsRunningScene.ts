@@ -13,6 +13,9 @@ export class GameIsRunningScene extends Phaser.Scene {
     floorMap: Phaser.Tilemaps.TilemapLayer;
     backgroundImg: Phaser.GameObjects.Image;
     welcomeMessage: DTLabel;
+    natureLayer: Phaser.Tilemaps.TilemapLayer;
+    tileMap: Phaser.Tilemaps.Tilemap;
+    floorTileSet: Phaser.Tilemaps.Tileset;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
@@ -38,12 +41,13 @@ export class GameIsRunningScene extends Phaser.Scene {
             this.onGameIsLoaded();
         });
 
-        const mapData = WorldMapHelper.convertToMapData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
+        const mapData = WorldMapHelper.getBiomeLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
+        //console.log(mapData);
         this.createTileMap(mapData);
-
+        const natureData = WorldMapHelper.getNatureLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
+        this.createNatureLayer(natureData);
         let heroImg = this.add.image(this.scale.width / 2+96, this.scale.height / 2-16, 'hero0').setDisplaySize(64, 64);
-        
-        this.cameras.main.setZoom(2);
+        //this.cameras.main.setZoom(2);
     }
 
     onGameIsLoaded() {
@@ -84,32 +88,69 @@ export class GameIsRunningScene extends Phaser.Scene {
         const mapDefinition = new Phaser.Tilemaps.MapData({
             width: this.room.state.width,
             height: this.room.state.height,
-            tileWidth: 64,
-            tileHeight: 32,
+            tileWidth: 128,
+            tileHeight: 64,
             orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
             format: Phaser.Tilemaps.Formats.ARRAY_2D
         });
 
-        const tileMap = new Phaser.Tilemaps.Tilemap(this, mapDefinition);
+        this.tileMap = new Phaser.Tilemaps.Tilemap(this, mapDefinition);
 
-        const floorTileSet = tileMap.addTilesetImage('floorTileSet', 'tileAtlas', 64, 128,0,0);
+        this.floorTileSet = this.tileMap.addTilesetImage('floorTileSet', 'plainTiles', 128, 128,0,0);
 
-        this.floorMap = tileMap.createBlankLayer('floorLayer', floorTileSet, this.scale.width/2, this.scale.height/2 -200)
-            .setAlpha(0);
+        this.floorMap = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width/2, this.scale.height/2 -200 +32);
+       
 
         let y = 0;
 
         tileData.forEach(row => {
 
             row.forEach((index, x) => {
-                let tile = this.floorMap.putTileAt(index, x, y);
-                tile.properties.isSelected = false;
+                if(index === 1){
+                    // todo: somewhere here, we should include biome data into account
+                    // currently it only works with Plains biome type because we only have that tileset
+                    let floorTileIndexes = WorldMapHelper.getFloorTileIndexes();
+                    const chosenIndex = floorTileIndexes[Math.floor(Math.random() * floorTileIndexes.length)];
+                    let tile = this.floorMap.putTileAt(chosenIndex, x, y);
+                    tile.properties.isSelected = false;
+                }
             });
 
             y++;
         });
 
         this.events.emit('gameIsLoaded');
+    }
+
+    createNatureLayer(natureData: number[][]) {
+        this.natureLayer = this.tileMap.createBlankLayer('natureLayer', this.floorTileSet, this.scale.width/2, this.scale.height/2 -200);
+
+        let y = 0;
+        natureData.forEach(row => {
+
+            // None = 0,
+            // Forest = 1,
+            // Mountain = 2,
+
+            row.forEach((index, x) => {
+                if(index === 1){
+                    // todo: somewhere here, we should include biome data into account
+                    // currently it only works with Plains biome type because we only have that tileset
+                    let forestTileIndexes = WorldMapHelper.getForestTileIndexes();
+                    const chosenIndex = forestTileIndexes[Math.floor(Math.random() * forestTileIndexes.length)];
+                    let tile = this.natureLayer.putTileAt(chosenIndex, x, y);
+                } else if(index === 2){
+                    // todo: somewhere here, we should include biome data into account
+                    // currently it only works with Plains biome type because we only have that tileset
+                    let mountainTileIndexes = WorldMapHelper.getMountainTileIndexes();
+                    const chosenIndex = mountainTileIndexes[Math.floor(Math.random() * mountainTileIndexes.length)];
+                    let tile = this.natureLayer.putTileAt(chosenIndex, x, y);
+                }
+            });
+
+            y++;
+        });
+
     }
 
     attachRoomEvents() {

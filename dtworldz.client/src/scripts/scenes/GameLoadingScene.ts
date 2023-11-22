@@ -3,6 +3,7 @@ import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
 import tileAtlasUrl from "../../../assets/images/tilemaps/newworldtiles.png"
+import plainTilesUrl from "../../../assets/images/tilemaps/plainsTiles.png"
 
 export class GameLoadingScene extends Phaser.Scene {
     room: Room | undefined;
@@ -21,11 +22,11 @@ export class GameLoadingScene extends Phaser.Scene {
 
         this.room = data.room;
         this.clients = data.clients;
-        
     }
 
     preload() {
         this.load.image('tileAtlas', tileAtlasUrl);
+        this.load.image('plainTiles', plainTilesUrl);
     }
 
     create() {
