@@ -1,23 +1,22 @@
 import { BaseGameLogicState } from "./baseGameLogicState";
 import { WorldRoom } from "../rooms/dtWorldz";
 import { RunningGameLogicState } from "./runningGameLogicState";
-import { WorldMapGenerator } from "../engines/worldMapGenerator";
-import { PlainsTile } from "../models/tilemap/tiles/plainsTile";
+import { WorldMapGenerator } from "../engines/proceduralGeneration/worldMapGenerator";
+import { TileFactory } from "../factories/tileFactory";
 
 // Define the type for a loading step
 type LoadingStep = {
     message: string;
-    action: (gameRoom: WorldRoom) => Promise<void>;
+    action: (loadingLogicState: LoadingGameLogicState) => Promise<void>;
 };
 
 // Define your loading steps with messages and corresponding actions
 const loadingSteps: LoadingStep[] = [
     { message: "Loading worldmap...", action: loadMap },
+    { message: "Spreading biomes", action: generateBiomes },
+    { message: "Nature is growing", action: generateNature },
     // ... other steps
 ];
-
-
-const interval = 1500; // 1 second
 
 // const loadingMessages = [
 //     "Loading worldmap...",
@@ -47,24 +46,25 @@ const interval = 1500; // 1 second
 // Concrete states
 export class LoadingGameLogicState extends BaseGameLogicState {
     messageIndex: number;
+    generator: WorldMapGenerator;
 
     constructor(gameRoom: WorldRoom) {
         super(gameRoom);
         this.messageIndex = 0;
     }
     exit(): void {
-        console.log("GameLogicState: Game is finished loading.");
-        this.gameRoom.broadcast('loadingGame', { message: 'all is set...', progress: 100 });
+        console.log("LoadingGameLogicState: Game is finished loading.");
+        this.gameRoom.broadcast('loadingGame', { message: 'all is set..', progress: 100 });
         this.messageIndex = 0;
     }
 
     enter() {
-        console.log("GameLogicState: Game preparing for loading..");
+        console.log("LoadingGameLogicState: Game preparing for loading..");
         this.gameRoom.broadcast('loadGame');
         this.elapsedTime = 0;
 
         setTimeout(() => {
-            console.log("GameLogicState:loading starts..");
+            console.log("LoadingGameLogicState: Loading starts..");
             this.processNextLoadingStep();
         }, 1000);
     }
@@ -78,13 +78,14 @@ export class LoadingGameLogicState extends BaseGameLogicState {
             const currentStep = loadingSteps[this.messageIndex];
             const progressPercentage = this.calculateProgressPercentage();
 
+            console.log("LoadingGameLogicState: " + currentStep.message + " (" + progressPercentage + "%)");
             this.broadcastLoadingMessage(currentStep.message, progressPercentage);
-            currentStep.action(this.gameRoom).then(() => {
+            currentStep.action(this).then(() => {
                 this.messageIndex++;
                 this.processNextLoadingStep();
             })
                 .catch((error: any) => {
-                    console.error("Error during loading:", error.message);
+                    console.error("LoadingGameLogicState: Error during loading:", error.message);
                 });
         } else {
             setTimeout(() => {
@@ -104,18 +105,32 @@ export class LoadingGameLogicState extends BaseGameLogicState {
     }
 }
 
-async function loadMap(gameRoom: WorldRoom): Promise<void> {
+async function loadMap(gameLogicState: LoadingGameLogicState): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         try {
-            console.log("Loading map...");
-            // get rid of reference to the old map
-            const generator = new WorldMapGenerator(gameRoom.state.width, gameRoom.state.height);
-            const mapData = generator.generate();
 
-            for (let x = 0; x < gameRoom.state.width; x++) {
-                for (let y = 0; y < gameRoom.state.height; y++) {
-                    let tile = mapData[x][y];
-                    gameRoom.state.tilemap.push(tile);
+            // create a mew map generator
+            // TODO: add seed
+            gameLogicState.generator = new WorldMapGenerator(gameLogicState.gameRoom.state.width, gameLogicState.gameRoom.state.height);
+
+            // to be able to send the data to the client in time
+            resolve();
+        } catch (error) {
+            // If there's an error during the load, call reject()
+            reject(new Error("LoadingGameLogicState: Failed to load the map"));
+        }
+    });
+}
+
+function generateBiomes(gameLogicState: LoadingGameLogicState): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        try {
+            // get rid of reference to the old map
+            const biomesData = gameLogicState.generator.generateBiomes();
+
+            for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
+                for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
+                    gameLogicState.gameRoom.state.tilemap.push(TileFactory.createTile(biomesData[x][y]));
                 }
             }
 
@@ -123,7 +138,29 @@ async function loadMap(gameRoom: WorldRoom): Promise<void> {
             resolve();
         } catch (error) {
             // If there's an error during the load, call reject()
-            reject(new Error("Failed to load the map"));
+            reject(new Error("LoadingGameLogicState: Failed to generate biomes"));
+        }
+    });
+}
+
+function generateNature(gameLogicState: LoadingGameLogicState): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        try {
+            // get rid of reference to the old map
+            const natureData = gameLogicState.generator.generateNature();
+
+            for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
+                for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
+                    let tile = gameLogicState.gameRoom.state.getTile(x, y);
+                    tile.setNature(natureData[x][y]);
+                }
+            }
+
+            // to be able to send the data to the client in time
+            resolve();
+        } catch (error) {
+            // If there's an error during the load, call reject()
+            reject(new Error("LoadingGameLogicState: Failed to generate nature"));
         }
     });
 }

@@ -29,7 +29,6 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     preload() {
-        // update menu background color
         this.load.image('loginBackground', '/assets/images/loginBackground.png');
         this.cameras.main.setBackgroundColor(0x000000);
         this.load.scenePlugin({

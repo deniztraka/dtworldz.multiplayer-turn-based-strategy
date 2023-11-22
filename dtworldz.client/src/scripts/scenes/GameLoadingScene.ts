@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
+import tileAtlasUrl from "../../../assets/images/tilemaps/newworldtiles.png"
 
 export class GameLoadingScene extends Phaser.Scene {
     room: Room | undefined;
@@ -24,7 +25,7 @@ export class GameLoadingScene extends Phaser.Scene {
     }
 
     preload() {
-        
+        this.load.image('tileAtlas', tileAtlasUrl);
     }
 
     create() {
@@ -60,7 +61,7 @@ export class GameLoadingScene extends Phaser.Scene {
         /** General UI Branding Starts **/
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
             .setOrigin(0.5, 0.5)
-            .setAlpha(0.2)
+            .setTint(0x333333)
             .setDisplaySize(this.scale.width, this.scale.height);
 
         this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
