@@ -1,4 +1,4 @@
-import { TileFactory } from "../../factories/tileFactory";
+import { TileFactory } from "../../models/tilemap/tiles/tileFactory";
 import { Biomes } from "../../models/tilemap/tiles/Biomes";
 import { Natures } from "../../models/tilemap/tiles/Natures";
 import { BaseTile } from "../../schema/tilemap/tile/baseTile";

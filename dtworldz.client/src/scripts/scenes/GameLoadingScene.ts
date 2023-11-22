@@ -12,6 +12,7 @@ export class GameLoadingScene extends Phaser.Scene {
     brandText: DTLabel;
     subTitleText: DTLabel;
     loadingMessage: DTLabel;
+    localClient: any;
 
     constructor() {
         super({ key: "GameLoadingScene" })
@@ -22,6 +23,17 @@ export class GameLoadingScene extends Phaser.Scene {
 
         this.room = data.room;
         this.clients = data.clients;
+        this.setLocalClient(this.clients);
+    }
+    setLocalClient(clients: { [sessionId: string]: any; }): any {
+        for (const sessionId in clients) {
+            if (Object.prototype.hasOwnProperty.call(clients, sessionId)) {
+                const client = clients[sessionId];
+                if (this.room.sessionId === sessionId) {
+                    this.localClient = client;
+                }
+            }
+        }
     }
 
     preload() {
@@ -41,7 +53,7 @@ export class GameLoadingScene extends Phaser.Scene {
         });
 
         this.room.onMessage("gameIsRunning", (payload) => {
-            this.scene.start('GameIsRunningScene', { room: this.room, clients: this.clients });
+            this.scene.start('GameIsRunningScene', { room: this.room, clients: this.clients, localClient: this.localClient });
         });
 
         // remove local reference when entity is removed from the server

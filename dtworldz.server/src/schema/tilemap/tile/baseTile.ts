@@ -2,21 +2,24 @@ import { Schema, type, MapSchema } from "@colyseus/schema";
 import { BaseTileComponent } from "./components/baseTileComponent";
 import { BaseMovementStrategy } from "./strategies/baseMovementStrategy";
 import { Natures } from "../../../models/tilemap/tiles/Natures";
+import { Position } from "../../position";
 
 export class BaseTile extends Schema {
 
     @type("number") id: number;
     @type("number") biome: number; // plains, snow, desert, swamp, lava
     @type("number") nature: number; // forest, mountains, hills, lake, river
+    @type(Position) position: Position;
     @type({ map: BaseTileComponent }) components = new MapSchema<BaseTileComponent>();
     movementStrategy: BaseMovementStrategy;
 
-    constructor(id: number, biome: number, movementStrategy: BaseMovementStrategy) {
+    constructor(id: number, position: Position, biome: number, movementStrategy: BaseMovementStrategy) {
         super();
         this.id = id;
         this.biome = biome;
         this.movementStrategy = movementStrategy;
         this.nature = Natures.None;
+        this.position = position;
     }
 
     setNature(nature: Natures) {
@@ -56,6 +59,19 @@ export class BaseTile extends Schema {
             }
         });
         return interactableComponents;
+    }
+
+    setMovementStrategy(movementStrategy: BaseMovementStrategy) {
+        this.movementStrategy = movementStrategy;
+    }
+
+    tryMove(mobile: any) {
+        if(this.movementStrategy.canMove(mobile)){
+            this.movementStrategy.move(mobile, this);
+            return true;
+        }
+
+        return false;
     }
 }
 

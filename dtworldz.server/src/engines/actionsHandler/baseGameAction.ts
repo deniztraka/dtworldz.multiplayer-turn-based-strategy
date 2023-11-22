@@ -1,4 +1,4 @@
-import { Player } from "../schema/mobiles/player";
+import { Player } from "../../schema/mobiles/player";
 
 export abstract class BaseGameAction {
     player: Player;

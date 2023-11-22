@@ -44,6 +44,7 @@ export class LobbyScene extends Phaser.Scene {
 
     constructor() {
         super({ key: "LobbyScene" })
+        this.localClient = {};
 
     }
 
@@ -61,6 +62,10 @@ export class LobbyScene extends Phaser.Scene {
             1: 'heroIcon1',
             2: 'heroIcon2',
             3: 'heroIcon3'
+        };
+        this.localClient = {
+            name: data.playerName,
+            isReady: false,
         };
     }
 
@@ -120,7 +125,7 @@ export class LobbyScene extends Phaser.Scene {
         });
 
         this.room.onMessage('loadGame', (message) => {
-            this.scene.start('GameLoadingScene', { room: this.room, clients: this.clients });
+            this.scene.start('GameLoadingScene', { room: this.room, clients: this.clients, localClient: this.localClient });
         });
 
         // remove local reference when entity is removed from the server

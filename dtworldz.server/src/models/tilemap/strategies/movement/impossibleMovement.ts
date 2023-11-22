@@ -4,7 +4,5 @@ import { BaseMovementStrategy } from "../../../../schema/tilemap/tile/strategies
 export class WaterMovement extends BaseMovementStrategy {
     canMove(mobile: BaseMobile) {
         return false;
-
-        
     }
 }

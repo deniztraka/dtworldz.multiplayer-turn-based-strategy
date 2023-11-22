@@ -1,5 +1,5 @@
-import { WorldRoom } from "../../rooms/dtWorldz";
-import { Player } from "../../schema/mobiles/player";
+import { WorldRoom } from "../../../rooms/dtWorldz";
+import { Player } from "../../../schema/mobiles/player";
 import { BaseGameAction } from "../baseGameAction";
 
 export abstract class OngoingAction extends BaseGameAction {

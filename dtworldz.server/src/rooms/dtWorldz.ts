@@ -2,10 +2,10 @@ import { Room, Client } from "colyseus";
 import { DTWorldzState } from "../schema/dtWorldzState";
 import { Player } from "../schema/mobiles/player";
 import { BaseGameLogicState } from "../states/baseGameLogicState";
-import { ActionManager } from "../actions/actionManager";
+import { ActionManager } from "../engines/actionsHandler/actionManager";
 import { LobbyGameLogicState } from "../states/lobbyGameLogicState";
 import * as http from 'http';
-import { ActionFactory } from "../factories/actionFactory";
+import { ActionFactory } from "../engines/actionsHandler/actionFactory";
 
 export class WorldRoom extends Room<DTWorldzState> {
     fixedTimeStep = 1000 / 60;
@@ -15,7 +15,7 @@ export class WorldRoom extends Room<DTWorldzState> {
     actionFactory: any;
 
     onCreate(options: { clientName: string, maxPlayers: number }) {
-        this.setState(new DTWorldzState(100, 100));
+        this.setState(new DTWorldzState(10, 10));
         this.maxClients = options.maxPlayers;
         this.actionManager = new ActionManager(this);
         this.actionFactory = new ActionFactory();

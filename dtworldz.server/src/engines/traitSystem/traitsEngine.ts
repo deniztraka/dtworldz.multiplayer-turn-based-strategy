@@ -12,5 +12,5 @@ export class TraitsEngine {
     static checkRequirements(trait: Trait, mobile: BaseMobile): boolean {
         const requirements = TraitsEngine.requirements.get(trait);
         return requirements ? requirements.every(req => mobile.attributes.get(req.attribute) >= req.minimumVal) : true;
-    }   
+    }
 }

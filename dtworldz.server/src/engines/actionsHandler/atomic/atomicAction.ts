@@ -1,6 +1,6 @@
-import { WorldRoom } from "../../rooms/dtWorldz";
-import { DTWorldzState } from "../../schema/dtWorldzState";
-import { Player } from "../../schema/mobiles/player";
+import { WorldRoom } from "../../../rooms/dtWorldz";
+import { DTWorldzState } from "../../../schema/dtWorldzState";
+import { Player } from "../../../schema/mobiles/player";
 import { BaseGameAction } from "../baseGameAction";
 
 export abstract class AtomicAction extends BaseGameAction {

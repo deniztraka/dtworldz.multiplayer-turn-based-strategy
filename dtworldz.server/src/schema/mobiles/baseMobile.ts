@@ -1,25 +1,27 @@
-import { Schema, type } from "@colyseus/schema";
+import { Schema, type, ArraySchema } from "@colyseus/schema";
 import { Position } from "../position";
 import { Trait } from "../../engines/traitSystem/traits";
 import { TraitsEngine } from "../../engines/traitSystem/traitsEngine";
 import { Attributes } from "../../engines/attributeSystem/attributes";
+import { BaseTile } from "../tilemap/tile/baseTile";
 
 export class BaseMobile extends Schema {
     @type("string") name: string = "";
     @type("boolean") isReady: boolean = false;
     @type("number") speed: number = 1;
     @type(Position) position: Position | undefined;
+    @type([Position]) currentPath: ArraySchema<Position>;
     private traits: Map<Trait, any> = new Map();
-    currentPath: any[];
-    attributes: Map<Attributes, number>  = new Map();
+    attributes: Map<Attributes, number> = new Map();
 
-    constructor(name:string, position: Position | undefined) {
+    constructor(name: string, position: Position | undefined) {
         super();
-        this.currentPath = [];
+        this.currentPath = new ArraySchema<Position>();;
         this.name = name;
         this.position = position;
         this.speed = 1;
         this.attributes.set(Attributes.Strength, 10);
+        this.position =  position || new Position(0, 0);
     }
 
     setAttribute(attribute: Attributes, value: number) {
@@ -48,5 +50,9 @@ export class BaseMobile extends Schema {
 
     removeTrait(trait: Trait) {
         this.traits.delete(trait);
+    }
+
+    tryMove(tile: BaseTile): boolean {
+        return tile.tryMove(this);
     }
 }

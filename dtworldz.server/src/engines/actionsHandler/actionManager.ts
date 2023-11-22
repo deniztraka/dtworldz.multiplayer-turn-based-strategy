@@ -1,4 +1,4 @@
-import { WorldRoom } from "../rooms/dtWorldz";
+import { WorldRoom } from "../../rooms/dtWorldz";
 import { AtomicAction } from "./atomic/atomicAction";
 import { BaseGameAction } from "./baseGameAction";
 import { OngoingAction } from "./ongoing/OngoingAction";
@@ -13,6 +13,7 @@ export class ActionManager {
     }
 
     handleNewAction(action: BaseGameAction) {
+        console.log(action);
         if (action instanceof OngoingAction) {
             this.ongoingActions.push(action);
         } else if (action instanceof AtomicAction) {

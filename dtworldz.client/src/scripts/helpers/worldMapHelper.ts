@@ -4,9 +4,7 @@ const mountainTileIndexes = [0, 1, 2, 3];
 
 export class WorldMapHelper {
     static getBiomeLayerData(serverMapData: any, width: number, height: number){
-        let data: {id:number, biome:number, nature:number, components: any[]}[]  = Array.from(serverMapData.$items.values());
-
-        // console.log(data);
+        let data: {id:number, biome:number, nature:number, components: any[], movementStrategy:any}[]  = Array.from(serverMapData.$items.values());
 
         let mapData = [];
         for (let i = 0; i < width; i++) {
@@ -21,8 +19,6 @@ export class WorldMapHelper {
 
     static getNatureLayerData(serverMapData: any, width: number, height: number){
         let data: {id:number, biome:number, nature:number, components: any[]}[]  = Array.from(serverMapData.$items.values());
-
-        // console.log(data);
 
         let mapData = [];
         for (let i = 0; i < width; i++) {
