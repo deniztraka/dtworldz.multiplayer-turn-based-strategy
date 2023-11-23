@@ -8,13 +8,13 @@ export class ActionFactory {
 
     }
 
-    get(player:Player, commandPayload: { aid: any }): BaseGameAction {
-        console.log(commandPayload);
-        switch (commandPayload.aid) {
+    get(player:Player, action: { aid: string, payload:any}): BaseGameAction {
+        switch (action.aid) {
             case 'select-tile':
-                return new FindPathAction(player, commandPayload)
+                return new FindPathAction(player, action.payload)
             case 'move':
-                 return new MoveAction(player, commandPayload)
+                 return new MoveAction(player, action.payload)
         }
     }
 }
+

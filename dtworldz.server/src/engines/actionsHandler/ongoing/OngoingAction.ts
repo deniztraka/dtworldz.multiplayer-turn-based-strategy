@@ -1,4 +1,5 @@
 import { WorldRoom } from "../../../rooms/dtWorldz";
+import { BaseMobile } from "../../../schema/mobiles/baseMobile";
 import { Player } from "../../../schema/mobiles/player";
 import { BaseGameAction } from "../baseGameAction";
 
@@ -7,8 +8,8 @@ export abstract class OngoingAction extends BaseGameAction {
     startTime: any;
     elapsedTime: number;
     
-    constructor(player:Player, actionPayload: any, duration:number) {
-        super(player, actionPayload);
+    constructor(mobile:BaseMobile, payload: any, duration:number) {
+        super(mobile, payload);
         this.duration = duration;
         this.startTime = new Date().getTime();
         this.elapsedTime = 0;

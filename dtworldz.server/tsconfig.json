@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "target": "es6",
-    "module": "commonjs",
+    "outDir": "build",
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "strict": true,
     "allowJs": true,
     "strictNullChecks": false,
@@ -10,7 +11,7 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strictPropertyInitialization": false,
+    "useDefineForClassFields": false
   },
   "include": [
     "src",

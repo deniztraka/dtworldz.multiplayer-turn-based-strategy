@@ -6,24 +6,29 @@ import { ActionManager } from "../engines/actionsHandler/actionManager";
 import { LobbyGameLogicState } from "../states/lobbyGameLogicState";
 import * as http from 'http';
 import { ActionFactory } from "../engines/actionsHandler/actionFactory";
+import { DynamicPathfindingService } from "../engines/pathfinding/pathFindingService";
 
 export class WorldRoom extends Room<DTWorldzState> {
+    
+    
     fixedTimeStep = 1000 / 60;
     currentGameLogicState: BaseGameLogicState;
     actionManager: ActionManager;
     creatorClient: Client | undefined;
     actionFactory: any;
+    private pathfindingService: DynamicPathfindingService;
 
     onCreate(options: { clientName: string, maxPlayers: number }) {
         this.setState(new DTWorldzState(10, 10));
         this.maxClients = options.maxPlayers;
         this.actionManager = new ActionManager(this);
         this.actionFactory = new ActionFactory();
+        this.pathfindingService = new DynamicPathfindingService(this);
         this.changeState(new LobbyGameLogicState(this));
 
         this.creatorClient = null;
 
-        this.attachGameEvents();
+        
         console.log(options);
 
         // set some options to show in the rooms list
@@ -38,18 +43,6 @@ export class WorldRoom extends Room<DTWorldzState> {
                 elapsedTime -= this.fixedTimeStep;
                 this.fixedUpdate(this.fixedTimeStep);
             }
-        });
-    }
-    attachGameEvents() {
-        this.onMessage('ca_action', (client, actionPayload) => {
-            console.log(`received action request from ${client.sessionId}`)
-
-            // get client's player
-            let player = this.state.players.get(client.sessionId);
-
-            // create action from payload and handle it (will be put in queue)
-            let action = this.actionFactory.get(player, actionPayload);
-            this.actionManager.handleNewAction(action);
         });
     }
 
@@ -83,7 +76,7 @@ export class WorldRoom extends Room<DTWorldzState> {
         }
 
         // add player to the state
-        this.state.players.set(client.sessionId, new Player(options.clientName, undefined));
+        this.state.players.set(client.sessionId, new Player(client, options.clientName, undefined));
     }
 
     /**
@@ -124,6 +117,18 @@ export class WorldRoom extends Room<DTWorldzState> {
         }
         this.currentGameLogicState = newState;
         this.currentGameLogicState.enter();
+    }
+
+    getPathfindingService() {
+        return this.pathfindingService;
+    }
+
+    getClient(sessionId: string) {
+        return this.clients.find(c => c.sessionId === sessionId);
+    }
+
+    getPlayer(sessionId: string) {
+        return this.state.players.get(sessionId);
     }
 
 }

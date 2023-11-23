@@ -6,6 +6,7 @@ import { Attributes } from "../../engines/attributeSystem/attributes";
 import { BaseTile } from "../tilemap/tile/baseTile";
 
 export class BaseMobile extends Schema {
+    
     @type("string") name: string = "";
     @type("boolean") isReady: boolean = false;
     @type("number") speed: number = 1;
@@ -16,7 +17,7 @@ export class BaseMobile extends Schema {
 
     constructor(name: string, position: Position | undefined) {
         super();
-        this.currentPath = new ArraySchema<Position>();;
+        this.currentPath = new ArraySchema<Position>();
         this.name = name;
         this.position = position;
         this.speed = 1;
@@ -54,5 +55,14 @@ export class BaseMobile extends Schema {
 
     tryMove(tile: BaseTile): boolean {
         return tile.tryMove(this);
+    }
+
+    findPathTo(targetPos:Position): Position[]{
+
+
+
+
+
+        return new ArraySchema<Position>();
     }
 }

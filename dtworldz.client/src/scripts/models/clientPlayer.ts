@@ -37,6 +37,11 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
                 this.move(currentValue);
             }
         });
+
+        this.client.listen("currentPath", (currentValue: any, previousValue: any) => {
+            console.log(`currentPath changed for ${this.sessionId}`);
+            console.log(currentValue);
+        });
     }
 
     move(tilePos: { x: number, y: number }) {
