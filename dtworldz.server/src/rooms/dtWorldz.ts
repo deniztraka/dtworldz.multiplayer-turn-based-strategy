@@ -10,6 +10,7 @@ import { DynamicPathfindingService } from "../engines/pathfinding/pathFindingSer
 import { BaseMobile } from "../schema/mobiles/baseMobile";
 
 export class WorldRoom extends Room<DTWorldzState> {
+    
     private fixedTimeStep = 1000 / 60;
     private currentGameLogicState: BaseGameLogicState;
     private actionManager: ActionManager;
@@ -25,7 +26,6 @@ export class WorldRoom extends Room<DTWorldzState> {
 
         this.creatorClient = null;
 
-        
         console.log(options);
 
         // set some options to show in the rooms list
@@ -100,6 +100,10 @@ export class WorldRoom extends Room<DTWorldzState> {
         console.log("room", this.roomId, "disposing...");
         this.currentGameLogicState.elapsedTime = 0;
         this.currentGameLogicState.exit();
+    }
+
+    getOwnerClient() {
+        return this.creatorClient
     }
 
     /**

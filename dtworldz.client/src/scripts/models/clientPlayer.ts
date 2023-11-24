@@ -37,7 +37,9 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
 
         this.client.listen("currentPath", (currentValue: any, previousValue: any) => {
             this.currentPath = currentValue;
-            this.drawPath();
+            if((this.scene as GameIsRunningScene).localPlayer.sessionId === this.sessionId ){
+                this.drawPath();
+            }
         });
     }
 
@@ -99,6 +101,10 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
                         let angle = Phaser.Math.RadToDeg(radRotation);
                         angle += 90;
                         marker.setAngle(angle);
+                        angle = Math.ceil(angle);
+                        if (this.characterSprite) {
+                            this.characterSprite.flipX = [-63, 244, 270].indexOf(angle) > -1
+                        }
                     }
                 }
                 this.markers.push(marker);

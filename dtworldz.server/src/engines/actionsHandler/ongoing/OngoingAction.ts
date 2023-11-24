@@ -16,6 +16,8 @@ export abstract class OngoingAction extends BaseGameAction {
     }
 
     abstract update(roomState: WorldRoom, deltaTime: number):void;
+
+    abstract onCompleted(roomState: WorldRoom):void;
 }
 
 

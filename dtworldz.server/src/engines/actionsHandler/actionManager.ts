@@ -40,6 +40,7 @@ export class ActionManager {
     
                 // Remove action if completed
                 if (action.elapsedTime >= action.duration) {
+                    action.onCompleted(this.worldRoom);
                     this.ongoingActions.splice(i, 1);
                 }
             }

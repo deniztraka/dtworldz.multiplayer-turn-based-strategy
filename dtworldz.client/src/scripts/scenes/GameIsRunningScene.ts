@@ -48,7 +48,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.attachRoomEvents();
         this.instantiatePlayers();
 
-        this.createTileLabels();
+        //this.createTileLabels();
         this.mouseHandler.init()
 
         this.events.once('gameIsLoaded', () => {
@@ -58,14 +58,15 @@ export class GameIsRunningScene extends Phaser.Scene {
 
 
 
-        this.cameras.main.setZoom(1);
+        this.cameras.main.setZoom(2);
         this.cameras.main.startFollow(this.localPlayer, true, 0.05, 0.05);
+        (window as any).fx = this.cameras.main.postFX.addTiltShift(0.25, 0.2, 0, 0.5, 1, 1);
 
         this.events.emit('gameIsLoaded');
     }
     buildMap() {
         const biomeData = WorldMapHelper.getBiomeLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
-        this.createTileMap(biomeData);
+        this.createFloorLayer(biomeData);
         
         const natureData = WorldMapHelper.getNatureLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
         this.createNatureLayer(natureData);
@@ -127,7 +128,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         });
     }
 
-    createTileMap(tileData: number[][]) {
+    createFloorLayer(tileData: number[][]) {
         const mapDefinition = new Phaser.Tilemaps.MapData({
             width: this.room.state.width,
             height: this.room.state.height,

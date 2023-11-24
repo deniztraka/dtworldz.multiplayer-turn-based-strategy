@@ -11,7 +11,8 @@ export class FindPathAction extends AtomicAction {
     }
 
     execute(worldRoom: WorldRoom): void {
-        if (this.mobile instanceof Player) {
+        if (this.mobile instanceof Player && !this.mobile.isMovingNow()) {
+
             // Access pathfinding service from worldRoom
             const pathfindingService = worldRoom.getPathfindingService(this.mobile);
  

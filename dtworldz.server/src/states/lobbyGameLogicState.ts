@@ -53,11 +53,11 @@ export class LobbyGameLogicState extends BaseGameLogicState {
     sendReadyStatus() {
         // Check if enough players are ready, then transition to Starting state
         if (this.areAllPlayersReady() && this.gameRoom.state.players.size >= this.gameRoom.maxClients) {
-            this.gameRoom.creatorClient.send('canBeStarted', { canBeStarted: true });
+            this.gameRoom.getOwnerClient().send('canBeStarted', { canBeStarted: true });
 
             console.log("All players are ready. Game can be started.");
         } else {
-            this.gameRoom.creatorClient.send('canBeStarted', { canBeStarted: false });
+            this.gameRoom.getOwnerClient().send('canBeStarted', { canBeStarted: false });
             console.log("Not all players are ready. Game can't be started.");
         }
     }
