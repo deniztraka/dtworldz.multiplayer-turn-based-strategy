@@ -1,4 +1,4 @@
-# dtworldz.the-dark-lands
+# dtworldz.multiplayer-turn-based-strategy
 
 Multiplayer Turn-Based Strategy/Adventure Game project
 
