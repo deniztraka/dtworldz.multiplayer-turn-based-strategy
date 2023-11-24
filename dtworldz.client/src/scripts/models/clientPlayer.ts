@@ -19,7 +19,7 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
         this.sessionId = sessionId;
         this.playerName = client.name;
         this.currentPath = [];
-        this.characterSprite = (add as any).sprite(0, 0, 'hero'+client.charIndex).setScale(0.5);
+        this.characterSprite = (add as any).sprite(0, 0, 'hero' + client.charIndex).setScale(0.5);
         this.characterSprite.setOrigin(0.5, 0.75);
         this.playerNameText = add.text(0, -60, this.playerName, { color: "#cccccc", fontSize: "8px", fontFamily: 'DTSubTitleFontFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
         this.add(this.playerNameText);
@@ -30,17 +30,14 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
     }
 
     listenServerUpdates() {
-        this.client.listen("position", (currentValue: any, previousValue: any) => {
-            // check if there is a path to follow and last point in the path equals to the current position
-            if (this.currentPath.length > 0 && this.currentPath[this.currentPath.length - 1].x === currentValue.x && this.currentPath[this.currentPath.length - 1].y === currentValue.y) {
-                // console.log(`moving player ${player.sessionId} to next point`);
-                this.move(currentValue);
-            }
+        this.client.listen("position", (currentValue: {x: number, y: number}, previousValue: any) => {
+            //console.log(`moving player ${this.sessionId} to the point ${currentValue.x} ${currentValue.y}`)
+            this.move(currentValue);
         });
 
         this.client.listen("currentPath", (currentValue: any, previousValue: any) => {
-            console.log(`currentPath changed for ${this.sessionId}`);
-            console.log(currentValue);
+            this.currentPath = currentValue;
+            this.drawPath();
         });
     }
 
@@ -48,11 +45,14 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
         // get tile from current position
         const tile = (<GameIsRunningScene>this.scene).floorMap.getTileAt(tilePos.x, tilePos.y);
 
+        const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
+
+
         this.scene.tweens.add({
             targets: this,
             x: tile.getCenterX(),
             y: tile.getCenterY(),
-            duration: 100,
+            duration:  1000 / this.client.speed,// this.client.speed,
             onComplete: () => {
                 if (this.markers) {
                     let marker = this.markers.shift();
@@ -64,8 +64,46 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
         });
     }
 
-    setPath(currentPath: IPoint[]) {
-        this.currentPath = currentPath;
+    drawPath() {
+        // clear markers
+        if (this.markers) {
+            this.markers.forEach((marker: any) => {
+                marker.destroy();
+            });
+        }
+        this.markers = [];
+
+        let paths = this.currentPath.map((pathItem: IPoint, index: number) => {
+            return { x: pathItem.x, y: pathItem.y };
+        });
+
+        // draw markers
+        paths.forEach((path, index) => {
+            // skip first and last
+            if (index === 0) {
+                return;
+            } 
+
+            const scene = (this.scene as GameIsRunningScene)
+            //draw marker
+            var tile = scene.floorMap.getTileAt(path.x, path.y);
+            if (tile.index !== -1) {
+                var marker = scene.add.image(tile.getCenterX(), tile.getCenterY(), 'markerImage').setScale(2);
+                marker.setDepth(100);
+                // set marker rotation to match the tile
+                if (index < this.currentPath.length - 1) {
+                    let nextItem = paths[index + 1];
+                    var nextTile = scene.floorMap.getTileAt(nextItem.x, nextItem.y);
+                    if (nextTile.index !== -1) {
+                        var radRotation = Phaser.Math.Angle.Between(tile.getCenterX(), tile.getCenterY(), nextTile.getCenterX(), nextTile.getCenterY());
+                        let angle = Phaser.Math.RadToDeg(radRotation);
+                        angle += 90;
+                        marker.setAngle(angle);
+                    }
+                }
+                this.markers.push(marker);
+            }
+        });
     }
 
     // moves the player to the next point in the path

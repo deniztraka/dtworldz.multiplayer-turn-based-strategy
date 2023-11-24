@@ -7,6 +7,7 @@ import { Natures } from "../models/tilemap/tiles/Natures";
 import { ForestMovementStrategy } from "../models/tilemap/strategies/movement/forestMovement";
 import { Position } from "../schema/position";
 import { MountainsMovement } from "../models/tilemap/strategies/movement/mountainsMovement";
+import { BaseTile } from "../schema/tilemap/tile/baseTile";
 
 // Define the type for a loading step
 type LoadingStep = {
@@ -135,9 +136,10 @@ async function generateBiomes(gameLogicState: LoadingGameLogicState): Promise<vo
             // get rid of reference to the old map
             const biomesData = gameLogicState.generator.generateBiomes();
 
-            for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
-                for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
-                    gameLogicState.gameRoom.state.tilemap.push(TileFactory.createTile(new Position(x, y), biomesData[x][y]));
+            for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
+                for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
+                    // Push the tile created at (x, y) into the tilemap array
+                    gameLogicState.gameRoom.state.tilemap.push(TileFactory.createTile(new Position(x, y), biomesData[y][x]));
                 }
             }
 
@@ -155,16 +157,18 @@ async function generateNature(gameLogicState: LoadingGameLogicState): Promise<vo
         try {
             const natureData = gameLogicState.generator.generateNature();
 
-            for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
-                for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
+            for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
+                for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
                     const tile = gameLogicState.gameRoom.state.getTile(x, y);
-
-                    const data = natureData[x][y];
+            
+                    // Make sure the natureData is indexed in [y][x] order as well
+                    const data = natureData[y][x];
                     if (data > 0.75) {
                         tile.setNature(Natures.Mountain);
                     } else if (data > 0.6) {
                         tile.setNature(Natures.Forest);
                     }
+                    // Include an 'else' if you need to handle other nature types or a default case
                 }
             }
 
@@ -206,25 +210,27 @@ function findStartingPositions(loadingLogicState: LoadingGameLogicState): Promis
     return new Promise<void>((resolve, reject) => {
         try {
 
+            let cleanTiles: BaseTile[] = [];
             // find a randome 'Plains' tile for each player
-            const players = loadingLogicState.gameRoom.state.players;
-            const tiles = loadingLogicState.gameRoom.state.tilemap.filter((tile) => tile.nature === Natures.None);
-            console.log(loadingLogicState.gameRoom.state.players.size)
-            // TODO: WHY WE HAVE  0 PLAYERS IN THIS STATE?
-
-            loadingLogicState.gameRoom.state.players.forEach(player => {
-                const randomTile = tiles[Math.floor(Math.random() * tiles.length)];
-                player.position = randomTile.position;
+            loadingLogicState.gameRoom.state.tilemap.forEach(tile => {
+                if (tile.nature === Natures.None) {
+                    cleanTiles.push(tile);
+                    // console.log(`${tile.position.x} ${tile.position.y} ${tile.nature}`);
+                }
             });
 
-            // for (const key in players) {
-            //     if (Object.prototype.hasOwnProperty.call(players, sessionId)) {
-            //         const player = loadingLogicState.gameRoom.state.players.get(sessionId);
-            //         console.log(player);
-            //         const randomTile = tiles[Math.floor(Math.random() * tiles.length)];
-            //         player.position = randomTile.position;
-            //     }
-            // }
+
+            loadingLogicState.gameRoom.getPlayers().forEach(player => {
+                const randomTile = cleanTiles[Math.floor(Math.random() * cleanTiles.length)];
+                player.position = randomTile.position;
+
+                //delete the tile from the list so that we don't use it again
+                const index = cleanTiles.indexOf(randomTile);
+                if (index > -1) {
+                    cleanTiles.splice(index, 1);
+                }
+            });
+
 
             resolve();
         } catch (error: any) {

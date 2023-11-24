@@ -1,21 +1,6 @@
-import { TileFactory } from "../../models/tilemap/tiles/tileFactory";
 import { Biomes } from "../../models/tilemap/tiles/Biomes";
-import { Natures } from "../../models/tilemap/tiles/Natures";
 import { BaseTile } from "../../schema/tilemap/tile/baseTile";
 import { createNoise2D } from 'simplex-noise';
-
-const natureIndex = [
-    [Natures.Forest, Natures.Forest, Natures.Forest, Natures.None, Natures.None, Natures.None, Natures.None, Natures.None, Natures.None, Natures.None],
-    [Natures.Forest, Natures.Forest, Natures.None, Natures.None, Natures.None, Natures.None, Natures.Forest, Natures.None, Natures.None, Natures.None],
-    [Natures.Forest, Natures.Forest, Natures.Forest, Natures.None, Natures.None, Natures.Mountain, Natures.None, Natures.None, Natures.None, Natures.Forest],
-    [Natures.Forest, Natures.Forest, Natures.Forest, Natures.None, Natures.Mountain, Natures.Mountain, Natures.None, Natures.None, Natures.None, Natures.None],
-    [Natures.None, Natures.Forest, Natures.Forest, Natures.Mountain, Natures.Mountain, Natures.Mountain, Natures.Forest, Natures.Forest, Natures.None, Natures.None],
-    [Natures.Forest, Natures.Forest, Natures.Mountain, Natures.None, Natures.None, Natures.None, Natures.Forest, Natures.Forest, Natures.None, Natures.None],
-    [Natures.None, Natures.Forest, Natures.Forest, Natures.None, Natures.Mountain, Natures.Forest, Natures.Forest, Natures.None, Natures.None, Natures.None],
-    [Natures.Forest, Natures.Forest, Natures.Forest, Natures.None, Natures.Mountain, Natures.None, Natures.None, Natures.None, Natures.None, Natures.None],
-    [Natures.None, Natures.Forest, Natures.Forest, Natures.None, Natures.Forest, Natures.None, Natures.None, Natures.None, Natures.Mountain, Natures.Forest],
-    [Natures.None, Natures.Forest, Natures.None, Natures.None, Natures.None, Natures.None, Natures.None, Natures.None, Natures.Forest, Natures.Forest],
-];
 
 export class WorldMapGenerator {
 

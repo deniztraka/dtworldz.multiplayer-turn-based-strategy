@@ -47,6 +47,8 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.buildMap();
         this.attachRoomEvents();
         this.instantiatePlayers();
+
+        this.createTileLabels();
         this.mouseHandler.init()
 
         this.events.once('gameIsLoaded', () => {
@@ -56,14 +58,15 @@ export class GameIsRunningScene extends Phaser.Scene {
 
 
 
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(1);
         this.cameras.main.startFollow(this.localPlayer, true, 0.05, 0.05);
 
         this.events.emit('gameIsLoaded');
     }
     buildMap() {
-        const mapData = WorldMapHelper.getBiomeLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
-        this.createTileMap(mapData);
+        const biomeData = WorldMapHelper.getBiomeLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
+        this.createTileMap(biomeData);
+        
         const natureData = WorldMapHelper.getNatureLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
         this.createNatureLayer(natureData);
     }
@@ -77,7 +80,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     }
     instantiatePlayer(client: any, sessionId: string) {
         var playerMapPosition = this.floorMap.getTileAt(client.position.x, client.position.y);
-        //var playerMapPosition = this.floorMap.getTileAt(0, 0);
+
         let player = new ClientPlayer(this, client, sessionId, playerMapPosition.getCenterX(), playerMapPosition.getCenterY());
 
         this.players[sessionId] = player;
@@ -235,6 +238,22 @@ export class GameIsRunningScene extends Phaser.Scene {
                 }
             }
         }
+    }
+
+ createTileLabels() {
+    
+        this.floorMap.forEachTile(tile => {
+            
+            // Get the center x, y of the tile
+            const centerX = tile.getCenterX();
+            const centerY = tile.getCenterY();
+
+            // Create a label for the tile
+            const label = this.add.text(centerX, centerY, `${ tile.x }-${ tile.y }`, {
+                font: '16px Arial', color: '#86bbf0'
+            }).setOrigin(0.5, 0.5); // Center the text on the tile
+        });
+    
     }
 
 }

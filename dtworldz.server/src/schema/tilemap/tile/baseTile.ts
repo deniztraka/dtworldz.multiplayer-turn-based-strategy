@@ -8,7 +8,7 @@ export class BaseTile extends Schema {
 
     @type("number") id: number;
     @type("number") biome: number; // plains, snow, desert, swamp, lava
-    @type("number") nature: number; // forest, mountains, hills, lake, river
+    @type("number") nature: Natures; // forest, mountains, hills, lake, river
     @type(Position) position: Position;
     @type({ map: BaseTileComponent }) components = new MapSchema<BaseTileComponent>();
     movementStrategy: BaseMovementStrategy;
@@ -63,6 +63,10 @@ export class BaseTile extends Schema {
 
     setMovementStrategy(movementStrategy: BaseMovementStrategy) {
         this.movementStrategy = movementStrategy;
+    }
+
+    canMove(mobile: any) {
+        return this.movementStrategy.canMove(mobile);
     }
 
     tryMove(mobile: any) {

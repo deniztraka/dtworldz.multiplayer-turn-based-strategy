@@ -17,6 +17,7 @@ export class DTWorldzState extends Schema {
   }
 
   getTile(x: number, y: number): BaseTile {
-    return this.tilemap[x + y * this.width];
+     return this.tilemap[y * this.width + x];
+    //return this.tilemap[x * this.height + y];
   }
 }

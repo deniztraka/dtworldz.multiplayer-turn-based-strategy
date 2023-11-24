@@ -1,6 +1,5 @@
 import { Schema, Context, type, MapSchema, ArraySchema } from "@colyseus/schema";
 import { Client } from "colyseus";
-import { BaseCommandPayload } from "dtworldz.shared-lib"
 import Color = require("color");
 
 export class MapPos extends Schema {
@@ -20,7 +19,6 @@ export class Player extends Schema {
   @type("number") color: number;
   @type("string") name: string;
 
-  commandPayloadQueue: BaseCommandPayload[] = [];
   client: Client;
 
   constructor(client: Client) {

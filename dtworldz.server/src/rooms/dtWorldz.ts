@@ -7,23 +7,20 @@ import { LobbyGameLogicState } from "../states/lobbyGameLogicState";
 import * as http from 'http';
 import { ActionFactory } from "../engines/actionsHandler/actionFactory";
 import { DynamicPathfindingService } from "../engines/pathfinding/pathFindingService";
+import { BaseMobile } from "../schema/mobiles/baseMobile";
 
 export class WorldRoom extends Room<DTWorldzState> {
-    
-    
-    fixedTimeStep = 1000 / 60;
-    currentGameLogicState: BaseGameLogicState;
-    actionManager: ActionManager;
-    creatorClient: Client | undefined;
-    actionFactory: any;
-    private pathfindingService: DynamicPathfindingService;
+    private fixedTimeStep = 1000 / 60;
+    private currentGameLogicState: BaseGameLogicState;
+    private actionManager: ActionManager;
+    private creatorClient: Client | undefined;
+    private actionFactory: ActionFactory;
 
     onCreate(options: { clientName: string, maxPlayers: number }) {
-        this.setState(new DTWorldzState(10, 10));
+        this.setState(new DTWorldzState(25, 25));
         this.maxClients = options.maxPlayers;
         this.actionManager = new ActionManager(this);
         this.actionFactory = new ActionFactory();
-        this.pathfindingService = new DynamicPathfindingService(this);
         this.changeState(new LobbyGameLogicState(this));
 
         this.creatorClient = null;
@@ -119,8 +116,9 @@ export class WorldRoom extends Room<DTWorldzState> {
         this.currentGameLogicState.enter();
     }
 
-    getPathfindingService() {
-        return this.pathfindingService;
+    getPathfindingService(mobile: BaseMobile) {
+        // create new one each time so we can have fresh grid
+        return new DynamicPathfindingService(this, mobile);
     }
 
     getClient(sessionId: string) {
@@ -131,6 +129,17 @@ export class WorldRoom extends Room<DTWorldzState> {
         return this.state.players.get(sessionId);
     }
 
+    getPlayers() {
+        return this.state.players;
+    }
+
+    getActionFactory() {
+        return this.actionFactory
+    }
+
+    getActionManager() {
+        return this.actionManager;
+    }
 }
 
 

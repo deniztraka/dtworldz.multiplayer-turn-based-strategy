@@ -56,13 +56,4 @@ export class BaseMobile extends Schema {
     tryMove(tile: BaseTile): boolean {
         return tile.tryMove(this);
     }
-
-    findPathTo(targetPos:Position): Position[]{
-
-
-
-
-
-        return new ArraySchema<Position>();
-    }
 }

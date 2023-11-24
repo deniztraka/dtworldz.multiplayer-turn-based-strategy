@@ -26,26 +26,32 @@ export class ActionManager {
 
     updateActions(deltaTime: number) {
         const currentTime = new Date().getTime();
-
-        // Update ongoing actions
-        this.ongoingActions.forEach(action => {
+    
+        // Update ongoing actions using a reverse for-loop
+        for (let i = this.ongoingActions.length - 1; i >= 0; i--) {
+            const action = this.ongoingActions[i];
+    
             if (currentTime >= action.startTime + action.elapsedTime) {
+                //console.log(`Action details: startTime=${action.startTime}, elapsedTime=${action.elapsedTime}, duration=${action.duration}`);
+
+    
                 action.update(this.worldRoom, deltaTime);
                 action.elapsedTime += deltaTime;
-
+    
                 // Remove action if completed
                 if (action.elapsedTime >= action.duration) {
-                    this.ongoingActions.splice(this.ongoingActions.indexOf(action), 1);
+                    this.ongoingActions.splice(i, 1);
                 }
             }
-        });
-
+        }
+    
         // Execute atomic actions
         while (this.atomicActions.length > 0) {
             const action = this.atomicActions.shift();
             action.execute(this.worldRoom);
         }
     }
+    
 
     // Methods to add actions, etc.
 }

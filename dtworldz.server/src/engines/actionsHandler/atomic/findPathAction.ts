@@ -13,18 +13,14 @@ export class FindPathAction extends AtomicAction {
     execute(worldRoom: WorldRoom): void {
         if (this.mobile instanceof Player) {
             // Access pathfinding service from worldRoom
-            const pathfindingService = worldRoom.getPathfindingService();
+            const pathfindingService = worldRoom.getPathfindingService(this.mobile);
  
             // Assuming actionPayload contains the destination
             const destination = this.payload;
-            console.log(destination)
 
             pathfindingService.findPathForPlayer(this.mobile.position, destination, this.mobile)
                 .then(path => {
 
-                    console.log("path found")
-
-                    // send path to the client
                     let positions = new ArraySchema<Position>();
                     for (let index = 0; index < path.length; index++) {
                         const element = path[index];

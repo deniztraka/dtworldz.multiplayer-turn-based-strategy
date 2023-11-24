@@ -4,6 +4,7 @@ import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
 import tileAtlasUrl from "../../../assets/images/tilemaps/newworldtiles.png"
 import plainTilesUrl from "../../../assets/images/tilemaps/plainsTiles.png"
+import markerUrl from "../../../assets/images/tilemaps/marker.png"
 
 export class GameLoadingScene extends Phaser.Scene {
     room: Room | undefined;
@@ -39,6 +40,7 @@ export class GameLoadingScene extends Phaser.Scene {
     preload() {
         this.load.image('tileAtlas', tileAtlasUrl);
         this.load.image('plainTiles', plainTilesUrl);
+        this.load.image('markerImage', markerUrl);
     }
 
     create() {

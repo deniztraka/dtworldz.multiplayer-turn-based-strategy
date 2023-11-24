@@ -6,70 +6,57 @@ import { WorldRoom } from '../../rooms/dtWorldz';
 
 export class DynamicPathfindingService {
     private easystar = new EasyStar.js();
+    worldRoom: WorldRoom;
+    mobile: BaseMobile;
 
-    constructor(worldRoom: WorldRoom) {
-        this.easystar.setGrid([/* default grid */]);//todo: implement converting tiles into grid
-        this.easystar.setAcceptableTiles([/* default walkable tiles */]);
+    constructor(worldRoom: WorldRoom, mobile: BaseMobile) {
+        this.worldRoom = worldRoom;
+        this.mobile = mobile;
+        this.init();
+        this.easystar.enableDiagonals();
+        this.easystar.enableCornerCutting();
+    }
+
+    private init(){
+        // prepare 2d grid with ids of tiles
+        let grid: number[][] = [];
+        for (let y = 0; y < this.worldRoom.state.height; y++) {
+            grid[y] = [];
+            for (let x = 0; x < this.worldRoom.state.width; x++) {
+                grid[y][x] = this.worldRoom.state.tilemap[y * this.worldRoom.state.width + x].nature;
+            }
+        }
+
+
+        // prepare walkable data
+        let walkableData: number[] = [];
+        this.worldRoom.state.tilemap.forEach(tile => {
+            const isWalkable = tile.canMove(this.mobile);
+
+            if(isWalkable){
+                walkableData.push(tile.nature);
+            }
+        });
+
+        this.easystar.setGrid(grid);
+        this.easystar.setAcceptableTiles(walkableData);
     }
 
     async findPathForPlayer(start: Position, end: Position, player: BaseMobile): Promise<Position[]> {
-        this.configureWalkableTiles(player);
-
-
         return new Promise((resolve, reject) => {
             try {
-
-
-
-
                 this.easystar.findPath(start.x, start.y, end.x, end.y, (path) => {
-
-                    console.log("patfinding works")
                     if (path === null) {
-                        reject('Path not found');
+                        resolve([]);
                     } else {
                         resolve(path.map(p => new Position(p.x, p.y)));
                     }
                 });
                 this.easystar.calculate();
             } catch (error) {
-                console.error('Error in pathfinding:', error);
+                console.error('Error in pathfinding service:', error);
                 reject(error);
             }
         });
-    }
-
-    private configureWalkableTiles(player: BaseMobile) {
-        //todo: implement this walkable tiles for player
-
-
-        // Adjust walkable tiles based on player's attributes and traits
-        const walkableTiles: number[] = [1/* default walkable tiles */];
-
-        // // find index of each position player can move to
-        // // if player has climbing trait, add mountain tiles to walkable tiles
-        // // if player has flying trait, add all tiles to walkable tiles
-        // // if player has swimming trait, add water tiles to walkable tiles
-
-        // const hasClimbingTrait = TraitsEngine.hasTrait(player, 'climbing');
-        // const hasFlyingTrait = TraitsEngine.hasTrait(player, 'flying');
-        // const hasSwimmingTrait = TraitsEngine.hasTrait(player, 'swimming');
-
-        // if (hasClimbingTrait) {
-        //     walkableTiles.push(/* mountain tile id, if applicable */);
-        // }
-
-        // if (hasFlyingTrait) {
-        //     // Add all tiles to walkable tiles
-        //     // Iterate through tileData and add all tile ids to walkableTiles
-        // }
-
-        // if (hasSwimmingTrait) {
-        //     // Add water tiles to walkable tiles
-        //     // Iterate through tileData and add water tile ids to walkableTiles
-        // }
-
-        // Set the updated walkable tiles
-        this.easystar.setAcceptableTiles(walkableTiles);
     }
 }

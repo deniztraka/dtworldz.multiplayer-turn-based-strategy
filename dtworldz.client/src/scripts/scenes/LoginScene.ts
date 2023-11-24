@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import heroImageUrl from "../../../assets/images/characters/hero1.png"
-import testMapUrl from "../../../assets/maps/testmap.json"
 import tileAtlasUrl from "../../../assets/images/tilemaps/tileatlas.png"
 import markerUrl from "../../../assets/images/tilemaps/marker.png"
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
@@ -18,7 +17,6 @@ export class LoginScene extends Phaser.Scene {
         // preload
         this.load.image('heroImage', heroImageUrl);
         this.load.image('markerImage', markerUrl);
-        this.load.tilemapTiledJSON('testMapJSON', testMapUrl);
         this.load.image('tileAtlas', tileAtlasUrl)
         
     }

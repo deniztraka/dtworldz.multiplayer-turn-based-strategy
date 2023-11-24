@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 import characterPanelUrl from "../../../assets/images/characterPanel.png"
-import { GameScene } from "./GameSceneOld";
+import { GameIsRunningScene } from "./GameIsRunningScene";
 
 export class UIScene extends Phaser.Scene {
-    gameScene: GameScene;
+    gameScene: GameIsRunningScene;
 
     constructor() {
         super({ key: "UIScene"});
@@ -15,7 +15,7 @@ export class UIScene extends Phaser.Scene {
 
     preload() {
         this.load.image('charPanel', characterPanelUrl);
-        this.gameScene = this.scene.get('GameScene') as GameScene;
+        this.gameScene = this.scene.get('GameScene') as GameIsRunningScene;
        
 
     }
@@ -24,7 +24,7 @@ export class UIScene extends Phaser.Scene {
     async create() {
         this.add.image(0, 0, 'charPanel').setOrigin(0, 0);
         this.gameScene.events.on('characterInitialized', () => {
-            let name = this.gameScene.currentPlayer.playerName;
+            let name = this.gameScene.localClient.name;
             this.add.text(70, 147, name, { color: "#dddddd", fontSize: "16px", fontFamily: 'Arial',fixedWidth:120, align:"center", padding: { left: 0, right: 0, top: 5, bottom: 5, } }).setOrigin(0.5, 0);
         });
     }

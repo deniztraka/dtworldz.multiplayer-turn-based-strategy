@@ -1,6 +1,6 @@
 import { PathFinder } from "../helpers/pathfinder"
 import { WorldMapHelper } from "../helpers/worldMapHelper"
-import { GameScene } from "../scenes/GameSceneOld"
+import { GameIsRunningScene } from "../scenes/GameIsRunningScene"
 
 
 export class WorldMap {
@@ -11,7 +11,7 @@ export class WorldMap {
     pathfinder: PathFinder
     data: number[][]
 
-    constructor(game: GameScene) {
+    constructor(game: GameIsRunningScene) {
         this.game = game
         this.height = game.room.state.mapHeight
         this.width = game.room.state.mapWidth

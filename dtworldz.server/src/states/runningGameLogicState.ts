@@ -23,14 +23,14 @@ export class RunningGameLogicState extends BaseGameLogicState {
 
     attachGameEvents() {
         this.gameRoom.onMessage('ca_action', (client, actionPayload) => {
-            console.log(`received action request from ${client.sessionId}`)
+            // console.log(`received action request from ${client.sessionId}`)
 
             // get client's player
             let player = this.gameRoom.getPlayer(client.sessionId);
 
             // create action from payload and handle it (will be put in queue)
-            let action = this.gameRoom.actionFactory.get(player, actionPayload);
-            this.gameRoom.actionManager.handleNewAction(action);
+            let action = this.gameRoom.getActionFactory().get(player, actionPayload);
+            this.gameRoom.getActionManager().handleNewAction(action);
         });
     }
 }
