@@ -30,6 +30,12 @@ This project is implemented on top of [Colyseus Framework](https://colyseus.io) 
 Shared library is obsolete and it doesnt have any usage for now.
 It is intended to hold the code shared by both server and client side and will be improved later.
 
-<img width="1086" alt="Screenshot 2023-11-24 at 4 34 32 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/cf2ff5a4-7d9c-4631-970c-d12e02af19db">
-<img width="699" alt="Screenshot 2023-11-24 at 4 36 37 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/cbff1bd1-de1f-4da4-a470-dc798c8b52fb">
-<img width="1119" alt="Screenshot 2023-11-24 at 4 37 57 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/769e7b64-2411-4c1a-9179-8f85d662df27">
+
+# Login or Create Room Screen
+<img width="1086" alt="Screenshot 2023-11-24 at 4 34 32 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/33a4986f-b218-4de3-a730-217831767fec">
+
+# Lobby Screen
+<img width="699" alt="Screenshot 2023-11-24 at 4 36 37 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/d5213c35-017f-4307-9910-dc7cfc0f318a">
+
+# In Game Screen
+<img width="1119" alt="Screenshot 2023-11-24 at 4 37 57 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/e86b1548-35fb-4a7d-82ab-d7408926e80f">
