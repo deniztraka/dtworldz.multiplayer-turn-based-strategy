@@ -1,14 +1,13 @@
 import Phaser from "phaser";
-import heroImageUrl from "./../../public/assets/images/characters/hero1.png"
-import testMapUrl from "../../public/assets/maps/testmap.json"
-import tileAtlasUrl from "../../public/assets/images/tilemaps/tileatlas.png"
-import markerUrl from "./../../public/assets/images/tilemaps/marker.png"
+import heroImageUrl from "../../../assets/images/characters/hero1.png"
+import tileAtlasUrl from "../../../assets/images/tilemaps/tileatlas.png"
+import markerUrl from "../../../assets/images/tilemaps/marker.png"
 import InputText from 'phaser3-rex-plugins/plugins/inputtext.js';
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 
 export class LoginScene extends Phaser.Scene {
     constructor() {
-        super({ key: "selector", active: true });
+        super({ key: "selector"});
     }
 
     preload() {
@@ -18,7 +17,6 @@ export class LoginScene extends Phaser.Scene {
         // preload
         this.load.image('heroImage', heroImageUrl);
         this.load.image('markerImage', markerUrl);
-        this.load.tilemapTiledJSON('testMapJSON', testMapUrl);
         this.load.image('tileAtlas', tileAtlasUrl)
         
     }
@@ -50,7 +48,7 @@ export class LoginScene extends Phaser.Scene {
             }
         };
 
-        var joinButtonText = this.add.text(this.scale.width/2, this.scale.height/2 + 100 , "JOIN", textStyle);
+        var joinButtonText = this.add.text(this.scale.width/2, this.scale.height/2 + 100 , "CREATE", textStyle);
         joinButtonText.setOrigin(0.5, 0.5);
 
         var button = new Button(joinButtonText, {

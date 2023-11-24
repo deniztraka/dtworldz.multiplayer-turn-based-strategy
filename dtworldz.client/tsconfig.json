@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
+    "outDir": "build",
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "strict": true,
     "allowJs": true,
     "strictNullChecks": false,
@@ -11,11 +11,11 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strictPropertyInitialization": false,
-    "resolveJsonModule": true
+    "useDefineForClassFields": false
   },
   "include": [
     "src/**/*",
-    "types/phaser3-rex-plugins.d.ts"
+    "types/phaser3-rex-plugins.d.ts",
+    "assets"
   ]
 }

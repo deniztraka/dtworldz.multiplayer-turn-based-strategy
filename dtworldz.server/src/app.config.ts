@@ -5,7 +5,7 @@ import { Server } from "colyseus";
 /**
  * Import your Room files
  */
-import { WorldRoom } from "./rooms/WorldRoom";
+import { WorldRoom } from "./rooms/dtWorldz";
 
 let gameServerRef: Server;
 let latencySimulationMs: number = 0;
@@ -19,7 +19,7 @@ export default config({
         /**
          * Define your room handlers:
          */
-        gameServer.define('world_room', WorldRoom);
+        gameServer.define('dtworldz', WorldRoom);
 
         //
         // keep gameServer reference, so we can

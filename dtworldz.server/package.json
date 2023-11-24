@@ -38,6 +38,7 @@
     "colyseus": "^0.15.9",
     "cors": "^2.8.5",
     "easystarjs": "^0.4.4",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "simplex-noise": "^4.0.1"
   }
 }
