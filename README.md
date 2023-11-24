@@ -2,6 +2,33 @@
 
 Multiplayer Turn-Based Strategy/Adventure Game project
 
+## Feature List
+- Lobby System
+- Players are able to join the lobby/game with room id
+- Only game owner can start the game
+- Option to create room up to 5 players including single player
+- Chat system in lobby 
+- Turn-based game play
+- Path finding
+- Movement system based on dynamically calculated cost of tiles
+- Simple Procedural Generation of Game World
+
+# ToDo List
+- Different character play style focusing on exploration (minimum combat)
+- Treasures
+- Traps
+- Different kind of enemies
+- Animal Hunting
+- Resource Gathering and Regeneration
+- Villages
+- Advanced Procedurally generated game world
+- Different Biomes
+- Minor base building system
+- Dynamic World Events
+- Better Graphics
+- Better Animations
+- Better UI
+
 ## Technical Details
 This project is implemented on top of [Colyseus Framework](https://colyseus.io) for server side game logic. Client side is using [Phaser](https://phaser.io) as rendering engine.
 
@@ -13,7 +40,7 @@ This project is implemented on top of [Colyseus Framework](https://colyseus.io) 
 - Install package
 `npm install`
 
-- Run client
+- Run server
 `npm run start`
 
 ### Client
