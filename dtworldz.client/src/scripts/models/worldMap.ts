@@ -1,6 +1,6 @@
 import { PathFinder } from "../helpers/pathfinder"
 import { WorldMapHelper } from "../helpers/worldMapHelper"
-import { GameScene } from "../scenes/GameScene"
+import { GameIsRunningScene } from "../scenes/GameIsRunningScene"
 
 
 export class WorldMap {
@@ -11,11 +11,11 @@ export class WorldMap {
     pathfinder: PathFinder
     data: number[][]
 
-    constructor(game: GameScene) {
+    constructor(game: GameIsRunningScene) {
         this.game = game
         this.height = game.room.state.mapHeight
         this.width = game.room.state.mapWidth
-        this.data = WorldMapHelper.convertToMapData(game.room.state.mapData, this.width, this.height);
+        this.data = WorldMapHelper.getBiomeLayerData(game.room.state.mapData, this.width, this.height);
         this.build()
         this.pathfinder = new PathFinder(this.data);
     }
@@ -24,17 +24,17 @@ export class WorldMap {
         const mapData = new Phaser.Tilemaps.MapData({
             width: 10,
             height: 10,
-            tileWidth: 64,
-            tileHeight: 32,
+            tileWidth: 128,
+            tileHeight: 64,
             orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
             format: Phaser.Tilemaps.Formats.ARRAY_2D
         });
 
         const map = new Phaser.Tilemaps.Tilemap(this.game, mapData);
 
-        const tileset = map.addTilesetImage('tileatlas-64x64', 'tiles');
+        const tilesetImage = map.addTilesetImage('tilesetImage', 'tileAtlas', 64, 96,0,0);
 
-        this.floorLayer = map.createBlankLayer('floorLayer', tileset, 350, 200);
+        this.floorLayer = map.createBlankLayer('floorLayer', tilesetImage, 350, 200);
 
 
         let y = 0;
@@ -49,5 +49,9 @@ export class WorldMap {
             y++;
 
         });
+
+        // const map = this.game.make.tilemap({ key:'testMapJSON'});
+        // const tileSet = map.addTilesetImage('newworldinit', 'tileAtlas');
+        // this.floorLayer = map.createLayer(0, tileSet, 350, 200);
     }
 }

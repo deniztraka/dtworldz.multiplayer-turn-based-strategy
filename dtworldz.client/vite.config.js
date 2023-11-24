@@ -1,4 +1,5 @@
 export default {
+  publicDir: './assets',
   // Define `base` because this deploys to user.github.io/repo-name/
   base: './',
   build: {
