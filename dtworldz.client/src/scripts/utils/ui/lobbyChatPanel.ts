@@ -1,12 +1,6 @@
-import { DTTextInput } from "./dtTextInput";
-import TextStyles from './../ui/textStyles';
 import { LobbyChatEntry } from "./lobbyChatEntry";
-import LifeTime from 'phaser3-rex-plugins/plugins/lifetime.js';
 import { TextEdit, Edit } from 'phaser3-rex-plugins/plugins/textedit';
 
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
 
 export class LobbyChatPanel {
     scene: any;
@@ -14,21 +8,26 @@ export class LobbyChatPanel {
     panel: any;
     entries: any[];
     maxEntries: number = 20;
+    height: number;
+    width: number;
     constructor(scene: any, x: number, y: number) {
         this.scene = scene;
         this.entries = [];
         let self = this;
 
+        this.height = 320;
+        this.width = 480;
+
         let initialText = 'write something...';
         let chatInputField = scene.add.text(0, 0, initialText, {
-            fontSize: '14px',
+            fontSize: '16px',
             color: '#ffffff',
             backgroundColor: '#333333',
-            fixedWidth: 250,
-            fixedHeight: 20,
+            fixedWidth: this.width,
+            fixedHeight: 30,
             padding: {
-                top: 5,
-                bottom: 5,
+                top: 7,
+                bottom: 7,
                 left: 5,
                 right: 5,
             },
@@ -65,8 +64,8 @@ export class LobbyChatPanel {
 
         this.scrollablePanel = scene.rexUI.add.scrollablePanel({
             x: x, y: y,
-            height: 220,
-            width: 250,
+            height: this.height,
+            width: this.width,
 
             scrollMode: 'y',
 
@@ -90,14 +89,6 @@ export class LobbyChatPanel {
                 focus: false,
                 speed: 0.1
             },
-
-            // header: scene.rexUI.add.label({
-            //     space: { left: 5, right: 5, top: 5, bottom: 5 },
-            //     background: scene.rexUI.add.roundRectangle({ color: COLOR_PRIMARY }),
-            //     text: scene.add.text(0, 0, 'Header', { fontSize: 20 })
-            // }),
-
-            // footer: new DTTextInput(scene, 0, 0, "your name?").setStyle(TextStyles.BodyText),
 
             footer: chatInputField,
 
