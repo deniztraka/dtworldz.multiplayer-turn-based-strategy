@@ -58,11 +58,13 @@ Shared library is obsolete and it doesnt have any usage for now.
 It is intended to hold the code shared by both server and client side and will be improved later.
 
 
-# Login or Create Room Screen
-<img width="1086" alt="Screenshot 2023-11-24 at 4 34 32 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/33a4986f-b218-4de3-a730-217831767fec">
+# Welcome Screen
+<img width="1171" alt="Screenshot 2023-11-26 at 6 28 22 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/df8156b6-7fea-4c3c-a1a0-61736187acd8">
 
 # Lobby Screen
-<img width="699" alt="Screenshot 2023-11-24 at 4 36 37 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/d5213c35-017f-4307-9910-dc7cfc0f318a">
+<img width="1169" alt="Screenshot 2023-11-26 at 6 30 18 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/0a2b00f0-3323-4788-a06e-76accbc50280">
+
 
 # In Game Screen
-<img width="1119" alt="Screenshot 2023-11-24 at 4 37 57 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/e86b1548-35fb-4a7d-82ab-d7408926e80f">
+<img width="1119" alt="Screenshot 2023-11-24 at 4 37 57 PM" src="https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/1b5e003b-8394-427b-b90d-8f3907ec7479">
+
