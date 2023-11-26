@@ -1,3 +1,7 @@
+
+![bgWide](https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/4fac7618-0db7-45be-8f4d-a89b453416dd)
+
+
 # dtworldz.multiplayer-turn-based-strategy
 
 Multiplayer Turn-Based Strategy/Adventure Game project
