@@ -4,7 +4,7 @@ const COLOR_PRIMARY = 0x4e342e;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
 
-const entryWidth = 227;
+const entryWidth = 460;
 const fontSize = 12
 
 
@@ -22,7 +22,7 @@ export class LobbyChatEntry {
                 radius: 3,
                 color: 0x333333,
                 strokeColor: COLOR_DARK, strokeWidth: 1
-            }).setAlpha(0.5),
+            }).setAlpha(0.25),
 
             text: scene.add.text(0, 0, text, {
                 fontSize: fontSize,

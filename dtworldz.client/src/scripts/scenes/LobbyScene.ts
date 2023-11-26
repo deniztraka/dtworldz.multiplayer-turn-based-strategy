@@ -12,7 +12,6 @@ import heroIcon1Url from "../../../assets/images/characters/heroIcon1.png";
 import heroIcon2Url from "../../../assets/images/characters/heroIcon2.png";
 import heroIcon3Url from "../../../assets/images/characters/heroIcon3.png";
 import Button from 'phaser3-rex-plugins/plugins/button.js';
-import { DTButton } from "../utils/ui/dtButton";
 import { LobbyClient } from "../models/lobbyClient";
 import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
 
@@ -103,7 +102,7 @@ export class LobbyScene extends Phaser.Scene {
                 this.addReadyButton(client);
                 this.addPlayerName(client);
                 this.createReadyButton();
-                //this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2 + 50, this.scale.height / 2 + 100);
+                this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2, this.scale.height / 2 - 60);
             }
 
             this.attachClientEvents(client, sessionId);
@@ -160,7 +159,7 @@ export class LobbyScene extends Phaser.Scene {
         this.createRoomIdButton();
 
     }
-    
+
     createReadyButton() {
         
         if(!this.clients[this.room.sessionId].isOwner){

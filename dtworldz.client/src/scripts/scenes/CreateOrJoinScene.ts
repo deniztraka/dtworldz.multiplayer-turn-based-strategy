@@ -6,7 +6,6 @@ import { BACKEND_URL } from "../../backend";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from './../utils/ui/textStyles';
 import { DTTextInput } from "../utils/ui/dtTextInput";
-import { DTDrowpDownList } from "../utils/ui/dtDrowpDownList";
 import { TextEdit } from 'phaser3-rex-plugins/plugins/textedit';
 import Button from 'phaser3-rex-plugins/plugins/button';
 
@@ -24,6 +23,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
     preload() {
         this.load.image('loginBackground', '/assets/images/bgWide.png');
+        this.load.image('frame', '/assets/images/frame.png');
         this.load.image('logo', '/assets/images/logo.png');
         this.load.image('buttonFrame', '/assets/images/buttonFrame.png');
         this.load.scenePlugin({
@@ -34,7 +34,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     create() {
-        this.createBackground(); 
+        this.createBackground();
         this.createNickNameInput();
         this.createButtons();
 
@@ -293,15 +293,21 @@ var CreateDialog = function (scene: any) {
 
 
 
-
-
     var dialog = scene.rexUI.add.dialog({
-        background: scene.rexUI.add.roundRectangle(0, 0, 100, 100, 1, 0xC3B68D),
+        background: scene.add.container(0, 0, [
+            scene.rexUI.add.roundRectangle(0, 0, 270, 280, 1, 0x000000).setAlpha(0.5),
+            scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(280, 280)
+        ]),
 
         title: scene.rexUI.add.label({
-            background: scene.rexUI.add.roundRectangle(0, 0, 100, 40, 1, 0x333333),
-            text: scene.add.text(0, 0, 'Join a lobby', {
-                fontSize: '24px'
+            background: scene.add.container(0, 0, [
+                scene.rexUI.add.roundRectangle(0, 0, 280, 50, 1, 0x333333).setAlpha(0.5),
+                scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(280, 50)
+            ]),
+            text: scene.add.text(110, 110, 'Join A Room', {
+                fontSize: '24px',
+                fontFamily: "DTSubTitleFontFamily",
+                color: '#bdced4',
             }),
             space: {
                 left: 15,
@@ -347,30 +353,20 @@ var CreateDialog = function (scene: any) {
     return dialog;
 }
 
-var CreateLabel = function (scene: {
-    rexUI: {
-        add: {
-            label: (arg0: {
-                // width: 40,
-                // height: 40,
-                background: any; text: any; space: { left: number; right: number; top: number; bottom: number; };
-            }) => any; roundRectangle: (arg0: number, arg1: number, arg2: number, arg3: number, arg4: number, arg5: number) => any;
-        };
-    }; add: { text: (arg0: number, arg1: number, arg2: any, arg3: { fontSize: string; }) => any; };
-}, text: string) {
+var CreateLabel = function (scene: any, text: string) {
     return scene.rexUI.add.label({
         // width: 40,
         // height: 40,
 
-        background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 5, 0x666666),
+        background: scene.add.image(0, -10, 'buttonFrame').setDisplaySize(150, 60),
 
-        text: scene.add.text(0, 0, text, {
+        text: scene.add.text(0, -10, text, {
             fontSize: '24px'
         }),
 
         space: {
-            left: 10,
-            right: 10,
+            left: 30,
+            right: 30,
             top: 10,
             bottom: 10
         }
