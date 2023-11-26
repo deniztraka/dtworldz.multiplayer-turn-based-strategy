@@ -19,10 +19,13 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
         this.sessionId = sessionId;
         this.playerName = client.name;
         this.currentPath = [];
-        this.characterSprite = (add as any).sprite(0, 0, 'hero' + client.charIndex).setScale(0.5);
-        this.characterSprite.setOrigin(0.5, 0.75);
-        this.playerNameText = add.text(0, -60, this.playerName, { color: "#cccccc", fontSize: "8px", fontFamily: 'DTSubTitleFontFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
+        this.characterSprite = (add as any).sprite(0, 0, 'char' + client.charIndex).setScale(0.25);
+        this.characterSprite.setOrigin(0.5, 1);
+
+        this.playerNameText = add.text(0, -75, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
         this.add(this.playerNameText);
+        
+        
         this.add(this.characterSprite);
         scene.add.existing(this);
 

@@ -67,13 +67,13 @@ export class WorldRoom extends Room<DTWorldzState> {
      */
     onJoin(client: Client, options: { clientName: string }, _auth: any) {
         console.log(`${client.sessionId} | ${options.clientName} is joined!`);
-
+        const player = new Player(client, options.clientName, undefined);
+        // add player to the state
+        this.state.players.set(client.sessionId, player);
         if (this.creatorClient === null) {
             this.creatorClient = client;
+            player.setOwner(true);
         }
-
-        // add player to the state
-        this.state.players.set(client.sessionId, new Player(client, options.clientName, undefined));
     }
 
     /**
