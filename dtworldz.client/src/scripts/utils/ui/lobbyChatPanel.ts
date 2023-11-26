@@ -1,12 +1,6 @@
-import { DTTextInput } from "./dtTextInput";
-import TextStyles from './../ui/textStyles';
 import { LobbyChatEntry } from "./lobbyChatEntry";
-import LifeTime from 'phaser3-rex-plugins/plugins/lifetime.js';
 import { TextEdit, Edit } from 'phaser3-rex-plugins/plugins/textedit';
 
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
 
 export class LobbyChatPanel {
     scene: any;
@@ -90,14 +84,6 @@ export class LobbyChatPanel {
                 focus: false,
                 speed: 0.1
             },
-
-            // header: scene.rexUI.add.label({
-            //     space: { left: 5, right: 5, top: 5, bottom: 5 },
-            //     background: scene.rexUI.add.roundRectangle({ color: COLOR_PRIMARY }),
-            //     text: scene.add.text(0, 0, 'Header', { fontSize: 20 })
-            // }),
-
-            // footer: new DTTextInput(scene, 0, 0, "your name?").setStyle(TextStyles.BodyText),
 
             footer: chatInputField,
 

@@ -6,31 +6,26 @@ import { BACKEND_URL } from "../../backend";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from './../utils/ui/textStyles';
 import { DTTextInput } from "../utils/ui/dtTextInput";
-import { DTButton } from "../utils/ui/dtButton";
 import { DTDrowpDownList } from "../utils/ui/dtDrowpDownList";
-import { DTDialog } from "../utils/ui/dtDialog";
+import { TextEdit } from 'phaser3-rex-plugins/plugins/textedit';
+import Button from 'phaser3-rex-plugins/plugins/button';
 
 export class CreateOrJoinScene extends Phaser.Scene {
     room: Room | undefined;
     nickNameText: DTTextInput;
-    titleText: DTLabel;
-    brandText: DTLabel;
-    createButton: DTButton;
-    dropdownList: DTDrowpDownList;
-    joinButton: DTButton;
-    maxPlayerCount: any;
-    joinDialog: DTDialog;
+
     errorText: DTLabel;
     roomId: any;
-    subTitleText: DTLabel;
+
 
     constructor() {
         super({ key: "CreateOrJoinScene" });
     }
 
     preload() {
-        this.load.image('loginBackground', '/assets/images/loginBackground.png');
-        this.cameras.main.setBackgroundColor(0x000000);
+        this.load.image('loginBackground', '/assets/images/bg.png');
+        this.load.image('logo', '/assets/images/logo.png');
+        this.load.image('buttonFrame', '/assets/images/buttonFrame.png');
         this.load.scenePlugin({
             key: 'rexuiplugin',
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
@@ -39,46 +34,165 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     create() {
-        //this.scene.start('LobbyScene', { room: this.room, playerName: 'deniz' });
+        this.createBackground();
+        this.createNickNameInput();
+        this.createButtons();
 
+        this.errorText = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "")
+            .setStyle(TextStyles.H4)
+            .setColor("#ffffff");
+        this.add.existing(this.errorText);
+    }
+
+    createButtons() {
+        const scene: any = this;
+
+        const createText = scene.add.text(0, -3, "CREATE", {
+            fontSize: '26px',
+            fontFamily: "DTBodyFontFamily",
+            color: '#dcd9ce',
+            fixedWidth: 160,
+            fixedHeight: 45,
+            padding: {
+                top: 10,
+                bottom: 10,
+                left: 10,
+                right: 10,
+            }})
+            .setOrigin(0.5, 0.5)
+            .setAlign('center')
+            .setAlpha(0.5);
+
+        new Button(this.add.container(this.scale.width / 2, this.scale.height / 2 + 100, [
+            scene.rexUI.add.roundRectangle(0, 0, 150, 60, {
+                x: 10,
+                y: 10
+            }, 0x000000),
+            scene.add.image(0, 0, 'buttonFrame')
+            .setOrigin(0.5, 0.5),
+            createText
+        ]).setSize(180,50), {
+            enable: true,
+            mode: 1,              // 0|'press'|1|'release'
+            clickInterval: 100,    // ms
+            threshold: undefined
+        }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
+            scene.onCreateClicked()
+        }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
+            createText.setAlpha(1);
+        }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
+            createText.setAlpha(0.5);
+        });
+
+
+        const joinText = scene.add.text(0, -3, "JOIN", {
+            fontSize: '26px',
+            fontFamily: "DTBodyFontFamily",
+            color: '#dcd9ce',
+            fixedWidth: 160,
+            fixedHeight: 45,
+            padding: {
+                top: 10,
+                bottom: 10,
+                left: 10,
+                right: 10,
+            }})
+            .setOrigin(0.5, 0.5)
+            .setAlign('center')
+            .setAlpha(0.5);
+
+        new Button(this.add.container(this.scale.width / 2, this.scale.height / 2 + 180, [
+            scene.rexUI.add.roundRectangle(0, 0, 150, 60, {
+                x: 10,
+                y: 10
+            }, 0x000000),
+            scene.add.image(0, 0, 'buttonFrame')
+            .setOrigin(0.5, 0.5),
+            joinText
+        ]).setSize(180,50), {
+            enable: true,
+            mode: 1,              // 0|'press'|1|'release'
+            clickInterval: 100,    // ms
+            threshold: undefined
+        }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
+            scene.onJoinClicked()
+        }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
+            joinText.setAlpha(1);
+        }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
+            joinText.setAlpha(0.5);
+        })
+    }
+
+    createBackground() {
+        const scene: any = this;
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
             .setOrigin(0.5, 0.5)
-            .setAlpha(0.2)
-            .setDisplaySize(this.scale.width, this.scale.height);
+        this.add.image(this.scale.width / 2, 0, 'logo')
+            .setOrigin(0.5, 0)
+    }
 
+    createNickNameInput() {
+        const scene: any = this;
+        let initialText = 'your name';
+        this.add.container(this.scale.width / 2, this.scale.height / 2 - 100, [
+            scene.rexUI.add.roundRectangle(0, 0, 200, 60, {
+                x: 10,
+                y: 10
+            }, 0x000000).setAlpha(0.6),
+            this.add.image(0, 0, 'buttonFrame')
+            .setOrigin(0.5, 0.5).setDisplaySize(240, 60)
+        ])
+        this.nickNameText = scene.add.text(this.scale.width / 2, this.scale.height / 2 - 100, initialText, {
+            fontSize: '22px',
+            fontFamily: "DTBodyFontFamily",
+            color: '#ffffff',
+            fixedWidth: 160,
+            fixedHeight: 45,
+            padding: {
+                top: 10,
+                bottom: 10,
+                left: 10,
+                right: 10,
+            },
+            align: 'center',
+        }).setOrigin(0.5, 0.5).setAlpha(0.5)
 
-        this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
-        this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
-        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 25, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
+        let editorConfig = {
+            type: 'text',
+            enterClose: true,
+            selectAll: true,
 
-        this.add.existing(this.titleText);
-        this.add.existing(this.subTitleText);
-        this.add.existing(this.brandText);
+            // onOpen: function (textObject: any) {
 
-        this.nickNameText = new DTTextInput(this, this.scale.width / 2, 300, "your name?").setStyle(TextStyles.BodyText);
-        this.dropdownList = new DTDrowpDownList(this, this.scale.width / 2, 340, 'max players ?', [
-            { text: 'single player', value: 1 },
-            { text: '2 players', value: 2 },
-            { text: '3 players', value: 3 },
-            { text: '4 players', value: 4 },
-            { text: '5 players', value: 5 },
-        ], this.onMaxPlayerCountSelected.bind(this));
-        this.createButton = new DTButton(this, this.scale.width / 2, 400, "CREATE", this.onCreateClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);;
-        this.joinButton = new DTButton(this, this.scale.width / 2, 440, " JOIN ", this.onJoinClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0.75);
+            // },
+            onTextChanged: function (textObject: any, text: any) {
+                textObject.text = text;
+                //trim if more than 9 chars
+                if (textObject.text.length > 9) {
+                    textObject.text = textObject.text.substring(0, 9);
+                }
 
-        this.add.existing(this.createButton);
-        this.add.existing(this.joinButton);
+                //remove spaces
+                textObject.text = textObject.text.replace(/\s/g, '');
 
-        this.errorText = new DTLabel(this, this.scale.width / 2, 600, "")
-            .setStyle(TextStyles.H5)
-            .setColor("#ff0000");
-        this.add.existing(this.errorText);
+            },
+            onClose: function (textObject: any) {
+                if (textObject.text === '' || textObject.text === undefined) {
+                    textObject.setAlpha(0.5);
+                    textObject.text = initialText;
+                } else {
+                    textObject.setAlpha(1);
+                }
+            },
+        };
 
+        // @ts-ignore: Unreachable code error
+        var editor = new TextEdit(this.nickNameText, editorConfig);
     }
 
     async onCreateClicked() {
 
-        if (!this.validateNickName() || !this.validatePlayerCount()) {
+        if (!this.validateNickName()) {
             return;
         }
 
@@ -111,13 +225,9 @@ export class CreateOrJoinScene extends Phaser.Scene {
         }, this);
     }
 
-    onMaxPlayerCountSelected(selectedObj: any) {
-        this.maxPlayerCount = selectedObj.value;
-    }
-
     async connect(clientName: string, roomId?: string) {
         // add connection status text
-        this.errorText.text = "connecting to the server...";
+        //this.errorText.text = "connecting to the server...";
 
         const client = new Client(BACKEND_URL);
 
@@ -126,7 +236,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
             if (roomId) {
                 this.room = await client.joinById(roomId, { clientName: clientName });
             } else {
-                this.room = await client.create("dtworldz", { clientName: clientName, maxPlayers: this.maxPlayerCount });
+                this.room = await client.create("dtworldz", { clientName: clientName, maxPlayers: 5 });
             }
 
             this.scene.start('LobbyScene', { room: this.room, playerName: clientName });
@@ -148,18 +258,8 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     validateNickName() {
-        if (this.nickNameText.text === '' || this.nickNameText.text === 'your name?') {
+        if (this.nickNameText.text === '' || this.nickNameText.text === 'your name') {
             this.errorText.text = "please enter your name";
-            return false;
-        } else {
-            this.errorText.text = "";
-        }
-        return true;
-    }
-
-    validatePlayerCount() {
-        if (this.maxPlayerCount === undefined) {
-            this.errorText.text = "please select max players";
             return false;
         } else {
             this.errorText.text = "";
@@ -225,7 +325,7 @@ var CreateDialog = function (scene: any) {
         .on('button.out', function (button: { getElement: (arg0: string) => { (): any; new(): any; setStrokeStyle: { (): void; new(): any; }; }; }, groupName: any, index: any, pointer: any, event: any) {
             button.getElement('background').setStrokeStyle();
         });
-    
+
     return dialog;
 }
 
