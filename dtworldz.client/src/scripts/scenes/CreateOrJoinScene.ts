@@ -23,7 +23,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('loginBackground', '/assets/images/bg.png');
+        this.load.image('loginBackground', '/assets/images/bgWide.png');
         this.load.image('logo', '/assets/images/logo.png');
         this.load.image('buttonFrame', '/assets/images/buttonFrame.png');
         this.load.scenePlugin({
@@ -34,7 +34,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     create() {
-        this.createBackground();
+        this.createBackground(); 
         this.createNickNameInput();
         this.createButtons();
 
@@ -58,7 +58,8 @@ export class CreateOrJoinScene extends Phaser.Scene {
                 bottom: 10,
                 left: 10,
                 right: 10,
-            }})
+            }
+        })
             .setOrigin(0.5, 0.5)
             .setAlign('center')
             .setAlpha(0.5);
@@ -69,9 +70,9 @@ export class CreateOrJoinScene extends Phaser.Scene {
                 y: 10
             }, 0x000000),
             scene.add.image(0, 0, 'buttonFrame')
-            .setOrigin(0.5, 0.5),
+                .setOrigin(0.5, 0.5),
             createText
-        ]).setSize(180,50), {
+        ]).setSize(180, 50), {
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
@@ -96,7 +97,8 @@ export class CreateOrJoinScene extends Phaser.Scene {
                 bottom: 10,
                 left: 10,
                 right: 10,
-            }})
+            }
+        })
             .setOrigin(0.5, 0.5)
             .setAlign('center')
             .setAlpha(0.5);
@@ -107,9 +109,9 @@ export class CreateOrJoinScene extends Phaser.Scene {
                 y: 10
             }, 0x000000),
             scene.add.image(0, 0, 'buttonFrame')
-            .setOrigin(0.5, 0.5),
+                .setOrigin(0.5, 0.5),
             joinText
-        ]).setSize(180,50), {
+        ]).setSize(180, 50), {
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
@@ -140,7 +142,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
                 y: 10
             }, 0x000000).setAlpha(0.6),
             this.add.image(0, 0, 'buttonFrame')
-            .setOrigin(0.5, 0.5).setDisplaySize(240, 60)
+                .setOrigin(0.5, 0.5).setDisplaySize(240, 60)
         ])
         this.nickNameText = scene.add.text(this.scale.width / 2, this.scale.height / 2 - 100, initialText, {
             fontSize: '22px',
@@ -188,6 +190,22 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
         // @ts-ignore: Unreachable code error
         var editor = new TextEdit(this.nickNameText, editorConfig);
+
+        scene.input.keyboard.on('keydown', function (event: any) {
+            if (event.key === "Enter") {
+                if (scene.validateNickName()) {
+                    scene.onCreateClicked();
+                } else {
+
+                    // @ts-ignore: Unreachable code error
+                    editor.open();
+                }
+            } else if (event.key === "Escape") {
+                scene.validateNickName()
+                // @ts-ignore: Unreachable code error
+                editor.close();
+            }
+        });
     }
 
     async onCreateClicked() {

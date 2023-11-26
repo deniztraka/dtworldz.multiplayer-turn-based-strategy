@@ -2,10 +2,11 @@ import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from './../utils/ui/textStyles';
-import hero0Url from "../../../assets/images/characters/hero0.png";
-import hero1Url from "../../../assets/images/characters/hero1.png";
-import hero2Url from "../../../assets/images/characters/hero2.png";
-import hero3Url from "../../../assets/images/characters/hero3.png";
+import char0Url from "../../../assets/images/characters/char0.png";
+import char1Url from "../../../assets/images/characters/char1.png";
+import char2Url from "../../../assets/images/characters/char2.png";
+import char3Url from "../../../assets/images/characters/char3.png";
+import char4Url from "../../../assets/images/characters/char4.png";
 import heroIcon0Url from "../../../assets/images/characters/heroIcon0.png";
 import heroIcon1Url from "../../../assets/images/characters/heroIcon1.png";
 import heroIcon2Url from "../../../assets/images/characters/heroIcon2.png";
@@ -13,7 +14,6 @@ import heroIcon3Url from "../../../assets/images/characters/heroIcon3.png";
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { DTButton } from "../utils/ui/dtButton";
 import { LobbyClient } from "../models/lobbyClient";
-import { LobbyChatEntry } from "../utils/ui/lobbyChatEntry";
 import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
 
 export class LobbyScene extends Phaser.Scene {
@@ -34,13 +34,14 @@ export class LobbyScene extends Phaser.Scene {
 
     localClient: any;
 
-    startButton: DTButton;
+    startButton: Button;
     startGame: boolean;
     lobbyClientList: LobbyClient[] = [];
 
     currentPlayerImage: Phaser.GameObjects.Image;
     isReadyImage: Phaser.GameObjects.Image;
     chatPanel: LobbyChatPanel;
+    readyText: any;
 
     constructor() {
         super({ key: "LobbyScene" })
@@ -52,16 +53,11 @@ export class LobbyScene extends Phaser.Scene {
 
         this.room = data.room;
         this.heroImages = {
-            0: 'hero0',
-            1: 'hero1',
-            2: 'hero2',
-            3: 'hero3'
-        };
-        this.heroIcons = {
-            0: 'heroIcon0',
-            1: 'heroIcon1',
-            2: 'heroIcon2',
-            3: 'heroIcon3'
+            0: 'char0',
+            1: 'char1',
+            2: 'char2',
+            3: 'char3',
+            4: 'char4',
         };
         this.localClient = {
             name: data.playerName,
@@ -77,10 +73,12 @@ export class LobbyScene extends Phaser.Scene {
         });
         this.load.image('ready', '/assets/images/ready.png');
         this.load.image('notready', '/assets/images/notready.png');
-        this.load.image('hero0', hero0Url);
-        this.load.image('hero1', hero1Url);
-        this.load.image('hero2', hero2Url);
-        this.load.image('hero3', hero3Url);
+        this.load.image('readyButton', '/assets/images/readyButton.png');
+        this.load.image('char0', char0Url);
+        this.load.image('char1', char1Url);
+        this.load.image('char2', char2Url);
+        this.load.image('char3', char3Url);
+        this.load.image('char4', char4Url);
         this.load.image('heroIcon0', heroIcon0Url);
         this.load.image('heroIcon1', heroIcon1Url);
         this.load.image('heroIcon2', heroIcon2Url);
@@ -104,7 +102,8 @@ export class LobbyScene extends Phaser.Scene {
                 this.addChangeCharacterButton(client);
                 this.addReadyButton(client);
                 this.addPlayerName(client);
-                this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2 + 50, this.scale.height / 2 + 100);
+                this.createReadyButton();
+                //this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2 + 50, this.scale.height / 2 + 100);
             }
 
             this.attachClientEvents(client, sessionId);
@@ -118,9 +117,11 @@ export class LobbyScene extends Phaser.Scene {
 
         this.room.onMessage('canBeStarted', (message) => {
             if (message.canBeStarted) {
-                this.startButton.setAlpha(1).setInteractive();
+                this.startButton.enable = true;
+                this.readyText.setAlpha(0.75);
             } else {
-                this.startButton.setAlpha(0.25).disableInteractive();
+                this.startButton.enable = false;
+                this.readyText.setAlpha(0.25);
             }
         });
 
@@ -154,22 +155,70 @@ export class LobbyScene extends Phaser.Scene {
 
     createLobbyUI() {
 
+        this.createBackground();
+
+        this.createRoomIdButton();
+
+    }
+    
+    createReadyButton() {
+        
+        if(!this.clients[this.room.sessionId].isOwner){
+            return;
+        }
+
         let scene: any = this;
+        /** Start Button **/
+        this.startGame = false;
+        // this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height - 92, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
+        // this.startButton.disableInteractive();
 
-        /** General UI Branding Starts **/
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
-            .setOrigin(0.5, 0.5)
-            .setTint(0x333333)
-            .setDisplaySize(this.scale.width, this.scale.height);
+        //this.add.existing(this.startButton);
+        this.readyText = scene.add.text(0, 0, "START", {
+            fontFamily: 'DTBodyFontFamily',
+            fontSize: '20px',
+            align: 'center',
+            fixedWidth: 0,
+            fixedHeight: 0,
+            padding: {
+                left: 40,
+                right: 40,
+                top: 5,
+                bottom: 5,
+            }
+        }).setOrigin(0.5, 0.5).setColor("#ffffff").setAlpha(0.25);
 
-        this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
-        this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
-        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 25, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
-        this.add.existing(this.titleText);
-        this.add.existing(this.subTitleText);
-        this.add.existing(this.brandText);
-        /** General UI Branding Ends **/
+        this.startButton = new Button(this.add.container(this.scale.width/ 2 + 175, this.scale.height - 200, [
+            scene.add.image(0, 50, 'readyButton')
+                .setOrigin(0.5, 0.5)
+                ,scene.readyText
+        ]).setSize(180, 50), {
+            enable: true,
+            mode: 1,              // 0|'press'|1|'release'
+            clickInterval: 100,    // ms
+            threshold: undefined
+        })
+        .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
+            scene.onStartClicked()
+        }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
+            if(button.enable){
+                scene.readyText.setAlpha(1);
+            } else {
+                scene.readyText.setAlpha(0.25);
+            }
+        }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
+            if(button.enable){
+                scene.readyText.setAlpha(0.5);
+            } else {
+                scene.readyText.setAlpha(0.25);
+            }
+        });
 
+        this.startButton.enable = false;
+    }
+    
+    createRoomIdButton() {
+        let scene: any = this;
         /** Room Id **/
         this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height - 60, "" + this.room.id).setStyle(TextStyles.BodyText).setColor("#E8D9A1");
         this.add.existing(this.roomIdText);
@@ -185,22 +234,24 @@ export class LobbyScene extends Phaser.Scene {
             }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
                 scene.roomIdText.setText(scene.room.id)
             })
+    }
 
-        /** Start Button **/
-        this.startGame = false;
-        this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height - 92, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
-        this.startButton.disableInteractive();
-
-        this.add.existing(this.startButton);
+    createBackground() {
+        const scene: any = this;
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
+            .setOrigin(0.5, 0.5)
+        this.add.image(this.scale.width / 2, 0, 'logo')
+            .setOrigin(0.5, 0)
     }
 
     addPlayerName(client: any) {
-        this.add.text(this.scale.width / 2 - 140, this.scale.height / 2 + 200, client.name, TextStyles.H5).setOrigin(0.5, 0.5).setColor("#cccccc").setAlpha(0.75);
+        this.add.text(this.scale.width / 2 - 180, this.scale.height - 375, client.name, TextStyles.H3).setOrigin(0.5, 0.5).setColor("#feffcc").setAlpha(1);
     }
 
     addChangeCharacterButton(client: any) {
         let scene: any = this;
-        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 140, this.scale.height / 2 + 110, this.heroImages[client.charIndex]).setDisplaySize(256, 256);
+
+        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 180, this.scale.height - 230, this.heroImages[client.charIndex]);
 
         let button = new Button(this.currentPlayerImage, {
             clickInterval: 100,
@@ -213,7 +264,7 @@ export class LobbyScene extends Phaser.Scene {
 
     addReadyButton(client: any) {
         let scene: any = this;
-        this.isReadyImage = this.add.image(this.scale.width / 2 - 140, this.scale.height / 2 + 240, client.isReady ? 'ready' : 'notready').setDisplaySize(25, 25).setAlpha(0.75);
+        this.isReadyImage = this.add.image(this.scale.width / 2 - 180, this.scale.height - 75, client.isReady ? 'ready' : 'notready').setDisplaySize(35, 35).setAlpha(0.8);
         let isReadyButton = new Button(this.isReadyImage, {
             clickInterval: 100,
             mode: 1
@@ -238,7 +289,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     refreshPlayerList() {
-        let offset = 50;
+        let offset = 125;
         const clientPositions = this.calculateClientPositions();
 
         for (let index = 0; index < this.lobbyClientList.length; index++) {
@@ -256,14 +307,14 @@ export class LobbyScene extends Phaser.Scene {
                 }
 
                 const clientPosition = clientPositions[counter];
-                this.lobbyClientList.push(new LobbyClient(this, client, clientPosition + offset, 150));
+                this.lobbyClientList.push(new LobbyClient(this, client, clientPosition + offset, this.scale.height - 230));
                 counter++;
             }
         }
     }
 
     calculateClientPositions() {
-        const clientWidth = 100;
+        const clientWidth = 75;
         const screenWidth = this.scale.width;
         const clientCount = Object.keys(this.clients).length - 1;
         const totalClientsWidth = clientCount * clientWidth;
@@ -294,14 +345,4 @@ export class LobbyScene extends Phaser.Scene {
         this.room.send('charIndex', { charIndex: this.localClient.charIndex });
         this.refreshPlayerList();
     }
-
-    // createChatUI() {
-    //     // Chat display area
-    //     this.chatBox = this.add.text(400, 50, '').setStyle({ font: '12px Courier', fill: '#00ff00' });
-    //     this.chatBox.setWordWrapWidth(400);
-    //     this.chatBox.setScrollFactor(0);
-
-    //     // HTML Input Element for chat messages
-    //     this.createChatInput();
-    // }
 }
