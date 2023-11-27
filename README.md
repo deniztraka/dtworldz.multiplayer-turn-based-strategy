@@ -1,11 +1,11 @@
 
 ![logo and background](https://github.com/deniztraka/dtworldz.multiplayer-turn-based-strategy/assets/11619491/7490eac2-258f-4c19-9bb9-ac78207f94e2)
 
-
-
 # dtworldz.multiplayer-turn-based-strategy
 
 Multiplayer Turn-Based Strategy/Adventure Game project
+
+It's live and under development on: [https://dtworldz-client.onrender.com/](https://dtworldz-client.onrender.com/ ) 
 
 ## Feature List
 - Lobby System
