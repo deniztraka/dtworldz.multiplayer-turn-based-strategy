@@ -68,24 +68,13 @@ export class GameLoadingScene extends Phaser.Scene {
     }
 
     loadingUI() {
-
-        let scene: any = this;
-
-        /** General UI Branding Starts **/
+        const scene: any = this;
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
             .setOrigin(0.5, 0.5)
-            .setTint(0x333333)
-            .setDisplaySize(this.scale.width, this.scale.height);
+        this.add.image(this.scale.width / 2, 0, 'logo')
+            .setOrigin(0.5, 0)
 
-        this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
-        this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
-        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 25, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
-        this.add.existing(this.titleText);
-        this.add.existing(this.subTitleText);
-        this.add.existing(this.brandText);
-        /** General UI Branding Ends **/
-
-        this.loadingMessage = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "creating the world..").setStyle(TextStyles.BodyText).setColor("#E8D9A1").setAlpha(0.5);
+        this.loadingMessage = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "creating the world..").setStyle(TextStyles.BodyText).setColor("#E8D9A1").setAlpha(1);
         this.add.existing(this.loadingMessage);
     }
 
