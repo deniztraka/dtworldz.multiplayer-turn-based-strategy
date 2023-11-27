@@ -52,10 +52,10 @@ export class GameIsRunningScene extends Phaser.Scene {
         //this.createTileLabels();
         this.mouseHandler.init()
 
-        this.events.once('gameIsLoaded', () => {
-            this.onGameIsLoaded();
+        // this.events.once('gameIsLoaded', () => {
+        //     this.onGameIsLoaded();
             
-        });
+        // });
 
 
 
