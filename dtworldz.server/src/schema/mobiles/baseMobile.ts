@@ -7,7 +7,7 @@ import { BaseTile } from "../tilemap/tile/baseTile";
 import { Client } from '@colyseus/core';
 
 export class BaseMobile extends Schema {
-    @type("string") sessionId: string; // contains the sessionId of Card owner
+    @type("string") sessionId: string;
     @type("string") name: string = "";
     @type("boolean") isReady: boolean = false;
     @type("number") speed: number = 1;
