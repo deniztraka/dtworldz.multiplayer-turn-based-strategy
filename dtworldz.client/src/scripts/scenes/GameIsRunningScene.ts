@@ -1,13 +1,14 @@
 import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
-import TextStyles from '../utils/ui/textStyles';
 import { WorldMapHelper } from "../helpers/worldMapHelper";
 import { MouseHandler } from "../handlers/ui/mouseHandlers";
 import { ClientPlayer } from "../models/clientPlayer";
+import { GameRunningUIScene } from "./GameRunningUIScene";
 // import { GameScene } from "./GameSceneOld";
 
 export class GameIsRunningScene extends Phaser.Scene {
+    
     room: Room | undefined;
     clients: { [sessionId: string]: any } = {};
     titleText: DTLabel;
@@ -53,6 +54,7 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.events.once('gameIsLoaded', () => {
             this.onGameIsLoaded();
+            
         });
 
 
@@ -64,6 +66,13 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.events.emit('gameIsLoaded');
     }
+
+    getRemotePlayers() : ClientPlayer[]{
+        return Object.values(this.players).filter((player: ClientPlayer) => {
+            return player.sessionId !== this.room.sessionId;
+        });
+    }
+
     buildMap() {
         const biomeData = WorldMapHelper.getBiomeLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
         this.createFloorLayer(biomeData);
@@ -95,37 +104,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     }
 
     onGameIsLoaded() {
-        // tween background image alpha to 0 and remove it
-        this.tweens.add({
-            targets: this.backgroundImg,
-            alpha: 0,
-            duration: 3000,
-            ease: 'Power2',
-            onComplete: () => {
-                this.backgroundImg.destroy();
-                this.brandText.destroy();
-                this.subTitleText.destroy();
-                this.titleText.destroy();
-            }
-        });
-        this.tweens.add({
-            targets: this.floorMap,
-            alpha: 1,
-            duration: 3000,
-            ease: 'Power2',
-            onComplete: () => {
-
-                this.tweens.add({
-                    targets: this.welcomeMessage,
-                    alpha: 0,
-                    duration: 3000,
-                    ease: 'Power2',
-                    onComplete: () => {
-                        this.welcomeMessage.destroy();
-                    }
-                });
-            }
-        });
+        this.scene.add('GameRunningUIScene', GameRunningUIScene, true);
     }
 
     createFloorLayer(tileData: number[][]) {
@@ -206,28 +185,17 @@ export class GameIsRunningScene extends Phaser.Scene {
                 delete this.players[sessionId]
             }
         });
+
+        this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string }) => {
+            const player = this.players[message.currentPlayerSessionId];
+            this.events.emit('turn-start', player);
+        });
     }
 
     loadingUI() {
 
-        let scene: any = this;
+        
 
-        /** General UI Branding Starts **/
-        this.backgroundImg = this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
-            .setOrigin(0.5, 0.5)
-            .setTint(0x333333)
-            .setDisplaySize(this.scale.width, this.scale.height);
-
-        this.titleText = new DTLabel(this, this.scale.width / 2, 50, "Exiles of Lowlands").setStyle(TextStyles.H1).setColor("#E8D9A1");
-        this.subTitleText = new DTLabel(this, this.scale.width / 2, 110, "The Darkening Mists").setStyle(TextStyles.H4).setColor("#B4AA83");
-        this.brandText = new DTLabel(this, this.scale.width / 2, this.scale.height - 25, "DTWorldz").setStyle(TextStyles.H4).setColor("#E8D9A1").setAlpha(0.25);
-        this.add.existing(this.titleText);
-        this.add.existing(this.subTitleText);
-        this.add.existing(this.brandText);
-        /** General UI Branding Ends **/
-
-        this.welcomeMessage = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "Welcome to the Lowlands..").setStyle(TextStyles.BodyText).setColor("#E8D9A1").setAlpha(0.5);
-        this.add.existing(this.welcomeMessage);
     }
 
     setLocalClient(clients: { [sessionId: string]: any; }): any {
