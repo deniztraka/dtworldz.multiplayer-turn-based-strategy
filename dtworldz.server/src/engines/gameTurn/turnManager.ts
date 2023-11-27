@@ -23,7 +23,7 @@ export class TurnManager {
         const currentPlayer = this.players[this.currentPlayerIndex];
         console.log(`Starting turn for player: ${currentPlayer.client.sessionId}`);
 
-        this.gameRoom.broadcast('turn_start', { currentPlayerId: currentPlayer.client.sessionId });
+        this.gameRoom.broadcast('sa_turn-start', { currentPlayerSessionId: currentPlayer.client.sessionId });
         this.elapsedTime = 0; // Reset elapsed time
     }
 

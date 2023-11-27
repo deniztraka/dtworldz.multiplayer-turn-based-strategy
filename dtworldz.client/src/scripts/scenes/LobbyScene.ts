@@ -2,15 +2,6 @@ import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from './../utils/ui/textStyles';
-import char0Url from "../../../assets/images/characters/char0.png";
-import char1Url from "../../../assets/images/characters/char1.png";
-import char2Url from "../../../assets/images/characters/char2.png";
-import char3Url from "../../../assets/images/characters/char3.png";
-import char4Url from "../../../assets/images/characters/char4.png";
-import heroIcon0Url from "../../../assets/images/characters/heroIcon0.png";
-import heroIcon1Url from "../../../assets/images/characters/heroIcon1.png";
-import heroIcon2Url from "../../../assets/images/characters/heroIcon2.png";
-import heroIcon3Url from "../../../assets/images/characters/heroIcon3.png";
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { LobbyClient } from "../models/lobbyClient";
 import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
@@ -72,16 +63,23 @@ export class LobbyScene extends Phaser.Scene {
         });
         this.load.image('ready', '/assets/images/ready.png');
         this.load.image('notready', '/assets/images/notready.png');
-        this.load.image('readyButton', '/assets/images/readyButton.png');
-        this.load.image('char0', char0Url);
-        this.load.image('char1', char1Url);
-        this.load.image('char2', char2Url);
-        this.load.image('char3', char3Url);
-        this.load.image('char4', char4Url);
-        this.load.image('heroIcon0', heroIcon0Url);
-        this.load.image('heroIcon1', heroIcon1Url);
-        this.load.image('heroIcon2', heroIcon2Url);
-        this.load.image('heroIcon3', heroIcon3Url);
+        this.load.image('readyButon', '/assets/images/readyButton.png');
+        this.load.image('char0', '/assets/images/characters/char0.png');
+        this.load.image('char1', '/assets/images/characters/char1.png');
+        this.load.image('char2', '/assets/images/characters/char2.png');
+        this.load.image('char3', '/assets/images/characters/char3.png');
+        this.load.image('char4', '/assets/images/characters/char4.png');
+        this.load.image('charIcon0', '/assets/images/characters/charIcon0.png');
+        this.load.image('charIcon1', '/assets/images/characters/charIcon1.png');
+        this.load.image('charIcon2', '/assets/images/characters/charIcon2.png');
+        this.load.image('charIcon3', '/assets/images/characters/charIcon3.png');
+        this.load.image('charIcon4', '/assets/images/characters/charIcon4.png');
+        this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
+        this.load.image('mainCharFrameBG', '/assets/images/mainCharFrameBG.png');
+        this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
+        this.load.image('characterPanelBarBG', '/assets/images/characterPanelBarBG.png');
+        this.load.image('characterPanelBar', '/assets/images/characterPanelBar.png');
+        this.load.image('turnSign', '/assets/images/turnSign.png');
     }
 
     create() {
@@ -161,7 +159,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     createReadyButton() {
-        
+
         if(!this.clients[this.room.sessionId].isOwner){
             return;
         }
@@ -188,7 +186,7 @@ export class LobbyScene extends Phaser.Scene {
         }).setOrigin(0.5, 0.5).setColor("#ffffff").setAlpha(0.25);
 
         this.startButton = new Button(this.add.container(this.scale.width/ 2 + 175, this.scale.height - 200, [
-            scene.add.image(0, 50, 'readyButton')
+            scene.add.image(0, 50, 'readyButon')
                 .setOrigin(0.5, 0.5)
                 ,scene.readyText
         ]).setSize(180, 50), {
