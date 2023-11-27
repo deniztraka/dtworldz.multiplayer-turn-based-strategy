@@ -2,7 +2,6 @@ import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
-import tileAtlasUrl from "../../../assets/images/tilemaps/newworldtiles.png"
 import plainTilesUrl from "../../../assets/images/tilemaps/plainsTiles.png"
 import markerUrl from "../../../assets/images/tilemaps/marker.png"
 
@@ -38,9 +37,8 @@ export class GameLoadingScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('tileAtlas', tileAtlasUrl);
-        this.load.image('plainTiles', plainTilesUrl);
-        this.load.image('markerImage', markerUrl);
+        this.load.image('plainTiles', '/assets/images/tilemaps/plainsTiles.png');
+        this.load.image('markerImage', '/assets/images/tilemaps/marker.png');
     }
 
     create() {
