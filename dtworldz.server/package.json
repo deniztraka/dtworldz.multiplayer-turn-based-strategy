@@ -26,7 +26,6 @@
     "@types/mocha": "^8.2.3",
     "copyfiles": "^2.4.1",
     "mocha": "^9.0.2",
-    "rimraf": "^2.7.1",
     "tsx": "^3.12.7",
     "typescript": "^4.6.3"
   },
@@ -39,6 +38,7 @@
     "cors": "^2.8.5",
     "easystarjs": "^0.4.4",
     "express": "^4.16.4",
-    "simplex-noise": "^4.0.1"
+    "simplex-noise": "^4.0.1",
+    "rimraf": "^2.7.1"
   }
 }
