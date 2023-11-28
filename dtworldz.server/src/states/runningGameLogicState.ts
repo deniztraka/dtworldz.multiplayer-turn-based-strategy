@@ -5,25 +5,38 @@ import { TurnManager } from "../engines/gameTurn/turnManager";
 // Concrete states
 export class RunningGameLogicState extends BaseGameLogicState {
     private turnManager: TurnManager;
+    private preCooldownDuration: number;
+    private isCooldownActive: boolean;
 
-    constructor(gameRoom: WorldRoom) {
+    constructor(gameRoom: WorldRoom, preCooldownDuration = 5000) {
         super(gameRoom);
-
-        const players = Array.from(this.gameRoom.getPlayers().values());
-        this.turnManager = new TurnManager(this.gameRoom, players);
+        this.turnManager = new TurnManager(this.gameRoom);
+        this.preCooldownDuration = preCooldownDuration;
+        this.elapsedTime = 0;
+        this.isCooldownActive = true; // Start with cooldown active
     }
     exit(): void {
 
     }
     enter() {
         this.gameRoom.broadcast('gameIsRunning', {});
+        console.log("GameLogicState: Pre-game cooldown started. Get ready!");
         this.attachGameEvents();
-        console.log("GameLogicState: Game Is Started and Running");
-        this.turnManager.startTurn();
+        // this.turnManager.startTurn();
     }
 
     update(deltaTime: number) {
-        this.turnManager.update(deltaTime);
+        if (this.isCooldownActive) {
+            this.elapsedTime += deltaTime;
+            if (this.elapsedTime >= this.preCooldownDuration) {
+                this.isCooldownActive = false;
+                this.attachGameEvents();
+                console.log("GameLogicState: Game Is Started and Running");
+                this.turnManager.startTurn();
+            }
+        } else {
+            this.turnManager.update(deltaTime);
+        }
     }
 
     attachGameEvents() {
