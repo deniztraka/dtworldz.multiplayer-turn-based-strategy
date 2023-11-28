@@ -37,6 +37,7 @@ export class LobbyGameLogicState extends BaseGameLogicState {
         })
 
         this.gameRoom.onMessage('startGame', (client, message) => {
+            this.gameRoom.lock();
             console.log(`Game is loading...`);
             //this.gameRoom.changeState(new LoadingGameLogicState(this.gameRoom));
             this.isReadyToStart = true;
