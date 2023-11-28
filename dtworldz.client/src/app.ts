@@ -12,7 +12,7 @@ const config: Phaser.Types.Core.GameConfig = {
         forceSetTimeOut: true,
         smoothStep: false,
     },
-    width: 1680,
+    width: 1084,
     height: 1084,
     // Game size
     scale: {
@@ -23,16 +23,18 @@ const config: Phaser.Types.Core.GameConfig = {
         // width: 1024,
         // height: 768,
 
-        // // Minimum size
+        // Minimum size
         // min: {
-        //     width: 1680,
+        //     width: 1084,
         //     height: 1084
         // },
-        
+        // Or set minimum size like these
+        // minWidth: 800,
+        // minHeight: 600,
 
-        // // Maximum size
+        // Maximum size
         // max: {
-        //     width: 1680,
+        //     width: 1980,
         //     height: 1980
         // },
         // Or set maximum size like these
