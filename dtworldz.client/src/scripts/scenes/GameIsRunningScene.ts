@@ -110,6 +110,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     }
 
     onGameIsLoaded() {
+
         this.scene.add('GameRunningUIScene', GameRunningUIScene, true);
     }
 
@@ -197,9 +198,9 @@ export class GameIsRunningScene extends Phaser.Scene {
             this.events.emit('turn-start', player);
         });
 
-        this.room.onMessage("sa_turnCountdown", (message: {timeLeft:number}) => {
+        this.room.onMessage("sa_turnTimeLeft", (message: {timeLeft:number, totalTime:number}) => {
             
-            this.events.emit('turn-countdown', message.timeLeft);
+            this.events.emit('turn-countdown', message);
         });
     }
 

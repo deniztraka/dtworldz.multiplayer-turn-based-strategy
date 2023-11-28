@@ -22,7 +22,6 @@ export class RunningGameLogicState extends BaseGameLogicState {
         this.gameRoom.broadcast('gameIsRunning', {});
         console.log("GameLogicState: Pre-game cooldown started. Get ready!");
         this.attachGameEvents();
-        // this.turnManager.startTurn();
     }
 
     update(deltaTime: number) {
@@ -46,7 +45,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
             // get client's player
             let player = this.gameRoom.getPlayer(client.sessionId);
 
-            if (player === this.turnManager.getCurrentPlayer()) {
+            if (player === this.turnManager.getCurrentPlayer() && !this.isCooldownActive) {
                 // create action from payload and handle it (will be put in queue)
                 let action = this.gameRoom.getActionFactory().get(player, actionPayload);
                 this.gameRoom.getActionManager().handleNewAction(action);

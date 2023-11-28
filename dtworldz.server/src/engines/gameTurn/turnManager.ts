@@ -29,15 +29,25 @@ export class TurnManager {
         if (this.elapsedTime >= this.turnDuration) {
             this.nextTurn();
         } else if (this.elapsedTime - this.lastBroadcastTime >= 1000) {
-            let timeLeft = Math.floor((this.turnDuration - this.elapsedTime) / 1000);
-            this.gameRoom.broadcast('sa_turnTimeLeft', { timeLeft: timeLeft, totalTime: this.turnDuration });
-            console.log(`Time left for ${this.getCurrentPlayer().name}: ${timeLeft} seconds`);
+            let timeLeft = Math.floor((this.turnDuration - this.elapsedTime));
+            this.gameRoom.broadcast('sa_turnTimeLeft', { timeLeft: timeLeft / 1000, totalTime: this.turnDuration /1000 });
+            const currentPlayer = this.getCurrentPlayer();
+            if(currentPlayer){
+                console.log(`Time left for ${this.getCurrentPlayer().name}: ${timeLeft} seconds`);
+            }else {
+                console.log(`Time left for not existing user: ${timeLeft} seconds`);
+            }
             this.lastBroadcastTime = this.elapsedTime;
         }
     }
 
     nextTurn() {
         const players = Array.from(this.gameRoom.getPlayers().values());
+
+        if(players.length === 1){
+            return;
+        }
+
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % players.length;
         this.startTurn();
     }
