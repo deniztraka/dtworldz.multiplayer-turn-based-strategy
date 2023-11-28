@@ -4,6 +4,7 @@ import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
 import plainTilesUrl from "../../../assets/images/tilemaps/plainsTiles.png"
 import markerUrl from "../../../assets/images/tilemaps/marker.png"
+import { GameIsRunningScene } from "./GameIsRunningScene";
 
 export class GameLoadingScene extends Phaser.Scene {
     room: Room | undefined;
@@ -56,15 +57,15 @@ export class GameLoadingScene extends Phaser.Scene {
             this.scene.start('GameIsRunningScene', { room: this.room, clients: this.clients, localClient: this.localClient });
         });
 
-        // remove local reference when entity is removed from the server
-        this.room.state.players.onRemove((_client: any, sessionId: any) => {
-            console.log(`${sessionId} is removed`);
-            const client = this.clients[sessionId]
+        // // remove local reference when entity is removed from the server
+        // this.room.state.players.onRemove((_client: any, sessionId: any) => {
+        //     console.log(`${sessionId} is removed`);
+        //     const client = this.clients[sessionId]
 
-            if (client) {
-                delete this.clients[sessionId]
-            }
-        });
+        //     if (client) {
+        //         delete this.clients[sessionId]
+        //     }
+        // });
     }
 
     loadingUI() {

@@ -245,7 +245,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
     async connect(clientName: string, roomId?: string) {
         // add connection status text
-        //this.errorText.text = "connecting to the server...";
+        this.errorText.text = "connecting to the server...";
 
         const client = new Client(BACKEND_URL);
 

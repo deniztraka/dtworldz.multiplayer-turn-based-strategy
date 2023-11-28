@@ -38,7 +38,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
                 let action = this.gameRoom.getActionFactory().get(player, actionPayload);
                 this.gameRoom.getActionManager().handleNewAction(action);
             } else {
-                console.log(`Player ${client.sessionId} tried to act on somebody's turn`);
+                console.log(`Player ${player.name} tried to act on somebody's turn`);
             }
         });
     }

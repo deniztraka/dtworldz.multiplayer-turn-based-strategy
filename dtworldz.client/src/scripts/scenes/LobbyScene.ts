@@ -123,7 +123,26 @@ export class LobbyScene extends Phaser.Scene {
         });
 
         this.room.onMessage('loadGame', (message) => {
-            this.scene.start('GameLoadingScene', { room: this.room, clients: this.clients, localClient: this.localClient });
+            this.scene.transition({
+                target: 'GameLoadingScene',
+                data: { room: this.room, clients: this.clients, localClient: this.localClient },
+                // moveAbove: false,
+                // moveBelow: false,
+
+                duration: 1000,
+
+                remove: true,
+                // sleep: false,
+                allowInput: false,
+
+                // onStart: null,
+                // onStartScope: scene,
+
+                // onUpdate: null,
+                // onUpdateScope: scene,
+            })
+
+            //this.scene.start('GameLoadingScene', { room: this.room, clients: this.clients, localClient: this.localClient });
         });
 
         // remove local reference when entity is removed from the server
@@ -137,7 +156,7 @@ export class LobbyScene extends Phaser.Scene {
             }
         });
 
-        
+
     }
 
     attachClientEvents(client: any, sessionId: any) {
@@ -160,7 +179,7 @@ export class LobbyScene extends Phaser.Scene {
 
     createReadyButton() {
 
-        if(!this.clients[this.room.sessionId].isOwner){
+        if (!this.clients[this.room.sessionId].isOwner) {
             return;
         }
 
@@ -185,35 +204,35 @@ export class LobbyScene extends Phaser.Scene {
             }
         }).setOrigin(0.5, 0.5).setColor("#ffffff").setAlpha(0.25);
 
-        this.startButton = new Button(this.add.container(this.scale.width/ 2 + 175, this.scale.height - 200, [
+        this.startButton = new Button(this.add.container(this.scale.width / 2 + 175, this.scale.height - 200, [
             scene.add.image(0, 50, 'readyButon')
                 .setOrigin(0.5, 0.5)
-                ,scene.readyText
+            , scene.readyText
         ]).setSize(180, 50), {
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
             threshold: undefined
         })
-        .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
-            scene.onStartClicked()
-        }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
-            if(button.enable){
-                scene.readyText.setAlpha(1);
-            } else {
-                scene.readyText.setAlpha(0.25);
-            }
-        }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
-            if(button.enable){
-                scene.readyText.setAlpha(0.5);
-            } else {
-                scene.readyText.setAlpha(0.25);
-            }
-        });
+            .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
+                scene.onStartClicked()
+            }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
+                if (button.enable) {
+                    scene.readyText.setAlpha(1);
+                } else {
+                    scene.readyText.setAlpha(0.25);
+                }
+            }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
+                if (button.enable) {
+                    scene.readyText.setAlpha(0.5);
+                } else {
+                    scene.readyText.setAlpha(0.25);
+                }
+            });
 
         this.startButton.enable = false;
     }
-    
+
     createRoomIdButton() {
         let scene: any = this;
         /** Room Id **/
