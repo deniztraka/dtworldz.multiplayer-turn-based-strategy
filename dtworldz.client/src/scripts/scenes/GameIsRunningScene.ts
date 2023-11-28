@@ -44,25 +44,31 @@ export class GameIsRunningScene extends Phaser.Scene {
     }
 
     create() {
+        const scene : GameIsRunningScene = this;
+
+        
         this.loadingUI();
+        
         this.buildMap();
+        
         this.attachRoomEvents();
+        
         this.instantiatePlayers();
+        
 
         //this.createTileLabels();
         this.mouseHandler.init()
-
-        // this.events.once('gameIsLoaded', () => {
-        //     this.onGameIsLoaded();
+        
+        this.events.once('gameIsLoaded', () => {
+            this.onGameIsLoaded();
             
-        // });
+        });
 
-
+        (window as any).fx = this.cameras.main.postFX.addTiltShift(0.25, 0.2, 0, 0.5, 1, 1);
 
 
         this.cameras.main.setZoom(2);
         this.cameras.main.startFollow(this.localPlayer, true, 0.05, 0.05);
-        (window as any).fx = this.cameras.main.postFX.addTiltShift(0.25, 0.2, 0, 0.5, 1, 1);
 
         this.events.emit('gameIsLoaded');
     }
@@ -179,7 +185,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.room.state.players.onRemove((_client: any, sessionId: any) => {
             console.log(`${sessionId} is removed`);
             const client = this.clients[sessionId]
-
+            this.players[sessionId].destroy();
             if (client) {
                 delete this.clients[sessionId]
                 delete this.players[sessionId]
@@ -189,6 +195,11 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string }) => {
             const player = this.players[message.currentPlayerSessionId];
             this.events.emit('turn-start', player);
+        });
+
+        this.room.onMessage("sa_turnCountdown", (message: {timeLeft:number}) => {
+            
+            this.events.emit('turn-countdown', message.timeLeft);
         });
     }
 

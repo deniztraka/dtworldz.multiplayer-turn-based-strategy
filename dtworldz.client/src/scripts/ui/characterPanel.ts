@@ -1,17 +1,18 @@
 import { ClientPlayer } from "../models/clientPlayer";
+import { GameRunningUIScene } from "../scenes/GameRunningUIScene";
+import Anchor from 'phaser3-rex-plugins/plugins/anchor.js';
 
 export class CharacterPanel extends Phaser.GameObjects.Container {
     private player: ClientPlayer;
     private healthBarImg: any;
     isLocal: boolean;
-    turnImage: Phaser.GameObjects.Image;
-    constructor(scene: any, player: ClientPlayer, x: number, y: number, isLocal: boolean) {
+    private turnMarker: Phaser.GameObjects.Image;
+    constructor(scene: GameRunningUIScene, player: ClientPlayer, x: number, y: number, isLocal: boolean) {
         super(scene, x, y);
         this.x = x;
         this.y = y;
         this.player = player;
         this.isLocal = isLocal;
-        this.width = 225;
         this.create();
         scene.add.existing(this);
     }
@@ -25,23 +26,23 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             this.createRemoteCharacterPanel();
         }
 
+        this.turnMarker = this.scene.add.image(this.x + 50, this.y, 'turnMarker').setOrigin(0.5, 1).setDisplaySize(75, 50).setAlpha(0);
+
 
 
         this.scene.events.on('turn-start', (player: ClientPlayer) => {
-            //TODO: SET TURN SIGN GREEN IF ACTIVE, IF NOT SET IT TO RED
-            // if(player.sessionId === this.player.sessionId){
-            //     this.turnImage = this.scene.add.image(0, 0, 'turnSign').setOrigin(0, 0).setDisplaySize(225, 80);
-            // } else {
-            //     this.turnImage.destroy();
-            // }
-            
-
+            if(player.sessionId === this.player.sessionId){
+                this.turnMarker.setAlpha(1);
+            } else {
+                this.turnMarker.setAlpha(0);
+            }
         });
-
-
     }
     createLocalCharacterPanel() {
         const scene = this.scene as any;
+        
+
+
         this.add(scene.add.image(-18, 70, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(260, 30).setTint(0x000000).setAlpha(0.5));
         this.healthBarImg = scene.add.image(-18, 70, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(260, 30).setTint(0xff0000);
         this.add(this.healthBarImg);
@@ -65,15 +66,28 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
                 innerLeft: 78, innerRight: 2, innerTop: 30, innerBottom: 2,
             }
         }).setOrigin(0,0.5).layout())
+
+        var anchorCharacterPanel = new Anchor(this, {
+            left: 'left-5',
+            top: 'bottom-95'
+        }).anchor();
+
     }
 
 
 
     createRemoteCharacterPanel() {
         const scene = this.scene as any;
-        this.add(scene.add.image(0, 70, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(160, 50));
+        // this.add(scene.add.image(0, 70, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(185, 50));
+        
+        // this.add(scene.add.image(0, 70, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(185, 50));
+
+        this.add(scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(195, 80));
+        this.add(scene.add.image(10, 8, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0).setDisplaySize(60, 60));
+        this.add(scene.add.image(0, 0, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(195, 80));
+
         this.add(scene.rexUI.add.textBox({
-            x: 20, y: 82,
+            x: 60, y: 30,
             width: 120,
             align: 'center',
             
@@ -89,13 +103,12 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
                 innerLeft: 2, innerRight: 2, innerTop: 30, innerBottom: 2,
             }
         }).setOrigin(0,0.5).layout())
-        this.add(scene.add.image(0, 70, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(160, 50));
 
-        this.add(scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(160, 80));
-        this.add(scene.add.image(10, 8, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0).setDisplaySize(60, 60));
-        this.add(scene.add.image(0, 0, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(160, 80));
 
-        
+        var anchorCharacterPanel = new Anchor(this, {
+            left: 'left+'+this.x,
+            bottom: 'bottom-70'
+        }).anchor();
         
     }
 
