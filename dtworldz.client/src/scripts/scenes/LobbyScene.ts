@@ -32,8 +32,8 @@ export class LobbyScene extends Phaser.Scene {
     currentPlayerImage: Phaser.GameObjects.Image;
     isReadyImage: Phaser.GameObjects.Image;
     chatPanel: LobbyChatPanel;
-    readyText: any;
     playerNameText: any;
+    startText: any;
 
     constructor() {
         super({ key: "LobbyScene" })
@@ -117,10 +117,10 @@ export class LobbyScene extends Phaser.Scene {
         this.room.onMessage('canBeStarted', (message) => {
             if (message.canBeStarted) {
                 this.startButton.enable = true;
-                this.readyText.setAlpha(0.75);
+                this.startText.setAlpha(0.75);
             } else {
                 this.startButton.enable = false;
-                this.readyText.setAlpha(0.25);
+                this.startText.setAlpha(0.25);
             }
         });
 
@@ -188,51 +188,64 @@ export class LobbyScene extends Phaser.Scene {
         let scene: any = this;
         /** Start Button **/
         this.startGame = false;
-        // this.startButton = new DTButton(this, this.scale.width / 2, this.scale.height - 92, "START GAME", this.onStartClicked.bind(this)).setStyle(TextStyles.BodyText).setAlpha(0);
-        // this.startButton.disableInteractive();
+        const buttonWidth = 66;
+        const buttonHeight = 20;
 
-        //this.add.existing(this.startButton);
-        this.readyText = scene.add.text(0, 0, "START", {
-            fontFamily: 'DTBodyFontFamily',
-            fontSize: '20px',
-            align: 'center',
-            fixedWidth: 0,
-            fixedHeight: 0,
+        this.startText = scene.add.text(0, 0, "START", {
+            fontSize: '10px',
+            fontFamily: "DTBodyFontFamily",
+            color: '#dcd9ce',
+            fixedWidth: 100,
+            fixedHeight: 20,
             padding: {
-                left: 40,
-                right: 40,
-                top: 5,
-                bottom: 5,
+                top: 4,
+                bottom: 4,
+                left: 0,
+                right: 0,
             }
-        }).setOrigin(0.5, 0.5).setColor("#ffffff").setAlpha(0.25);
+        })
+            .setOrigin(0.5, 0.5)
+            .setAlign('center')
+            .setAlpha(0.5).setScale(1)
 
-        this.startButton = new Button(this.add.container(this.scale.width / 2 + 175, this.scale.height - 200, [
-            scene.add.image(0, 50, 'readyButon')
-                .setOrigin(0.5, 0.5)
-            , scene.readyText
-        ]).setSize(180, 50), {
+        const container = this.add.container(this.scale.width / 2, this.scale.height - 75, [
+            scene.rexUI.add.roundRectangle(0, 0, buttonWidth, buttonHeight, {
+                x: 10,
+                y: 10
+            }, 0x000000),
+            scene.add.image(0, 0, 'buttonFrame')
+                .setOrigin(0.5, 0.5),
+                this.startText
+        ]).setSize(buttonWidth, buttonHeight);
+
+        this.startButton = new Button(container,{
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
             threshold: undefined
-        })
-            .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
-                scene.onStartClicked()
-            }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
-                if (button.enable) {
-                    scene.readyText.setAlpha(1);
-                } else {
-                    scene.readyText.setAlpha(0.25);
-                }
-            }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
-                if (button.enable) {
-                    scene.readyText.setAlpha(0.5);
-                } else {
-                    scene.readyText.setAlpha(0.25);
-                }
-            });
+        }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
+            scene.onStartClicked()
+        }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
+            if (button.enable) {
+                scene.startText.setAlpha(1);
+            } else {
+                scene.startText.setAlpha(0.25);
+            }
+        }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
+            if (button.enable) {
+                scene.startText.setAlpha(0.5);
+            } else {
+                scene.startText.setAlpha(0.25);
+            }
+        });
 
         this.startButton.enable = false;
+
+
+        new Anchor(container, {
+            centerX: 'center',
+            bottom: 'bottom-15',
+        }).anchor();
     }
 
     createRoomIdButton() {
@@ -248,7 +261,7 @@ export class LobbyScene extends Phaser.Scene {
                 top: 0,
                 bottom: 0,
             }
-        }).setColor("#aaaaaa").setScale(0.5);
+        }).setColor("#aaaaaa").setScale(0.5).setAlpha(0.5);
         this.add.existing(this.roomIdText);
 
         var anchorCharacterPanel = new Anchor(this.roomIdText, {

@@ -98,7 +98,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
             scene.add.image(0, 0, 'buttonFrame')
                 .setOrigin(0.5, 0.5),
             createText
-        ]).setSize(buttonWidth, buttonHeight), {
+        ]).setSize(buttonWidth, buttonHeight),{
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
