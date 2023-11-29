@@ -79,7 +79,6 @@ export class LobbyScene extends Phaser.Scene {
         this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
         this.load.image('characterPanelBarBG', '/assets/images/characterPanelBarBG.png');
         this.load.image('characterPanelBar', '/assets/images/characterPanelBar.png');
-        this.load.image('turnSign', '/assets/images/turnSign.png');
     }
 
     create() {

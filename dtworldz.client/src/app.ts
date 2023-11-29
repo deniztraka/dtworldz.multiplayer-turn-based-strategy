@@ -12,31 +12,27 @@ const config: Phaser.Types.Core.GameConfig = {
         forceSetTimeOut: true,
         smoothStep: false,
     },
-    width: 1084,
-    height: 1084,
+    width: 640,
+    height: 360,
     // Game size
     scale: {
-        mode: Phaser.Scale.HEIGHT_CONTROLS_WIDTH,
+        mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
 
-        // Or put game size here
-        // width: 1024,
-        // height: 768,
-
         // Minimum size
-        // min: {
-        //     width: 1084,
-        //     height: 1084
-        // },
+        min: {
+            width: 640,
+            height: 360
+        },
         // Or set minimum size like these
         // minWidth: 800,
         // minHeight: 600,
 
         // Maximum size
-        // max: {
-        //     width: 1980,
-        //     height: 1980
-        // },
+        max: {
+            width: 1280,
+            height: 720
+        },
         // Or set maximum size like these
         // maxWidth: 1600,
         // maxHeight: 1200,
@@ -44,7 +40,6 @@ const config: Phaser.Types.Core.GameConfig = {
         zoom: 1,  // Size of game canvas = game size * zoom
     },
     autoRound: false,
-    // height: 200,
     backgroundColor: '#000000',
     parent: 'phaser-example',
     physics: {
