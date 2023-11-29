@@ -8,13 +8,12 @@ import { GameRunningUIScene } from "./GameRunningUIScene";
 // import { GameScene } from "./GameSceneOld";
 
 export class GameIsRunningScene extends Phaser.Scene {
-    
+
     room: Room | undefined;
     clients: { [sessionId: string]: any } = {};
     titleText: DTLabel;
     brandText: DTLabel;
     subTitleText: DTLabel;
-    floorMap: Phaser.Tilemaps.TilemapLayer;
     backgroundImg: Phaser.GameObjects.Image;
     welcomeMessage: DTLabel;
     natureLayer: Phaser.Tilemaps.TilemapLayer;
@@ -24,6 +23,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     localClient: any;
     players: { [sessionId: string]: any } = {};
     localPlayer: ClientPlayer;
+    floorLayer: Phaser.Tilemaps.TilemapLayer;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
@@ -40,40 +40,45 @@ export class GameIsRunningScene extends Phaser.Scene {
 
 
     preload() {
-
+        
     }
 
     create() {
-        const scene : GameIsRunningScene = this;
+        const scene: GameIsRunningScene = this;
 
         
+
+
         this.loadingUI();
-        
+
         this.buildMap();
-        
+
         this.attachRoomEvents();
-        
+
         this.instantiatePlayers();
-        
+
 
         //this.createTileLabels();
         this.mouseHandler.init()
-        
+
         this.events.once('gameIsLoaded', () => {
             this.onGameIsLoaded();
-            
+
         });
 
         (window as any).fx = this.cameras.main.postFX.addTiltShift(0.25, 0.2, 0, 0.5, 1, 1);
 
 
-        this.cameras.main.setZoom(2);
-        this.cameras.main.startFollow(this.localPlayer, true, 0.05, 0.05);
+        this.cameras.main.startFollow(this.localPlayer.container, true, 1, 1);
 
         this.events.emit('gameIsLoaded');
+
+         //  Our container
+         
+        
     }
 
-    getRemotePlayers() : ClientPlayer[]{
+    getRemotePlayers(): ClientPlayer[] {
         return Object.values(this.players).filter((player: ClientPlayer) => {
             return player.sessionId !== this.room.sessionId;
         });
@@ -82,7 +87,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     buildMap() {
         const biomeData = WorldMapHelper.getBiomeLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
         this.createFloorLayer(biomeData);
-        
+
         const natureData = WorldMapHelper.getNatureLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
         this.createNatureLayer(natureData);
     }
@@ -95,7 +100,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         }
     }
     instantiatePlayer(client: any, sessionId: string) {
-        var playerMapPosition = this.floorMap.getTileAt(client.position.x, client.position.y);
+        var playerMapPosition = this.floorLayer.getTileAt(client.position.x, client.position.y);
 
         let player = new ClientPlayer(this, client, sessionId, playerMapPosition.getCenterX(), playerMapPosition.getCenterY());
 
@@ -118,17 +123,17 @@ export class GameIsRunningScene extends Phaser.Scene {
         const mapDefinition = new Phaser.Tilemaps.MapData({
             width: this.room.state.width,
             height: this.room.state.height,
-            tileWidth: 128,
-            tileHeight: 64,
+            tileWidth: 64,
+            tileHeight: 32,
             orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
             format: Phaser.Tilemaps.Formats.ARRAY_2D
         });
 
         this.tileMap = new Phaser.Tilemaps.Tilemap(this, mapDefinition);
 
-        this.floorTileSet = this.tileMap.addTilesetImage('floorTileSet', 'plainTiles', 128, 128, 0, 0);
+        this.floorTileSet = this.tileMap.addTilesetImage('floorTileSet', 'plainTiles', 64, 64, 0, 0);
 
-        this.floorMap = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width / 2, this.scale.height / 2 - 200 + 32);
+        this.floorLayer = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width / 2, this.scale.height / 2 - 200 + 16);
 
 
         let y = 0;
@@ -141,7 +146,7 @@ export class GameIsRunningScene extends Phaser.Scene {
                     // currently it only works with Plains biome type because we only have that tileset
                     let floorTileIndexes = WorldMapHelper.getFloorTileIndexes();
                     const chosenIndex = floorTileIndexes[Math.floor(Math.random() * floorTileIndexes.length)];
-                    let tile = this.floorMap.putTileAt(chosenIndex, x, y);
+                    let tile = this.floorLayer.putTileAt(chosenIndex, x, y);
                     tile.properties.isSelected = false;
                 }
             });
@@ -198,15 +203,15 @@ export class GameIsRunningScene extends Phaser.Scene {
             this.events.emit('turn-start', player);
         });
 
-        this.room.onMessage("sa_turnTimeLeft", (message: {timeLeft:number, totalTime:number}) => {
-            
+        this.room.onMessage("sa_turnTimeLeft", (message: { timeLeft: number, totalTime: number }) => {
+
             this.events.emit('turn-countdown', message);
         });
     }
 
     loadingUI() {
 
-        
+
 
     }
 
@@ -221,20 +226,20 @@ export class GameIsRunningScene extends Phaser.Scene {
         }
     }
 
- createTileLabels() {
-    
-        this.floorMap.forEachTile(tile => {
-            
+    createTileLabels() {
+
+        this.floorLayer.forEachTile(tile => {
+
             // Get the center x, y of the tile
             const centerX = tile.getCenterX();
             const centerY = tile.getCenterY();
 
             // Create a label for the tile
-            const label = this.add.text(centerX, centerY, `${ tile.x }-${ tile.y }`, {
+            const label = this.add.text(centerX, centerY, `${tile.x}-${tile.y}`, {
                 font: '16px Arial', color: '#86bbf0'
             }).setOrigin(0.5, 0.5); // Center the text on the tile
         });
-    
+
     }
 
 }

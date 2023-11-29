@@ -2,9 +2,6 @@ import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
 import TextStyles from '../utils/ui/textStyles';
-import plainTilesUrl from "../../../assets/images/tilemaps/plainsTiles.png"
-import markerUrl from "../../../assets/images/tilemaps/marker.png"
-import { GameIsRunningScene } from "./GameIsRunningScene";
 
 export class GameLoadingScene extends Phaser.Scene {
     room: Room | undefined;
@@ -38,8 +35,9 @@ export class GameLoadingScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('plainTiles', '/assets/images/tilemaps/plainsTiles.png');
+        this.load.image('plainTiles', '/assets/images/tilemaps/plainsTiles-lowRes.png');
         this.load.image('markerImage', '/assets/images/tilemaps/marker.png');
+        
     }
 
     create() {
@@ -72,8 +70,6 @@ export class GameLoadingScene extends Phaser.Scene {
         const scene: any = this;
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
             .setOrigin(0.5, 0.5)
-        this.add.image(this.scale.width / 2, 0, 'logo')
-            .setOrigin(0.5, 0)
 
         this.loadingMessage = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "creating the world..").setStyle(TextStyles.BodyText).setColor("#E8D9A1").setAlpha(1);
         this.add.existing(this.loadingMessage);

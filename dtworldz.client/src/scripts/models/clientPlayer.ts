@@ -2,7 +2,7 @@ import { Game } from "phaser";
 import { IPoint } from "../interfaces/ipoint";
 import { GameIsRunningScene } from "../scenes/GameIsRunningScene";
 
-export class ClientPlayer extends Phaser.GameObjects.Container {
+export class ClientPlayer {
 
     private selectedTile: Phaser.Tilemaps.Tile;
     client: any;
@@ -12,35 +12,36 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
     playerName: any;
     characterSprite: any;
     playerNameText: Phaser.GameObjects.Text;
+    container: Phaser.GameObjects.Container;
+    scene: GameIsRunningScene;
+    x: number;
+    y: number;
     constructor(scene: GameIsRunningScene, client: any, sessionId: any, x: number, y: number) {
-        super(scene, x, y);
-        let add = scene.add;
+        this.scene = scene;
+        this.x = x;
+        this.y = y
+        this.container = scene.add.container(x, y);
         this.client = client;
         this.sessionId = sessionId;
         this.playerName = client.name;
         this.currentPath = [];
-        this.characterSprite = (add as any).sprite(0, 0, 'char' + client.charIndex).setScale(0.25);
-        this.characterSprite.setOrigin(0.5, 1);
+        this.characterSprite = scene.add.sprite(0, 0, 'char', 0).setOrigin(0.5, 1);
+        this.playerNameText = scene.add.text(0, -75, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
 
-        this.playerNameText = add.text(0, -75, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
-        this.add(this.playerNameText);
-        
-        
-        this.add(this.characterSprite);
-        scene.add.existing(this);
+        this.container.add([this.characterSprite, this.playerNameText]);
 
         this.listenServerUpdates();
     }
 
     listenServerUpdates() {
-        this.client.listen("position", (currentValue: {x: number, y: number}, previousValue: any) => {
+        this.client.listen("position", (currentValue: { x: number, y: number }, previousValue: any) => {
             //console.log(`moving player ${this.sessionId} to the point ${currentValue.x} ${currentValue.y}`)
             this.move(currentValue);
         });
 
         this.client.listen("currentPath", (currentValue: any, previousValue: any) => {
             this.currentPath = currentValue;
-            if((this.scene as GameIsRunningScene).localPlayer.sessionId === this.sessionId ){
+            if ((this.scene as GameIsRunningScene).localPlayer.sessionId === this.sessionId) {
                 this.drawPath();
             }
         });
@@ -48,16 +49,16 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
 
     move(tilePos: { x: number, y: number }) {
         // get tile from current position
-        const tile = (<GameIsRunningScene>this.scene).floorMap.getTileAt(tilePos.x, tilePos.y);
+        const tile = (<GameIsRunningScene>this.scene).floorLayer.getTileAt(tilePos.x, tilePos.y);
 
         const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
 
 
         this.scene.tweens.add({
-            targets: this,
+            targets: this.container,
             x: tile.getCenterX(),
             y: tile.getCenterY(),
-            duration:  1000 / this.client.speed,// this.client.speed,
+            duration: 1000 / this.client.speed,// this.client.speed,
             onComplete: () => {
                 if (this.markers) {
                     let marker = this.markers.shift();
@@ -87,18 +88,18 @@ export class ClientPlayer extends Phaser.GameObjects.Container {
             // skip first and last
             if (index === 0) {
                 return;
-            } 
+            }
 
             const scene = (this.scene as GameIsRunningScene)
             //draw marker
-            var tile = scene.floorMap.getTileAt(path.x, path.y);
+            var tile = scene.floorLayer.getTileAt(path.x, path.y);
             if (tile.index !== -1) {
                 var marker = scene.add.image(tile.getCenterX(), tile.getCenterY(), 'markerImage').setScale(2);
                 marker.setDepth(100);
                 // set marker rotation to match the tile
                 if (index < this.currentPath.length - 1) {
                     let nextItem = paths[index + 1];
-                    var nextTile = scene.floorMap.getTileAt(nextItem.x, nextItem.y);
+                    var nextTile = scene.floorLayer.getTileAt(nextItem.x, nextItem.y);
                     if (nextTile.index !== -1) {
                         var radRotation = Phaser.Math.Angle.Between(tile.getCenterX(), tile.getCenterY(), nextTile.getCenterX(), nextTile.getCenterY());
                         let angle = Phaser.Math.RadToDeg(radRotation);

@@ -39,7 +39,8 @@ const config: Phaser.Types.Core.GameConfig = {
 
         zoom: 1,  // Size of game canvas = game size * zoom
     },
-    autoRound: false,
+    roundPixels: false,
+  	antialias: false,
     backgroundColor: '#000000',
     parent: 'phaser-example',
     physics: {

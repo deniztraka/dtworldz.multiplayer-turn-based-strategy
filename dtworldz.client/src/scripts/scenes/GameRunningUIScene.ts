@@ -20,7 +20,7 @@ export class GameRunningUIScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('turnMarker', '/assets/images/turnMarker.png');
+
     }
 
 

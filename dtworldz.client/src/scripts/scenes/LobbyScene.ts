@@ -5,6 +5,7 @@ import TextStyles from './../utils/ui/textStyles';
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { LobbyClient } from "../models/lobbyClient";
 import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
+import Anchor from 'phaser3-rex-plugins/plugins/anchor.js';
 
 export class LobbyScene extends Phaser.Scene {
     room: Room | undefined;
@@ -32,6 +33,7 @@ export class LobbyScene extends Phaser.Scene {
     isReadyImage: Phaser.GameObjects.Image;
     chatPanel: LobbyChatPanel;
     readyText: any;
+    playerNameText: any;
 
     constructor() {
         super({ key: "LobbyScene" })
@@ -79,6 +81,7 @@ export class LobbyScene extends Phaser.Scene {
         this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
         this.load.image('characterPanelBarBG', '/assets/images/characterPanelBarBG.png');
         this.load.image('characterPanelBar', '/assets/images/characterPanelBar.png');
+        this.load.spritesheet('char', '/assets/images/characters/charsSheet.png', { frameWidth: 32, frameHeight: 32 });
     }
 
     create() {
@@ -99,7 +102,7 @@ export class LobbyScene extends Phaser.Scene {
                 this.addReadyButton(client);
                 this.addPlayerName(client);
                 this.createReadyButton();
-                this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2, this.scale.height / 2 - 60);
+                //this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2, this.scale.height / 2 - 60);
             }
 
             this.attachClientEvents(client, sessionId);
@@ -235,8 +238,24 @@ export class LobbyScene extends Phaser.Scene {
     createRoomIdButton() {
         let scene: any = this;
         /** Room Id **/
-        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height - 60, "" + this.room.id).setStyle(TextStyles.BodyText).setColor("#E8D9A1");
+        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height/2, "" + this.room.id).setStyle({
+            fontFamily: 'Arial',
+            fontSize: '18px',
+            align: 'center',
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+            }
+        }).setColor("#aaaaaa").setScale(0.5);
         this.add.existing(this.roomIdText);
+
+        var anchorCharacterPanel = new Anchor(this.roomIdText, {
+            centerX: 'center',
+            bottom: 'bottom',
+        }).anchor();
+
         let buttonRoomId = new Button(this.roomIdText, {
             clickInterval: 100,
             mode: 1,
@@ -252,21 +271,33 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     createBackground() {
-        const scene: any = this;
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
             .setOrigin(0.5, 0.5)
-        this.add.image(this.scale.width / 2, 0, 'logo')
-            .setOrigin(0.5, 0)
     }
 
     addPlayerName(client: any) {
-        this.add.text(this.scale.width / 2 - 180, this.scale.height - 375, client.name, TextStyles.H3).setOrigin(0.5, 0.5).setColor("#feffcc").setAlpha(1);
+        this.playerNameText = this.add.text(this.scale.width / 2 - 180, this.scale.height - 375, client.name, {
+            fontFamily: 'DTBodyFontFamily',
+            fontSize: '10px',
+            fixedWidth: 80,
+            fixedHeight: 0,
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+            }
+        }).setOrigin(0.5, 0.5).setColor("#cccccc").setAlpha(1).setScale(1).setAlign('center');
+        let anchor = new Anchor( this.playerNameText, {
+            left: '5%',
+            bottom: 'bottom-110',
+        }).anchor();
     }
 
     addChangeCharacterButton(client: any) {
         let scene: any = this;
-
-        this.currentPlayerImage = this.add.image(this.scale.width / 2 - 180, this.scale.height - 230, this.heroImages[client.charIndex]);
+        //this.currentPlayerImage = this.add.sprite(this.scale.width / 2, this.scale.height, 'char', client.charIndex).setOrigin(0.5, 1);
+        this.currentPlayerImage = this.add.image(this.scale.width / 2, this.scale.height, this.heroImages[client.charIndex]).setDisplaySize(64,64).setOrigin(0.5, 1);
 
         let button = new Button(this.currentPlayerImage, {
             clickInterval: 100,
@@ -275,17 +306,27 @@ export class LobbyScene extends Phaser.Scene {
             .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
                 scene.setPlayerCharacter();
             })
+
+            let anchor = new Anchor( this.currentPlayerImage, {
+                left: '5%+0',
+                bottom: 'bottom-40',
+            }).anchor();
     }
 
     addReadyButton(client: any) {
         let scene: any = this;
-        this.isReadyImage = this.add.image(this.scale.width / 2 - 180, this.scale.height - 75, client.isReady ? 'ready' : 'notready').setDisplaySize(35, 35).setAlpha(0.8);
+        this.isReadyImage = this.add.image(this.scale.width / 2 - 180, this.scale.height - 75, client.isReady ? 'ready' : 'notready').setDisplaySize(16, 16).setAlpha(0.8).setOrigin(0.5, 0.5);
         let isReadyButton = new Button(this.isReadyImage, {
             clickInterval: 100,
             mode: 1
         }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
             scene.setPlayerReady()
         })
+
+        let anchor = new Anchor(  this.isReadyImage, {
+            left: '5%+20',
+            bottom: 'bottom-20',
+        }).anchor();
     }
 
     copyRoomIdToClipboard() {
