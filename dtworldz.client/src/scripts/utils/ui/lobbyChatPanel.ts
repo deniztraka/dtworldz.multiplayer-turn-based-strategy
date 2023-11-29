@@ -1,37 +1,39 @@
+import { LobbyScene } from "../../scenes/LobbyScene";
 import { LobbyChatEntry } from "./lobbyChatEntry";
 import { TextEdit, Edit } from 'phaser3-rex-plugins/plugins/textedit';
 
 
 export class LobbyChatPanel {
-    scene: any;
+    scene: LobbyScene;
     scrollablePanel: any;
     panel: any;
     entries: any[];
     maxEntries: number = 20;
     height: number;
     width: number;
-    constructor(scene: any, x: number, y: number) {
+    constructor(scene: LobbyScene, ) {
         this.scene = scene;
         this.entries = [];
         let self = this;
 
-        this.height = 320;
-        this.width = 480;
+        this.height = 140;
+        this.width = 200;
 
         let initialText = 'write something...';
         let chatInputField = scene.add.text(0, 0, initialText, {
-            fontSize: '16px',
+            fontSize: '10px',
             color: '#ffffff',
             backgroundColor: '#333333',
             fixedWidth: this.width,
-            fixedHeight: 30,
+            fixedHeight: 15,
             padding: {
-                top: 7,
+                top: 0,
                 bottom: 7,
                 left: 5,
                 right: 5,
             },
-        }).setAlpha(0.5);
+            fontFamily: 'Arial',
+        }).setAlpha(0.5).setScale(1);
 
         let editorConfig = {
             type: 'text',
@@ -62,14 +64,15 @@ export class LobbyChatPanel {
         // @ts-ignore: Unreachable code error
         var editor = new TextEdit(chatInputField, editorConfig);
 
-        this.scrollablePanel = scene.rexUI.add.scrollablePanel({
-            x: x, y: y,
+        this.scrollablePanel = (scene as any).rexUI.add.scrollablePanel({
+            x: this.scene.scale.width/2,
+            y: this.scene.scale.height/2 - 15,
             height: this.height,
             width: this.width,
 
             scrollMode: 'y',
 
-            background: scene.rexUI.add.roundRectangle({
+            background: (scene as any).rexUI.add.roundRectangle({
                 color: 0x000000,
                 radius: 3
             }).setAlpha(0.25),
@@ -81,8 +84,8 @@ export class LobbyChatPanel {
             },
 
             slider: {
-                track: scene.rexUI.add.roundRectangle({ width: 5, radius: 5, color: 0x111111 }),
-                thumb: scene.rexUI.add.roundRectangle({ radius: 8, color: 0x443D22 }),
+                track: (scene as any).rexUI.add.roundRectangle({ width: 5, radius: 5, color: 0x111111 }),
+                thumb: (scene as any).rexUI.add.roundRectangle({ radius: 8, color: 0x443D22 }),
             },
 
             mouseWheelScroller: {
@@ -121,7 +124,7 @@ export class LobbyChatPanel {
     }
 
     addEntry(owner: string, text: string) {
-        let chatEntry = new LobbyChatEntry(this.scene, owner, text, this.scene.scale.width / 2 + 50, this.scene.scale.height / 2);
+        let chatEntry = new LobbyChatEntry(this.scene, owner && owner.length > 0 ? owner + ':' : owner, text, this.scene.scale.width / 2 + 50, this.scene.scale.height / 2);
         this.panel.add(chatEntry.textBox);
         this.entries.push(chatEntry.textBox);
 
@@ -138,7 +141,7 @@ export class LobbyChatPanel {
     }
 
     createChatPanel() {
-        this.panel = this.scene.rexUI.add.sizer({
+        this.panel = (this.scene as any).rexUI.add.sizer({
             orientation: 'y',
             space: { item: 10, top: 0, bottom: 0 }
         })

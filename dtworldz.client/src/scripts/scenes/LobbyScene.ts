@@ -102,7 +102,7 @@ export class LobbyScene extends Phaser.Scene {
                 this.addReadyButton(client);
                 this.addPlayerName(client);
                 this.createReadyButton();
-                //this.chatPanel = new LobbyChatPanel(this, this.scale.width / 2, this.scale.height / 2 - 60);
+                this.chatPanel = new LobbyChatPanel(this);
             }
 
             this.attachClientEvents(client, sessionId);
@@ -238,7 +238,7 @@ export class LobbyScene extends Phaser.Scene {
     createRoomIdButton() {
         let scene: any = this;
         /** Room Id **/
-        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height/2, "" + this.room.id).setStyle({
+        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "" + this.room.id).setStyle({
             fontFamily: 'Arial',
             fontSize: '18px',
             align: 'center',
@@ -287,8 +287,8 @@ export class LobbyScene extends Phaser.Scene {
                 top: 0,
                 bottom: 0,
             }
-        }).setOrigin(0.5, 0.5).setColor("#cccccc").setAlpha(1).setScale(1).setAlign('center');
-        let anchor = new Anchor( this.playerNameText, {
+        }).setOrigin(0.5, 0.5).setColor("#fff").setAlpha(1).setScale(1).setAlign('center');
+        let anchor = new Anchor(this.playerNameText, {
             left: '5%',
             bottom: 'bottom-110',
         }).anchor();
@@ -297,7 +297,7 @@ export class LobbyScene extends Phaser.Scene {
     addChangeCharacterButton(client: any) {
         let scene: any = this;
         //this.currentPlayerImage = this.add.sprite(this.scale.width / 2, this.scale.height, 'char', client.charIndex).setOrigin(0.5, 1);
-        this.currentPlayerImage = this.add.image(this.scale.width / 2, this.scale.height, this.heroImages[client.charIndex]).setDisplaySize(64,64).setOrigin(0.5, 1);
+        this.currentPlayerImage = this.add.image(this.scale.width / 2, this.scale.height, this.heroImages[client.charIndex]).setDisplaySize(64, 64).setOrigin(0.5, 1);
 
         let button = new Button(this.currentPlayerImage, {
             clickInterval: 100,
@@ -307,10 +307,10 @@ export class LobbyScene extends Phaser.Scene {
                 scene.setPlayerCharacter();
             })
 
-            let anchor = new Anchor( this.currentPlayerImage, {
-                left: '5%+0',
-                bottom: 'bottom-40',
-            }).anchor();
+        let anchor = new Anchor(this.currentPlayerImage, {
+            left: '5%+0',
+            bottom: 'bottom-40',
+        }).anchor();
     }
 
     addReadyButton(client: any) {
@@ -323,7 +323,7 @@ export class LobbyScene extends Phaser.Scene {
             scene.setPlayerReady()
         })
 
-        let anchor = new Anchor(  this.isReadyImage, {
+        let anchor = new Anchor(this.isReadyImage, {
             left: '5%+20',
             bottom: 'bottom-20',
         }).anchor();
@@ -353,7 +353,7 @@ export class LobbyScene extends Phaser.Scene {
             element.destroy();
         }
 
-        
+        let characterContainer = this.add.container(0, 0);
 
         let counter = 0
         for (const sessionId in this.clients) {
@@ -364,25 +364,24 @@ export class LobbyScene extends Phaser.Scene {
                     continue;
                 }
 
-                
-
                 const clientPosition = clientPositions[counter];
-                console.log(clientPositions);
-                const lobbyClient = new LobbyClient(this, client, clientPosition + offset, this.scale.height - 230)
-                
-                const anchor = new Anchor(lobbyClient, {
-                    bottom: 'bottom-40',
-                }).anchor();
+                const lobbyClient = new LobbyClient(this, client, clientPosition, 0)
+
                 this.lobbyClientList.push(lobbyClient);
-                //characterContainer.add(lobbyClient);
+                characterContainer.add(lobbyClient);
                 counter++;
             }
         }
+
+        let anchor = new Anchor(characterContainer, {
+            left: '75%',
+            centerY: 'bottom-40'
+        }).anchor();
     }
 
     calculateClientPositions() {
         const clientWidth = 32;
-        const screenWidth = this.scale.width;
+        const screenWidth = this.cameras.main.getBounds().width;
         const clientCount = Object.keys(this.clients).length - 1;
         const totalClientsWidth = clientCount * clientWidth;
         const startingX = (screenWidth / 2) - (totalClientsWidth / 2);

@@ -1,43 +1,41 @@
-import { LobbyScene } from "../../scenes/LobbyScene";
-
-const COLOR_PRIMARY = 0x4e342e;
-const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
-
-const entryWidth = 460;
-const fontSize = 12
+const fontSize = 9
 
 
 export class LobbyChatEntry {
     textBox: any;
+    entryWidth: number;
     constructor(scene: any, owner: string, text: string, x: number, y: number) {
+        this.entryWidth = 180;
+       
         this.textBox = scene.rexUI.add.textBox({
             x: x, y: y,
-            width: entryWidth,
+            width: this.entryWidth,
             align:{
                 title: 'left',
             },
 
-            innerBackground: scene.rexUI.add.roundRectangle({
-                radius: 3,
-                color: 0x333333,
-                strokeColor: COLOR_DARK, strokeWidth: 1
-            }).setAlpha(0.25),
+            // innerBackground: scene.rexUI.add.roundRectangle({
+            //     radius: 3,
+            //     color: 0x333333,
+            //     //strokeColor: COLOR_DARK, strokeWidth: 1
+            // }).setAlpha(0.25),
 
             text: scene.add.text(0, 0, text, {
                 fontSize: fontSize,
-                wordWrap: { width: entryWidth - 10 },
+                wordWrap: { width: this.entryWidth - 10 },
                 maxLines: 4
-            }),
+            }).setColor("#fff").setAlpha(0.75).setStyle("bold"),
 
             title: scene.rexUI.add.label({
                 
-                background: scene.rexUI.add.roundRectangle({
-                    // radius: 3,
-                    color: 0x222222,
-                    // strokeColor: COLOR_LIGHT, strokeWidth: 1
-                }).setAlpha(0.5),
-                text: scene.add.text(0, 0, owner, { fontSize: fontSize + 2 }).setColor("#E8D9A1"),
+                // background: scene.rexUI.add.roundRectangle({
+                //     // radius: 3,
+                //     color: 0x222222,
+                //     // strokeColor: COLOR_LIGHT, strokeWidth: 1
+                // }).setAlpha(0.5),
+                text: scene.add.text(0, 0, owner, { fontSize: fontSize + 1,
+                    fontFamily: 'Arial',
+                }).setColor("#fff").setAlpha(1).setStyle("bold").setScale(1),
                 align: 'center',
                 space: {
                     left: 3, right: 3, top: 3, bottom: 3,
