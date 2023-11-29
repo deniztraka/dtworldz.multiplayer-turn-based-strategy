@@ -22,7 +22,6 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('loginBackground', '/assets/images/bgWide.png');
         this.load.image('loginBackground', '/assets/images/bg.png');
         this.load.image('frame', '/assets/images/frame.png');
         this.load.image('buttonFrame', '/assets/images/buttonFrame-lowRes.png');
