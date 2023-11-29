@@ -353,6 +353,8 @@ export class LobbyScene extends Phaser.Scene {
             element.destroy();
         }
 
+        
+
         let counter = 0
         for (const sessionId in this.clients) {
             if (Object.prototype.hasOwnProperty.call(this.clients, sessionId)) {
@@ -362,15 +364,24 @@ export class LobbyScene extends Phaser.Scene {
                     continue;
                 }
 
+                
+
                 const clientPosition = clientPositions[counter];
-                this.lobbyClientList.push(new LobbyClient(this, client, clientPosition + offset, this.scale.height - 230));
+                console.log(clientPositions);
+                const lobbyClient = new LobbyClient(this, client, clientPosition + offset, this.scale.height - 230)
+                
+                const anchor = new Anchor(lobbyClient, {
+                    bottom: 'bottom-40',
+                }).anchor();
+                this.lobbyClientList.push(lobbyClient);
+                //characterContainer.add(lobbyClient);
                 counter++;
             }
         }
     }
 
     calculateClientPositions() {
-        const clientWidth = 75;
+        const clientWidth = 32;
         const screenWidth = this.scale.width;
         const clientCount = Object.keys(this.clients).length - 1;
         const totalClientsWidth = clientCount * clientWidth;
