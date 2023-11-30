@@ -9,7 +9,6 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
     private healthBarImg: any;
     isLocal: boolean;
     remainingTimeBarImg: any;
-    turnTimerDisplayBar: LineProgressCanvas;
     constructor(scene: GameRunningUIScene, player: ClientPlayer, x: number, y: number, isLocal: boolean) {
         super(scene, x, y);
         this.x = x;
@@ -24,9 +23,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
 
     create() {
         const self = this.scene as GameRunningUIScene;
-        
 
-        
         if (this.isLocal) {
             this.createLocalCharacterPanel();
         } else {
@@ -35,99 +32,59 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
 
         this.scene.events.on('turn-start', (player: ClientPlayer) => {
             if (player.sessionId === this.player.sessionId ) {
-                this.turnTimerDisplayBar.setAlpha(1);
+                this.remainingTimeBarImg.setAlpha(1);
             } else {
-                this.turnTimerDisplayBar.setAlpha(0);
+                this.remainingTimeBarImg.setAlpha(0);
             }
         });
 
-        this.scene.events.on('turn-countdown', (message:{timeLeft:number, totalTime:number}) => {
+        this.scene.events.on('turn-countdown', (message: { timeLeft: number, totalTime: number }) => {
             this.setRemainingTime(message.totalTime - message.timeLeft, message.totalTime);
-            console.log('turn-countdown: ' + message.timeLeft + ' ' + message.totalTime)
+            //console.log('turn-countdown: ' + message.timeLeft + ' ' + message.totalTime)
         });
     }
+
     createLocalCharacterPanel() {
-        this.turnTimerDisplayBar = new LineProgressCanvas(this.scene, this.x, this.y, 220, 5, '#740010', 50, {
-            barColor2: '#e0d9cb',
-            isHorizontalGradient: true,
-            trackColor: '#cccccc',
-            trackStrokeColor: '#000000',
-            //@ts-ignore
-            trackStrokeThickness: 2,
 
-            skewX: 0,
-            rtl: false,
+        this.remainingTimeBarImg = this.scene.add.image(4, -5, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(128, 10).setTint(0xffffff).setAlpha(1);
+        this.add(this.remainingTimeBarImg);
 
-            easeValue: {
-                duration: 0,
-                ease: 'Linear'
-            },
-            // valuechangeCallback: function (newValue, oldValue, lineProgress) {
-            // },
-        }).setOrigin(0, 1).setAlpha(1);
-        this.add(this.turnTimerDisplayBar);
-
-        
-
-        
-        this.add(this.scene.add.image(-18, 70, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(260, 30).setTint(0x000000).setAlpha(0.5));
-        this.healthBarImg = this.scene.add.image(-18, 70, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(260, 30).setTint(0xff0000);
+        this.add(this.scene.add.image(10, 22, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(114, 10).setTint(0x000000).setAlpha(0.5));
+        this.healthBarImg = this.scene.add.image(10, 22, 'characterPanelBarBG').setOrigin(0, 0).setDisplaySize(114, 10).setTint(0xff0000);
         this.add(this.healthBarImg);
-        this.add(this.scene.add.image(-18, 70, 'characterPanelBar').setOrigin(0, 0).setDisplaySize(260, 30));
+        this.add(this.scene.add.image(10, 22, 'characterPanelBar').setOrigin(0, 0).setDisplaySize(114, 10));
 
-        this.add(this.scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(225, 80));
-        this.add(this.scene.add.image(10, 8, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0).setDisplaySize(60, 60));
-        this.add(this.scene.add.image(0, 0, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(225, 80));
+        this.add(this.scene.add.image(18, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(100, 25));
+        this.add(this.scene.add.image(22, 0, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0).setDisplaySize(20, 20));
+        this.add(this.scene.add.image(18, 0, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(100, 25));
         this.add((this.scene as any).rexUI.add.textBox({
-            x: 0, y: 30,
-            width: 120,
+            x: 0, y: 0,
+            width: 100,
             align: 'left',
             text: this.scene.add.text(0, 0, this.player.playerName, {
-                fontSize: 20,
-                wordWrap: { width: 120 },
+                fontSize: 10,
+                wordWrap: { width: 100 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily'
             }).setAlpha(0.8),
             space: {
                 // For innerSizer
-                innerLeft: 78, innerRight: 2, innerTop: 30, innerBottom: 2,
+                innerLeft: 44, innerRight: 2, innerTop: 30, innerBottom: 2,
             }
         }).setOrigin(0, 0.5).layout())
 
         var anchorCharacterPanel = new Anchor(this, {
-            left: 'left-5',
-            top: 'bottom-95'
+            centerX: 'center-57',
+            top: 'bottom-30'
         }).anchor();
 
-    }
-
-    showTurnTimerDisplayBar(value: boolean){
-        this.turnTimerDisplayBar.setAlpha(value ? 1 : 0);
     }
 
     createRemoteCharacterPanel() {
         console.log(this.x + ' ' + this.y)
 
         const scene = this.scene as any;
-        this.turnTimerDisplayBar = new LineProgressCanvas(this.scene, this.x, this.y - 50, 155, 5, '#740010', 50, {
-            barColor2: '#e0d9cb',
-            isHorizontalGradient: true,
-            trackColor: '#cccccc',
-            trackStrokeColor: '#000000',
-            // @ts-ignore
-            trackStrokeThickness: 2,
-
-            skewX: 0,
-            rtl: false,
-
-            easeValue: {
-                duration: 0,
-                ease: 'Linear'
-            },
-            // valuechangeCallback: function (newValue, oldValue, lineProgress) {
-            // },
-        }).setOrigin(0, 1).setAlpha(1);
-        this.scene.add.existing(this.turnTimerDisplayBar);
+        
 
         this.add(scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(195, 80));
         this.add(scene.add.image(10, 8, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0).setDisplaySize(60, 60));
@@ -166,8 +123,9 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
     }
 
     setRemainingTime(timeLeft: number, totalTime: number) {
-        if (this.turnTimerDisplayBar) {
-            this.turnTimerDisplayBar.setValue(timeLeft / totalTime);
+        if (this.remainingTimeBarImg) {
+            this.remainingTimeBarImg.setDisplaySize(114 * (totalTime - timeLeft) / totalTime, 10);
+            
         }
     }
 }

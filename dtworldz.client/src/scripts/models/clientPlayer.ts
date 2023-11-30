@@ -26,7 +26,7 @@ export class ClientPlayer {
         this.playerName = client.name;
         this.currentPath = [];
         this.characterSprite = scene.add.sprite(0, 0, 'char', 0).setOrigin(0.5, 1);
-        this.playerNameText = scene.add.text(0, -75, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
+        this.playerNameText = scene.add.text(0, -50, this.playerName, { color: "#ffffff", fontSize: "10px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
 
         this.container.add([this.characterSprite, this.playerNameText]);
 
