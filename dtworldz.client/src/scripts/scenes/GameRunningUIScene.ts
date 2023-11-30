@@ -38,7 +38,7 @@ export class GameRunningUIScene extends Phaser.Scene {
         // });
 
         this.gameScene.events.on('turn-start', (player: ClientPlayer) => {
-            console.log('turn-start: ' + player.sessionId)
+            //console.log('turn-start: ' + player.sessionId)
 
             this.events.emit('turn-start', player);
             this.currentPlayerSessionId = player.sessionId;
