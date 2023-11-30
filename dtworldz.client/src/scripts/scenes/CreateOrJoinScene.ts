@@ -22,15 +22,24 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('loginBackground', '/assets/images/bgWide.png');
+        this.load.image('loginBackground', '/assets/images/bg.png');
         this.load.image('frame', '/assets/images/frame.png');
-        this.load.image('logo', '/assets/images/logo.png');
-        this.load.image('buttonFrame', '/assets/images/buttonFrame.png');
+        this.load.image('buttonFrame', '/assets/images/buttonFrame-lowRes.png');
         this.load.scenePlugin({
             key: 'rexuiplugin',
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
+
+        var url;
+        url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js';
+        this.load.plugin('rexbbcodetextplugin', url, true);
+      
+        url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js';
+        this.load.plugin('rextexteditplugin', url, true);
+
+        
+    
     }
 
     create() {
@@ -38,41 +47,58 @@ export class CreateOrJoinScene extends Phaser.Scene {
         this.createNickNameInput();
         this.createButtons();
 
-        this.errorText = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "")
-            .setStyle(TextStyles.H4)
+        
+
+        this.errorText = new DTLabel(this, this.scale.width / 2, this.scale.height / 2 + 50, "")
+            .setStyle({
+                fontFamily: 'DTBodyTextFontFamily',
+                fontSize: '12px',
+                align: 'center',
+                fixedWidth: 0,
+                fixedHeight: 0,
+                padding: {
+                    left: 40,
+                    right: 40,
+                    top: 5,
+                    bottom: 5,
+                }
+            })
             .setColor("#ffffff");
         this.add.existing(this.errorText);
     }
 
     createButtons() {
+        const buttonWidth = 66;
+        const buttonHeight = 20;
+
         const scene: any = this;
 
-        const createText = scene.add.text(0, -3, "CREATE", {
-            fontSize: '26px',
+        const createText = scene.add.text(0, 0, "CREATE", {
+            fontSize: '10px',
             fontFamily: "DTBodyFontFamily",
             color: '#dcd9ce',
-            fixedWidth: 160,
-            fixedHeight: 45,
+            fixedWidth: 100,
+            fixedHeight: 20,
             padding: {
-                top: 10,
-                bottom: 10,
-                left: 10,
-                right: 10,
+                top: 4,
+                bottom: 4,
+                left: 0,
+                right: 0,
             }
         })
             .setOrigin(0.5, 0.5)
             .setAlign('center')
-            .setAlpha(0.5);
+            .setAlpha(0.5).setScale(1);
 
-        new Button(this.add.container(this.scale.width / 2, this.scale.height / 2 + 100, [
-            scene.rexUI.add.roundRectangle(0, 0, 150, 60, {
+        new Button(this.add.container(this.scale.width / 2, this.scale.height / 2 + 75, [
+            scene.rexUI.add.roundRectangle(0, 0, buttonWidth, buttonHeight, {
                 x: 10,
                 y: 10
             }, 0x000000),
             scene.add.image(0, 0, 'buttonFrame')
                 .setOrigin(0.5, 0.5),
             createText
-        ]).setSize(180, 50), {
+        ]).setSize(buttonWidth, buttonHeight),{
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
@@ -85,33 +111,32 @@ export class CreateOrJoinScene extends Phaser.Scene {
             createText.setAlpha(0.5);
         });
 
-
-        const joinText = scene.add.text(0, -3, "JOIN", {
-            fontSize: '26px',
+        const joinText = scene.add.text(0, 0, "JOIN", {
+            fontSize: '10px',
             fontFamily: "DTBodyFontFamily",
             color: '#dcd9ce',
-            fixedWidth: 160,
-            fixedHeight: 45,
+            fixedWidth: buttonWidth,
+            fixedHeight: buttonHeight,
             padding: {
-                top: 10,
-                bottom: 10,
+                top: 4,
+                bottom: 4,
                 left: 10,
                 right: 10,
             }
         })
             .setOrigin(0.5, 0.5)
             .setAlign('center')
-            .setAlpha(0.5);
+            .setAlpha(0.5).setScale(1);
 
-        new Button(this.add.container(this.scale.width / 2, this.scale.height / 2 + 180, [
-            scene.rexUI.add.roundRectangle(0, 0, 150, 60, {
+        new Button(this.add.container(this.scale.width / 2, this.scale.height / 2 + 100, [
+            scene.rexUI.add.roundRectangle(0, 0, buttonWidth, buttonHeight, {
                 x: 10,
                 y: 10
             }, 0x000000),
             scene.add.image(0, 0, 'buttonFrame')
                 .setOrigin(0.5, 0.5),
             joinText
-        ]).setSize(180, 50), {
+        ]).setSize(buttonWidth, buttonHeight), {
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
             clickInterval: 100,    // ms
@@ -129,46 +154,45 @@ export class CreateOrJoinScene extends Phaser.Scene {
         const scene: any = this;
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
             .setOrigin(0.5, 0.5)
-        this.add.image(this.scale.width / 2, 0, 'logo')
-            .setOrigin(0.5, 0)
     }
 
     createNickNameInput() {
         const scene: any = this;
         let initialText = 'your name';
-        this.add.container(this.scale.width / 2, this.scale.height / 2 - 100, [
-            scene.rexUI.add.roundRectangle(0, 0, 200, 60, {
+        this.add.container(this.scale.width / 2, this.scale.height / 2, [
+            scene.rexUI.add.roundRectangle(0, 0, 84, 20, {
                 x: 10,
                 y: 10
             }, 0x000000).setAlpha(0.6),
             this.add.image(0, 0, 'buttonFrame')
-                .setOrigin(0.5, 0.5).setDisplaySize(240, 60)
+                .setOrigin(0.5, 0.5).setDisplaySize(84, 20)
         ])
-        this.nickNameText = scene.add.text(this.scale.width / 2, this.scale.height / 2 - 100, initialText, {
-            fontSize: '22px',
+        this.nickNameText = scene.add.text(this.scale.width / 2, this.scale.height / 2, initialText, {
+            fontSize: '9px',
             fontFamily: "DTBodyFontFamily",
-            color: '#ffffff',
-            fixedWidth: 160,
-            fixedHeight: 45,
+            color: '#dddddd',
+            fixedWidth: 84,
+            fixedHeight: 20,
             padding: {
-                top: 10,
-                bottom: 10,
-                left: 10,
-                right: 10,
+                top: 4,
+                bottom: 4,
+                left: 4,
+                right: 4,
             },
             align: 'center',
-        }).setOrigin(0.5, 0.5).setAlpha(0.5)
+        })
+        .setOrigin(0.5, 0.5).setAlpha(0.5)
 
         let editorConfig = {
             type: 'text',
             enterClose: true,
             selectAll: true,
 
-            // onOpen: function (textObject: any) {
-
-            // },
+            onOpen: function (textObject: any) {
+            },
             onTextChanged: function (textObject: any, text: any) {
                 textObject.text = text;
+
                 //trim if more than 9 chars
                 if (textObject.text.length > 9) {
                     textObject.text = textObject.text.substring(0, 9);
@@ -288,34 +312,28 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
 var CreateDialog = function (scene: any) {
 
+    const dialogwidth = 180;
+    const dialogheight = 120;
 
 
-
-
+    
 
     var dialog = scene.rexUI.add.dialog({
         background: scene.add.container(0, 0, [
-            scene.rexUI.add.roundRectangle(0, 0, 270, 280, 1, 0x000000).setAlpha(0.5),
-            scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(280, 280)
+            scene.rexUI.add.roundRectangle(0, 0, dialogwidth, dialogheight, 1, 0x000000).setAlpha(0.5),
+            scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(dialogwidth, dialogheight)
         ]),
 
-        title: scene.rexUI.add.label({
-            background: scene.add.container(0, 0, [
-                scene.rexUI.add.roundRectangle(0, 0, 280, 50, 1, 0x333333).setAlpha(0.5),
-                scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(280, 50)
-            ]),
-            text: scene.add.text(110, 110, 'Join A Room', {
-                fontSize: '24px',
+        title: scene.add.container(0, 0, [
+            scene.rexUI.add.roundRectangle(0, -30, dialogwidth, 50, 1, 0x000000).setAlpha(0.75),
+            scene.add.image(0, -30, 'frame').setOrigin(0.5, 0.5).setDisplaySize(dialogwidth, 50),
+            scene.add.text(0, -30, 'Join A Room', {
+                fontSize: '18px',
                 fontFamily: "DTSubTitleFontFamily",
                 color: '#bdced4',
-            }),
-            space: {
-                left: 15,
-                right: 15,
-                top: 10,
-                bottom: 10
-            }
-        }),
+                align: 'center',
+            }).setOrigin(0.5, 0.5)
+        ]),
 
         content: new DTTextInput(scene, 0, 0, "enter room id").setStyle(TextStyles.H5),
 
@@ -325,9 +343,9 @@ var CreateDialog = function (scene: any) {
         ],
 
         space: {
-            title: 25,
-            content: 100,
-            action: 15,
+            title: 0,
+            content: 20,
+            action: 0,
 
             left: 20,
             right: 20,
@@ -344,10 +362,10 @@ var CreateDialog = function (scene: any) {
         }
     })
         .on('button.over', function (button: { getElement: (arg0: string) => { (): any; new(): any; setStrokeStyle: { (arg0: number, arg1: number): void; new(): any; }; }; }, groupName: any, index: any, pointer: any, event: any) {
-            button.getElement('background').setStrokeStyle(1, 0xffffff);
+            // button.getElement('background').setStrokeStyle(1, 0xffffff);
         })
         .on('button.out', function (button: { getElement: (arg0: string) => { (): any; new(): any; setStrokeStyle: { (): void; new(): any; }; }; }, groupName: any, index: any, pointer: any, event: any) {
-            button.getElement('background').setStrokeStyle();
+            // button.getElement('background').setStrokeStyle();
         });
 
     return dialog;
@@ -358,7 +376,7 @@ var CreateLabel = function (scene: any, text: string) {
         // width: 40,
         // height: 40,
 
-        background: scene.add.image(0, -10, 'buttonFrame').setDisplaySize(150, 60),
+        background: scene.add.image(0, -10, 'buttonFrame'),
 
         text: scene.add.text(0, -10, text, {
             fontSize: '24px'

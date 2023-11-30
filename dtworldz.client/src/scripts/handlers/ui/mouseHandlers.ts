@@ -13,7 +13,7 @@ export class MouseHandler {
     init() {
         this.game.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
             const { worldX, worldY } = pointer
-            var tile = this.game.floorMap.getIsoTileAtWorldXY(worldX , worldY - 32);
+            var tile = this.game.floorLayer.getIsoTileAtWorldXY(worldX , worldY - 16);
             if (tile) {
                 this.eventEmitter.emit('tileClick', tile);
             } else {

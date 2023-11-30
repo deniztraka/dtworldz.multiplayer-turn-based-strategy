@@ -79,7 +79,7 @@ const textStyles = {
     },
     'BodyText': {
         fontFamily: 'DTBodyFontFamily',
-        fontSize: '16px',
+        fontSize: '10px',
         align: 'center',
         fixedWidth: 0,
         fixedHeight: 0,
