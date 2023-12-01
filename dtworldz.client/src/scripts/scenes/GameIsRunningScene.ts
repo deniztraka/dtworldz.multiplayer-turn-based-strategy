@@ -57,6 +57,8 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.instantiatePlayers();
 
+        this.localPlayer.playerNameText.setAlpha(0);
+
 
         //this.createTileLabels();
         this.mouseHandler.init()
@@ -73,7 +75,7 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.events.emit('gameIsLoaded');
 
-         //  Our container
+        this.cameras.main.setZoom(2);
          
         
     }

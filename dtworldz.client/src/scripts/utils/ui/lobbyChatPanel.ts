@@ -16,16 +16,16 @@ export class LobbyChatPanel {
         this.entries = [];
         let self = this;
 
-        this.height = 140;
-        this.width = 200;
+        this.height = 200;
+        this.width = 350;
 
         let initialText = 'write something...';
         let chatInputField = scene.add.text(0, 0, initialText, {
-            fontSize: '10px',
+            fontSize: '14px',
             color: '#ffffff',
             backgroundColor: '#333333',
             fixedWidth: this.width,
-            fixedHeight: 15,
+            fixedHeight: 24,
             padding: {
                 top: 0,
                 bottom: 7,
@@ -66,7 +66,7 @@ export class LobbyChatPanel {
 
         this.scrollablePanel = (scene as any).rexUI.add.scrollablePanel({
             x: this.scene.scale.width/2,
-            y: this.scene.scale.height/2 - 15,
+            y: this.scene.scale.height/2 - 50,
             height: this.height,
             width: this.width,
 
