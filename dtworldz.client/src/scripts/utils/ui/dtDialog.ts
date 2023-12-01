@@ -39,9 +39,7 @@ export class DTDialog {
             }
         })
 
-        let textInput = new DTTextInput(scene, 0, 0, "enter room id").setStyle(TextStyles.H5)
-            .setColor("#333333")
-            .setBackgroundColor("#999999");
+        let textInput = new DTTextInput(scene, 0, 0, "enter room id")
 
 
         container.add(textInput);
