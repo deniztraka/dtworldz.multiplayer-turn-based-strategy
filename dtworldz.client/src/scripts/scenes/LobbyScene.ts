@@ -6,6 +6,7 @@ import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { LobbyClient } from "../models/lobbyClient";
 import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
 import Anchor from 'phaser3-rex-plugins/plugins/anchor.js';
+import { DTButton } from "../utils/ui/dtButton";
 
 export class LobbyScene extends Phaser.Scene {
     room: Room | undefined;
@@ -25,7 +26,7 @@ export class LobbyScene extends Phaser.Scene {
 
     localClient: any;
 
-    startButton: Button;
+    startButton: DTButton;
     startGame: boolean;
     lobbyClientList: LobbyClient[] = [];
 
@@ -101,7 +102,15 @@ export class LobbyScene extends Phaser.Scene {
                 this.addChangeCharacterButton(client);
                 this.addReadyButton(client);
                 this.addPlayerName(client);
-                this.createReadyButton();
+                this.createStartButton();
+
+                const currentPlayerContainer = this.add.container(0, 0, [this.currentPlayerImage, this.isReadyImage, this.playerNameText]);
+                let anchor = new Anchor(currentPlayerContainer, {
+                    left: '18%',
+                    bottom: 'bottom-100',
+                }).anchor();
+
+
                 this.chatPanel = new LobbyChatPanel(this);
             }
 
@@ -116,11 +125,9 @@ export class LobbyScene extends Phaser.Scene {
 
         this.room.onMessage('canBeStarted', (message) => {
             if (message.canBeStarted) {
-                this.startButton.enable = true;
-                this.startText.setAlpha(0.75);
+                this.startButton.setEnabled(true);
             } else {
-                this.startButton.enable = false;
-                this.startText.setAlpha(0.25);
+                this.startButton.setEnabled(false)
             }
         });
 
@@ -179,95 +186,24 @@ export class LobbyScene extends Phaser.Scene {
 
     }
 
-    createReadyButton() {
-
+    createStartButton() {
         if (!this.clients[this.room.sessionId].isOwner) {
             return;
         }
-
-        let scene: any = this;
         /** Start Button **/
         this.startGame = false;
-        const buttonWidth = 66;
-        const buttonHeight = 20;
 
-        this.startText = scene.add.text(0, 0, "START", {
-            fontSize: '10px',
-            fontFamily: "DTBodyFontFamily",
-            color: '#dcd9ce',
-            fixedWidth: 100,
-            fixedHeight: 20,
-            padding: {
-                top: 4,
-                bottom: 4,
-                left: 0,
-                right: 0,
-            }
-        })
-            .setOrigin(0.5, 0.5)
-            .setAlign('center')
-            .setAlpha(0.5).setScale(1)
-
-        const container = this.add.container(this.scale.width / 2, this.scale.height - 75, [
-            scene.rexUI.add.roundRectangle(0, 0, buttonWidth, buttonHeight, {
-                x: 10,
-                y: 10
-            }, 0x000000),
-            scene.add.image(0, 0, 'buttonFrame')
-                .setOrigin(0.5, 0.5),
-                this.startText
-        ]).setSize(buttonWidth, buttonHeight);
-
-        this.startButton = new Button(container,{
-            enable: true,
-            mode: 1,              // 0|'press'|1|'release'
-            clickInterval: 100,    // ms
-            threshold: undefined
-        }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
-            scene.onStartClicked()
-        }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
-            if (button.enable) {
-                scene.startText.setAlpha(1);
-            } else {
-                scene.startText.setAlpha(0.25);
-            }
-        }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
-            if (button.enable) {
-                scene.startText.setAlpha(0.5);
-            } else {
-                scene.startText.setAlpha(0.25);
-            }
-        });
-
-        this.startButton.enable = false;
-
-
-        new Anchor(container, {
-            centerX: 'center',
-            bottom: 'bottom-15',
-        }).anchor();
+        this.startButton = new DTButton(this, 0, 0, 'START', this.onStartClicked.bind(this),
+            { centerX: 'center', bottom: 'bottom-30' }).setEnabled(false).setScale(1);
     }
 
     createRoomIdButton() {
         let scene: any = this;
-        /** Room Id **/
-        this.roomIdText = new DTLabel(this, this.scale.width / 2, this.scale.height / 2, "" + this.room.id).setStyle({
-            fontFamily: 'Arial',
-            fontSize: '18px',
-            align: 'center',
-            padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-            }
-        }).setColor("#aaaaaa").setScale(0.5).setAlpha(0.5);
-        this.add.existing(this.roomIdText);
-
-        var anchorCharacterPanel = new Anchor(this.roomIdText, {
+        this.roomIdText = new DTLabel(this, 0, 0, this.room.id, {}, {
             centerX: 'center',
             bottom: 'bottom',
-        }).anchor();
+        }).setScale(1);
+
 
         let buttonRoomId = new Button(this.roomIdText, {
             clickInterval: 100,
@@ -289,9 +225,9 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     addPlayerName(client: any) {
-        this.playerNameText = this.add.text(this.scale.width / 2 - 180, this.scale.height - 375, client.name, {
+        this.playerNameText = this.add.text(0, -200, client.name, {
             fontFamily: 'DTBodyFontFamily',
-            fontSize: '10px',
+            fontSize: '18px',
             fixedWidth: 80,
             fixedHeight: 0,
             padding: {
@@ -301,16 +237,15 @@ export class LobbyScene extends Phaser.Scene {
                 bottom: 0,
             }
         }).setOrigin(0.5, 0.5).setColor("#fff").setAlpha(1).setScale(1).setAlign('center');
-        let anchor = new Anchor(this.playerNameText, {
-            left: '5%',
-            bottom: 'bottom-110',
-        }).anchor();
+        // let anchor = new Anchor(this.playerNameText, {
+        //     left: '5%',
+        //     bottom: 'bottom-110',
+        // }).anchor();
     }
 
     addChangeCharacterButton(client: any) {
         let scene: any = this;
-        //this.currentPlayerImage = this.add.sprite(this.scale.width / 2, this.scale.height, 'char', client.charIndex).setOrigin(0.5, 1);
-        this.currentPlayerImage = this.add.image(this.scale.width / 2, this.scale.height, this.heroImages[client.charIndex]).setDisplaySize(64, 64).setOrigin(0.5, 1);
+        this.currentPlayerImage = this.add.image(0, 0, this.heroImages[client.charIndex]).setOrigin(0.5, 1).setScale(0.75);
 
         let button = new Button(this.currentPlayerImage, {
             clickInterval: 100,
@@ -320,15 +255,16 @@ export class LobbyScene extends Phaser.Scene {
                 scene.setPlayerCharacter();
             })
 
-        let anchor = new Anchor(this.currentPlayerImage, {
-            left: '5%+0',
-            bottom: 'bottom-40',
-        }).anchor();
+        // let anchor = new Anchor(this.currentPlayerImage, {
+        //     left: '5%+0',
+        //     bottom: 'bottom-80',
+        // }).anchor();
     }
 
     addReadyButton(client: any) {
         let scene: any = this;
-        this.isReadyImage = this.add.image(this.scale.width / 2 - 180, this.scale.height - 75, client.isReady ? 'ready' : 'notready').setDisplaySize(16, 16).setAlpha(0.8).setOrigin(0.5, 0.5);
+        const anchorPlayer = this.currentPlayerImage.getBounds();
+        this.isReadyImage = this.add.image(0, 25, client.isReady ? 'ready' : 'notready').setAlpha(0.8).setOrigin(0.5, 0.5).setScale(0.4);
         let isReadyButton = new Button(this.isReadyImage, {
             clickInterval: 100,
             mode: 1
@@ -336,10 +272,11 @@ export class LobbyScene extends Phaser.Scene {
             scene.setPlayerReady()
         })
 
-        let anchor = new Anchor(this.isReadyImage, {
-            left: '5%+20',
-            bottom: 'bottom-20',
-        }).anchor();
+
+        // let anchor = new Anchor(this.isReadyImage, {
+        //     left: '15%',
+        //     bottom: 'bottom-50',
+        // }).anchor();
     }
 
     copyRoomIdToClipboard() {
@@ -388,7 +325,7 @@ export class LobbyScene extends Phaser.Scene {
 
         let anchor = new Anchor(characterContainer, {
             left: '75%',
-            centerY: 'bottom-40'
+            centerY: 'bottom-100'
         }).anchor();
     }
 
