@@ -12,8 +12,6 @@ const config: Phaser.Types.Core.GameConfig = {
         forceSetTimeOut: true,
         smoothStep: false,
     },
-    width: 640,
-    height: 360,
     // Game size
     scale: {
         mode: Phaser.Scale.ENVELOP,

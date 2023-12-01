@@ -16,7 +16,7 @@ export class LobbyClient extends Phaser.GameObjects.Container {
         this.offSetY = 0;
         const nameOffset = Math.floor(Math.random() * 10) - 10;
 
-        const characterSprite = (scene.add as any).sprite(0, 0 + this.offSetY, 'char' + client.charIndex).setOrigin(0.5, 1).setDisplaySize(64, 64).setTint(0xcccccc);
+        const characterSprite = (scene.add as any).sprite(0, 0 + this.offSetY, 'char' + client.charIndex).setOrigin(0.5, 1).setTint(0xcccccc).setScale(0.75);
         const flipIndex = [4,1];
         characterSprite.flipX = flipIndex.indexOf(client.charIndex) > -1;
 
@@ -33,7 +33,7 @@ export class LobbyClient extends Phaser.GameObjects.Container {
                 bottom: 5,
             }
         }).setOrigin(0.5, 0.5).setColor("#fff").setAlpha(1).setScale(1);
-        const readyImage = (scene.add as any).image(0, 10 + this.offSetY, client.isReady ? 'ready' : 'notready').setDisplaySize(10, 10).setAlpha(0.75);
+        const readyImage = (scene.add as any).image(0, 10 + this.offSetY, client.isReady ? 'ready' : 'notready').setDisplaySize(25, 25).setAlpha(0.75);
         this.add(playerNameText);
         this.add(characterSprite);
         this.add(readyImage);
