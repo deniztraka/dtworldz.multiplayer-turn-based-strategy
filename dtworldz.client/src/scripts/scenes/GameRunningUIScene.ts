@@ -44,7 +44,7 @@ export class GameRunningUIScene extends Phaser.Scene {
                 name = 'You are alone on your journey...';
             }
 
-            let turnText = this.add.text(this.scale.width / 2, this.scale.height / 2, name, { fontFamily: 'DTSubTitleFontFamily', fontSize: 32, color: '#eeeeee' }).setOrigin(0.5, 0.5).setDepth(1000).setAlpha(0).setStroke('#000000', 4);
+            let turnText = this.add.text(this.scale.width / 2, this.scale.height / 2, name, { fontFamily: 'DTSubTitleFontFamily', fontSize: 26, color: '#eeeeee' }).setOrigin(0.5, 0.5).setDepth(1000).setAlpha(0).setStroke('#000000', 4);
             this.add.existing(turnText);
             this.tweens.add({
                 targets: turnText,
@@ -53,7 +53,7 @@ export class GameRunningUIScene extends Phaser.Scene {
                 ease: 'Linear',
                 repeat: 0,
                 onComplete: () => {
-                    FadeOutDestroy(turnText, 100);
+                    FadeOutDestroy(turnText, 1000);
                 }
             });
 
