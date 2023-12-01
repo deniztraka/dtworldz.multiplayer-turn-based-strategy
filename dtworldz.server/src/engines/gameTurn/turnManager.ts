@@ -33,9 +33,9 @@ export class TurnManager {
             this.gameRoom.broadcast('sa_turnTimeLeft', { timeLeft: timeLeft / 1000, totalTime: this.turnDuration /1000 });
             const currentPlayer = this.getCurrentPlayer();
             if(currentPlayer){
-                console.log(`Time left for ${this.getCurrentPlayer().name}: ${timeLeft} seconds`);
+                //console.log(`Time left for ${this.getCurrentPlayer().name}: ${timeLeft} seconds`);
             }else {
-                console.log(`Time left for not existing user: ${timeLeft} seconds`);
+                //console.log(`Time left for not existing user: ${timeLeft} seconds`);
                 this.nextTurn(true);
             }
             this.lastBroadcastTime = this.elapsedTime;

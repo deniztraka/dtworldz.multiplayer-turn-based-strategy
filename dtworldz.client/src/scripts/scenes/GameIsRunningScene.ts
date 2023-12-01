@@ -208,6 +208,11 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.room.onMessage("sa_turnTimeLeft", (message: { timeLeft: number, totalTime: number }) => {
             this.events.emit('turn-countdown', message);
         });
+
+        this.room.onMessage("sa_countdown", (message: { timeLeft: number, totalTime: number }) => {
+            console.log("adasd")
+            this.events.emit('countdown', message);
+        });
     }
 
     loadingUI() {
