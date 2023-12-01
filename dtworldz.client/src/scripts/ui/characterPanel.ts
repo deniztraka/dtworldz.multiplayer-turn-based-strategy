@@ -80,10 +80,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
     }
 
     createRemoteCharacterPanel() {
-        console.log(this.x + ' ' + this.y)
-
         const scene = this.scene as any;
-        
 
         this.add(this.scene.add.image(0, -10, 'mainCharFrameBG').setOrigin(0, 1).setDisplaySize(60, 60));
         this.add(this.scene.add.image(5, -18, 'charIcon' + this.player.client.charIndex).setOrigin(0, 1));

@@ -64,25 +64,7 @@ export class LobbyScene extends Phaser.Scene {
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-        this.load.image('ready', '/assets/images/ready.png');
-        this.load.image('notready', '/assets/images/notready.png');
-        this.load.image('readyButon', '/assets/images/readyButton.png');
-        this.load.image('char0', '/assets/images/characters/char0.png');
-        this.load.image('char1', '/assets/images/characters/char1.png');
-        this.load.image('char2', '/assets/images/characters/char2.png');
-        this.load.image('char3', '/assets/images/characters/char3.png');
-        this.load.image('char4', '/assets/images/characters/char4.png');
-        this.load.image('charIcon0', '/assets/images/characters/charIcon0.png');
-        this.load.image('charIcon1', '/assets/images/characters/charIcon1.png');
-        this.load.image('charIcon2', '/assets/images/characters/charIcon2.png');
-        this.load.image('charIcon3', '/assets/images/characters/charIcon3.png');
-        this.load.image('charIcon4', '/assets/images/characters/charIcon4.png');
-        this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
-        this.load.image('mainCharFrameBG', '/assets/images/mainCharFrameBG.png');
-        this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
-        this.load.image('characterPanelBarBG', '/assets/images/characterPanelBarBG.png');
-        this.load.image('characterPanelBar', '/assets/images/characterPanelBar.png');
-        this.load.spritesheet('char', '/assets/images/characters/charsSheet.png', { frameWidth: 32, frameHeight: 32 });
+        
     }
 
     create() {
@@ -150,13 +132,15 @@ export class LobbyScene extends Phaser.Scene {
                 // onUpdate: null,
                 // onUpdateScope: scene,
             })
-
-            //this.scene.start('GameLoadingScene', { room: this.room, clients: this.clients, localClient: this.localClient });
         });
+
+       
 
         // remove local reference when entity is removed from the server
         this.room.state.players.onRemove((_client: any, sessionId: any) => {
-            console.log(`${sessionId} is removed`);
+            this.events.emit('onClientRemove', _client, sessionId);
+        });
+        this.events.on('onClientRemove', (_client: any, sessionId: any) => {
             const client = this.clients[sessionId]
 
             if (client) {
@@ -179,11 +163,8 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     createLobbyUI() {
-
         this.createBackground();
-
         this.createRoomIdButton();
-
     }
 
     createStartButton() {

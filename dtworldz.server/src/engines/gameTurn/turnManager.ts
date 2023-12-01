@@ -36,15 +36,16 @@ export class TurnManager {
                 console.log(`Time left for ${this.getCurrentPlayer().name}: ${timeLeft} seconds`);
             }else {
                 console.log(`Time left for not existing user: ${timeLeft} seconds`);
+                this.nextTurn(true);
             }
             this.lastBroadcastTime = this.elapsedTime;
         }
     }
 
-    nextTurn() {
+    nextTurn(force: boolean = false) {
         const players = Array.from(this.gameRoom.getPlayers().values());
 
-        if(players.length === 1){
+        if(players.length === 1 && !force){
             return;
         }
 
