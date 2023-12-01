@@ -330,7 +330,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     calculateClientPositions() {
-        const clientWidth = 32;
+        const clientWidth = 48;
         const screenWidth = this.cameras.main.getBounds().width;
         const clientCount = Object.keys(this.clients).length - 1;
         const totalClientsWidth = clientCount * clientWidth;

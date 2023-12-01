@@ -198,7 +198,12 @@ var CreateDialog = function (scene: any) {
             }).setOrigin(0.5, 0.5)
         ]),
 
-        content: new DTTextInput(scene, 0, 0, "enter room id"),
+        content: new DTTextInput(scene, 0, 0, "enter room id", {
+            background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, {
+                x: 1,
+                y: 1
+            }, 0x666666).setAlpha(0.5).setStrokeStyle(2, 0x999999),
+        }),
 
         actions: [
             CreateLabel(scene, 'Yes'),
@@ -235,11 +240,12 @@ var CreateDialog = function (scene: any) {
 }
 
 var CreateLabel = function (scene: any, text: string) {
+    
     return scene.rexUI.add.label({
         // width: 40,
         // height: 40,
 
-        background: scene.add.image(0, -10, 'buttonFrame'),
+        background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 1, 0x333333).setAlpha(0.5).setStrokeStyle(2, 0x666666).setScale(0.7),
 
         text: scene.add.text(0, -10, text, {
             fontSize: '24px'
