@@ -56,11 +56,11 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         this.add(this.scene.add.image(10, -8, 'charIcon' + this.player.client.charIndex).setOrigin(0, 1));
         this.add(this.scene.add.image(0, 0, 'mainCharFrame').setOrigin(0, 1).setDisplaySize(250, 70));
         this.add((this.scene as any).rexUI.add.textBox({
-            x: 0, y: -30,
+            x: 0, y: -50,
             width: 200,
             align: 'center',
             text: this.scene.add.text(0, 0, this.player.playerName, {
-                fontSize: 14,
+                fontSize: 18,
                 wordWrap: { width: 200 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily',
@@ -68,7 +68,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             }).setAlpha(0.8),
             space: {
                 // For innerSizer
-                innerLeft: 64, innerRight: 2, innerTop: 30, innerBottom: 2,
+                innerLeft: 66, innerRight: 2, innerTop: 0, innerBottom: 2,
             }
         }).setOrigin(0, 0.5).layout())
 
