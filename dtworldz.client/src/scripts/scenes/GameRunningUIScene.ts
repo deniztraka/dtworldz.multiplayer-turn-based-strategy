@@ -60,6 +60,23 @@ export class GameRunningUIScene extends Phaser.Scene {
             this.createRemoteCharacterPanels(player);
         })
 
+        this.gameScene.events.on('countdown', (message: {timeLeft:number}) => {
+            let countDownText = this.add.text(this.scale.width / 2, this.scale.height / 2, message.timeLeft.toString(), { fontFamily: 'DTSubTitleFontFamily', fontSize: 26, color: '#eeeeee' }).setOrigin(0.5, 0.5).setDepth(1000).setAlpha(0).setStroke('#000000', 4);
+            this.add.existing(countDownText);
+            this.tweens.add({
+                targets: countDownText,
+                alpha: 1,
+                duration: 500,
+                ease: 'Linear',
+                repeat: 0,
+                onComplete: () => {
+                    FadeOutDestroy(countDownText, 500);
+                }
+            });
+        
+        
+        });
+
         if (this.gameScene.getRemotePlayers().length !== 0) {
             this.gameScene.events.on('turn-countdown', (message: { timeLeft: number, totalTime: number }) => {
                 if (this.gameScene.localPlayer.sessionId === this.currentPlayerSessionId) {

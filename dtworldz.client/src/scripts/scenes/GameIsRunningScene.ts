@@ -192,12 +192,12 @@ export class GameIsRunningScene extends Phaser.Scene {
         // remove local reference when entity is removed from the server
         this.room.state.players.onRemove((_client: any, sessionId: any) => {
             console.log(`${sessionId} is removed`);
-            const client = this.clients[sessionId]
-            this.players[sessionId].destroy();
-            if (client) {
-                delete this.clients[sessionId]
-                delete this.players[sessionId]
+            const player = this.players[sessionId];
+            if(player){
+                player.destroy();
             }
+            delete this.clients[sessionId]
+            delete this.players[sessionId]
         });
 
         this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string }) => {
@@ -206,8 +206,12 @@ export class GameIsRunningScene extends Phaser.Scene {
         });
 
         this.room.onMessage("sa_turnTimeLeft", (message: { timeLeft: number, totalTime: number }) => {
-
             this.events.emit('turn-countdown', message);
+        });
+
+        this.room.onMessage("sa_countdown", (message: { timeLeft: number, totalTime: number }) => {
+            console.log("adasd")
+            this.events.emit('countdown', message);
         });
     }
 

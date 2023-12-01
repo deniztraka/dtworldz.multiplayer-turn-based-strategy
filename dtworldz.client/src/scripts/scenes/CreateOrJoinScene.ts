@@ -26,6 +26,25 @@ export class CreateOrJoinScene extends Phaser.Scene {
         this.load.image('loginBackground', '/assets/images/bg.png');
         this.load.image('frame', '/assets/images/frame.png');
         this.load.image('buttonFrame', '/assets/images/buttonFrame-lowRes.png');
+        this.load.image('ready', '/assets/images/ready.png');
+        this.load.image('notready', '/assets/images/notready.png');
+        this.load.image('readyButon', '/assets/images/readyButton.png');
+        this.load.image('char0', '/assets/images/characters/char0.png');
+        this.load.image('char1', '/assets/images/characters/char1.png');
+        this.load.image('char2', '/assets/images/characters/char2.png');
+        this.load.image('char3', '/assets/images/characters/char3.png');
+        this.load.image('char4', '/assets/images/characters/char4.png');
+        this.load.image('charIcon0', '/assets/images/characters/charIcon0.png');
+        this.load.image('charIcon1', '/assets/images/characters/charIcon1.png');
+        this.load.image('charIcon2', '/assets/images/characters/charIcon2.png');
+        this.load.image('charIcon3', '/assets/images/characters/charIcon3.png');
+        this.load.image('charIcon4', '/assets/images/characters/charIcon4.png');
+        this.load.image('mainCharFrame', '/assets/images/mainCharFrame.png');
+        this.load.image('mainCharFrameBG', '/assets/images/mainCharFrameBG.png');
+        this.load.image('characterPanelBarBG', '/assets/images/characterPanelBarBG.png');
+        this.load.image('characterPanelBar', '/assets/images/characterPanelBar.png');
+        this.load.spritesheet('char', '/assets/images/characters/charsSheet.png', { frameWidth: 32, frameHeight: 32 });
+
         this.load.scenePlugin({
             key: 'rexuiplugin',
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
