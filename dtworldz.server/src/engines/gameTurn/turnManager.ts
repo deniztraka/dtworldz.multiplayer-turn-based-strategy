@@ -1,5 +1,6 @@
 import { WorldRoom } from "../../rooms/dtWorldz";
 import { Player } from "../../schema/mobiles/player";
+import { RunningGameLogicState } from "../../states/runningGameLogicState";
 
 export class TurnManager {
     private currentPlayerIndex: number;
@@ -19,6 +20,7 @@ export class TurnManager {
     startTurn() {
         this.elapsedTime = 0;
         this.lastBroadcastTime = 0;
+
         //console.log(`Turn started for player: ${this.getCurrentPlayer().name}`);
         this.gameRoom.broadcast('sa_turn-start', { currentPlayerSessionId: this.getCurrentPlayer().client.sessionId });
     }
@@ -47,6 +49,11 @@ export class TurnManager {
 
         if(players.length === 1 && !force){
             return;
+        }
+
+        const currentState = this.gameRoom.getCurrentGameLogicState();
+        if(currentState instanceof RunningGameLogicState){
+            currentState.handleTurnProcess();
         }
 
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % players.length;

@@ -43,14 +43,14 @@ export class GameRunningUIScene extends Phaser.Scene {
             this.currentPlayerSessionId = player.sessionId;
 
             let name = "Your Turn!";
-            if(this.gameScene.localPlayer.sessionId !== player.sessionId){
+            if (this.gameScene.localPlayer.sessionId !== player.sessionId) {
                 name = player.playerName + "'s Turn";
-                if(this.nextTurnImage){
+                if (this.nextTurnImage) {
                     this.nextTurnImage.setAlpha(0.5);
                     this.nextTurnButton.setEnable(false);
                 }
             } else {
-                if(this.nextTurnImage){
+                if (this.nextTurnImage) {
                     this.nextTurnImage.setAlpha(1);
                     this.nextTurnButton.setEnable(true);
                 }
@@ -102,13 +102,15 @@ export class GameRunningUIScene extends Phaser.Scene {
             }
         });
 
-        if (this.gameScene.getRemotePlayers().length !== 0) {
+        const playerCount = Object.keys(this.gameScene.players).length
+
+        if (playerCount !== 0) {
             this.turnCountDownText = this.add.text(0, 0, '', { fontFamily: 'DTSubTitleFontFamily', fontSize: 20, color: '#eeeeee' }).setOrigin(1, 1).setDepth(1000).setAlpha(1).setStroke('#000000', 4);
             this.nextTurnImage = this.add.sprite(0, 0, 'playerStatusIcons', 3).setOrigin(1, 1).setScale(1);
             new Anchor(this.nextTurnImage, { right: 'right-10', bottom: 'bottom-30' });
             new Anchor(this.turnCountDownText, { right: 'right-10', bottom: 'bottom-10' });
 
-            
+
             let scene = this;
             this.nextTurnButton = new Button(this.nextTurnImage, {
                 clickInterval: 100,
@@ -117,25 +119,28 @@ export class GameRunningUIScene extends Phaser.Scene {
                 .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
                     scene.gameScene.requestNextTurn();
                 }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
-                    
+
                 }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
-                    
+
                 })
 
 
-            this.gameScene.events.on('turn-countdown', (message: { timeLeft: number, totalTime: number }) => {
-                this.turnCountDownText.setText(message.timeLeft.toString());
-                // if (this.gameScene.localPlayer.sessionId === this.currentPlayerSessionId) {
-                //     this.localCharacterPanel.setRemainingTime(message.timeLeft, message.totalTime);
-                // } else {
-                //     let remoteCharacterPanel = this.remoteCharacterPanels[this.currentPlayerSessionId];
-                //     if (remoteCharacterPanel) {
-                //         remoteCharacterPanel.setRemainingTime(message.timeLeft, message.totalTime);
-                //     }
-                // }
-            });
+            if (playerCount > 1) {
+                
 
-            
+                this.gameScene.events.on('turn-countdown', (message: { timeLeft: number, totalTime: number }) => {
+                    this.turnCountDownText.setText(message.timeLeft.toString());
+                    // if (this.gameScene.localPlayer.sessionId === this.currentPlayerSessionId) {
+                    //     this.localCharacterPanel.setRemainingTime(message.timeLeft, message.totalTime);
+                    // } else {
+                    //     let remoteCharacterPanel = this.remoteCharacterPanels[this.currentPlayerSessionId];
+                    //     if (remoteCharacterPanel) {
+                    //         remoteCharacterPanel.setRemainingTime(message.timeLeft, message.totalTime);
+                    //     }
+                    // }
+                });
+            }
+
         }
     }
 

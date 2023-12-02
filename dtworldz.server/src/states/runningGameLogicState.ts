@@ -53,6 +53,19 @@ export class RunningGameLogicState extends BaseGameLogicState {
         }
     }
 
+    handleTurnProcess() {
+        console.log("GameLogicState: Handling turn effects");
+        this.gameRoom.getPlayers().forEach((player: Player) => {
+            player.hunger -= 2;
+            player.energy = 10;
+            player.health += 2;
+        });
+
+        this.gameRoom.getPlayers().forEach((player: Player) => {
+            console.log(`Player ${player.name} has ${player.hunger} hunger`);
+        });
+    }
+
     attachGameEvents() {
         this.gameRoom.onMessage('ca_action', (client, actionPayload) => {
             // console.log(`received action request from ${client.sessionId}`)
@@ -71,7 +84,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
     requestNextTurn(mobile: Player) {
         if(this.turnManager.getCurrentPlayer().sessionId === mobile.client.sessionId){
             //console.log(`Next turn request is succesfully made ${mobile.name} requested next turn`);
-            this.turnManager.nextTurn();
+            this.turnManager.nextTurn(true);
         } else {
             console.log(`Player ${mobile.name} tried to request next turn on somebody's turn`);
         }

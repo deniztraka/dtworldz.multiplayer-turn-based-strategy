@@ -34,15 +34,15 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         }
 
         this.player.client.listen("health", (currentValue: number, previousValue: any) => {
-            this.setHealth(currentValue);
+            this.healthText.setText(currentValue.toString());
         });
 
         this.player.client.listen("hunger", (currentValue: number, previousValue: any) => {
-            this.setHunger(currentValue);
+            this.hungerText.setText(currentValue.toString());
         });
 
         this.player.client.listen("energy", (currentValue: number, previousValue: any) => {
-            this.setEnergy(currentValue);
+            this.energyText.setText(currentValue.toString());
         });
     }
 
@@ -75,7 +75,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             x: 130, y: 40,
             width: 200,
             align: 'center',
-            text: this.scene.add.text(0, 0, '10', {
+            text: this.scene.add.text(0, 0, this.player.client.hunger, {
                 fontSize: 14,
                 wordWrap: { width: 200 },
                 maxLines: 1,
@@ -166,15 +166,10 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             }
         }).setOrigin(0, 0.5).layout());
 
-
-
-
-
         var anchorCharacterPanel = new Anchor(this, {
             left: 'left-4',
             top: 'top'
         }).anchor();
-
     }
 
     createRemoteCharacterPanel() {
