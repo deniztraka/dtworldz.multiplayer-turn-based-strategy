@@ -2,6 +2,8 @@ import { BaseGameLogicState } from "./baseGameLogicState";
 import { WorldRoom } from "../rooms/dtWorldz";
 import { TurnManager } from "../engines/gameTurn/turnManager";
 import { Player } from "../schema/mobiles/player";
+import { TilePosCost } from "../schema/tilemap/tile/tilePosCost";
+import { ArraySchema } from "@colyseus/schema";
 
 export class RunningGameLogicState extends BaseGameLogicState {
     
@@ -55,14 +57,21 @@ export class RunningGameLogicState extends BaseGameLogicState {
 
     handleTurnProcess() {
         console.log("GameLogicState: Handling turn effects");
+
+        // update current player's hunger, energy and health
+        const currentPlayer = this.turnManager.getCurrentPlayer();
+        if(currentPlayer){
+            currentPlayer.hunger -= currentPlayer.hungerDecay;
+            currentPlayer.energy = currentPlayer.maxEnergy
+            currentPlayer.health += currentPlayer.healthRegen;
+        }
+
+        // iterate all players and clear their currentPath and setMovement to false
         this.gameRoom.getPlayers().forEach((player: Player) => {
-
-            // console.log(`Player ${player.name} is getting hungry: ${player.hunger} - ${player.hungerDecay}`);
-
-            player.hunger -= player.hungerDecay;
-            player.energy = player.maxEnergy
-            player.health += player.healthRegen;
+            player.currentPath = new ArraySchema<TilePosCost>();
+            player.setMovingNow(false);
         });
+        
     }
 
     attachGameEvents() {
