@@ -9,22 +9,57 @@ It's live and under development on: [https://dtworldz-client.onrender.com/](http
 
 ## Feature List
 - Lobby System
-- Players are able to join the lobby/game with room id
-- Only game owner can start the game
-- Option to create room up to 5 players including single player
+- Players can join the lobby/game with room ID
+- Only the game owner can start the game
+- Option to create room for up to 5 players including single player
 - Chat system in lobby 
-- Turn-based game play
-- Path finding
+- Turn-based gameplay
+- Pathfinding
 - Movement system based on dynamically calculated cost of tiles
 - Simple Procedural Generation of Game World
+- Different character playstyle focusing on exploration (minimum combat)]
+
+### Attributes System
+- More strength means more max health.
+- Dexterity makes the character quicker while moving but makes the character hungry quicker.
+- Intelligence provides better use of resources. It has bigger effects on health regain than the other attributes.
+
+### Hunger System
+Less hungry characters will gain more health on every turn.
+Intelligence and Dexterity have meaningful effects on the character's hunger decay
+Intelligence provides better management of resources so the character will lose fewer hunger points each turn.
+Dexterity means quick metabolism, which means losing more hunger points each turn.
+
+
+### Traits System
+- Swimming allows moving on Water tiles. Requires ->  30 Dexterity, 5 Strength 
+- Climbing allows moving on Mountain tiles. Requires -> 30 Dexterity, 30 Strength
+- Pathfinding allows moving on Forest tiles. requires -> 15 Intelligence, 20 Dexterity 
+
+### 5 Different Characters
+#### The Tactical Guardian: Tough and strategic, with high health and efficient recovery, but slower movement.
+Strength 35, Dexterity: 15, Intelligence 35
+
+#### The Agile Scout: Fast and agile, adept at navigating Forests and Water.
+Strength 10, Dexterity: 40, Intelligence 30
+
+#### The Energetic Ranger: Swift and versatile, capable in Forests and Waters, with decent resource management.
+Strength 25, Dexterity: 45, Intelligence 20
+
+#### The Mighty Mountaineer: Strong and resilient, excels in Climbing and has high health.
+Strength 40, Dexterity: 30, Intelligence 5
+
+#### The Wise Survivor: Balanced and resourceful, good at managing health, hunger, and energy.
+Strength 20, Dexterity: 20, Intelligence 40
+
+
 
 # ToDo List
-- Different character play style focusing on exploration (minimum combat)
-- Treasures
-- Traps
-- Different kind of enemies
 - Animal Hunting
 - Resource Gathering and Regeneration
+- Treasures
+- Traps
+- Different kinds of enemies
 - Villages
 - Advanced Procedurally generated game world
 - Different Biomes
