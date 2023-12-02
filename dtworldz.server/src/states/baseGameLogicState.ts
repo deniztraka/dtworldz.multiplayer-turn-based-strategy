@@ -1,5 +1,6 @@
 import { Schema } from "@colyseus/schema";
 import { WorldRoom } from "../rooms/dtWorldz";
+import { Player } from "../schema/mobiles/player";
 
 export abstract class BaseGameLogicState {
     gameRoom: WorldRoom;

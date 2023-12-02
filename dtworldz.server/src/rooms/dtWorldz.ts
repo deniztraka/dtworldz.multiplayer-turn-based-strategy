@@ -8,8 +8,11 @@ import * as http from 'http';
 import { ActionFactory } from "../engines/actionsHandler/actionFactory";
 import { DynamicPathfindingService } from "../engines/pathfinding/pathFindingService";
 import { BaseMobile } from "../schema/mobiles/baseMobile";
+import { TurnManager } from "../engines/gameTurn/turnManager";
+import { RunningGameLogicState } from "../states/runningGameLogicState";
 
 export class WorldRoom extends Room<DTWorldzState> {
+    
     
     private fixedTimeStep = 1000 / 60;
     private currentGameLogicState: BaseGameLogicState;
@@ -84,7 +87,9 @@ export class WorldRoom extends Room<DTWorldzState> {
      * @memberof WorldRoom
      */
     onLeave(client: Client, _consented: boolean) {
-        console.log(client.sessionId, "left!");
+        if(this.state.players.has(client.sessionId)){
+            console.log(this.state.players.get(client.sessionId).name + " is left");
+        };
         if (this.state.players.has(client.sessionId)) {
             this.state.players.delete(client.sessionId);
         }
@@ -97,13 +102,21 @@ export class WorldRoom extends Room<DTWorldzState> {
      * @memberof WorldRoom
      */
     onDispose() {
-        console.log("room", this.roomId, "disposing...");
+        
+        console.log("room", this.roomId, "disposing..");
         this.currentGameLogicState.elapsedTime = 0;
         this.currentGameLogicState.exit();
     }
 
     getOwnerClient() {
         return this.creatorClient
+    }
+
+    requestNextTurn(mobile: Player) {
+        console.log("Next turn requested by " + mobile.name);
+        if (this.currentGameLogicState instanceof RunningGameLogicState) {
+            this.currentGameLogicState.requestNextTurn(mobile);
+        }
     }
 
     /**
