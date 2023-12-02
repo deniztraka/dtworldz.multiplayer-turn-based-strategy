@@ -10,6 +10,7 @@ export class ClientPlayer {
     currentPath: IPoint[];
     markers: any;
     playerName: any;
+    hunger: number;
     characterSprite: any;
     playerNameText: Phaser.GameObjects.Text;
     container: Phaser.GameObjects.Container;
@@ -27,6 +28,7 @@ export class ClientPlayer {
         this.currentPath = [];
         this.characterSprite = scene.add.sprite(0, 0, 'char', client.charIndex).setOrigin(0.5, 1);
         this.playerNameText = scene.add.text(0, -40, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
+        this.hunger = client.hunger;
 
         // if(this.scene.localPlayer.sessionId === this.sessionId){
         //     this.characterSprite.setTint(0x00ff00);
@@ -50,6 +52,8 @@ export class ClientPlayer {
                 this.drawPath();
             }
         });
+
+        
     }
 
     move(tilePos: { x: number, y: number }) {

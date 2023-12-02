@@ -157,6 +157,10 @@ export class WorldRoom extends Room<DTWorldzState> {
     getActionManager() {
         return this.actionManager;
     }
+
+    getCurrentGameLogicState() {
+        return this.currentGameLogicState;
+    }
 }
 
 
