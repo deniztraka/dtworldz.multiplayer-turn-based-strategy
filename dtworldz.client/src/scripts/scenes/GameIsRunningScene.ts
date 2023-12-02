@@ -8,6 +8,7 @@ import { GameRunningUIScene } from "./GameRunningUIScene";
 // import { GameScene } from "./GameSceneOld";
 
 export class GameIsRunningScene extends Phaser.Scene {
+    
 
     room: Room | undefined;
     clients: { [sessionId: string]: any } = {};
@@ -84,6 +85,10 @@ export class GameIsRunningScene extends Phaser.Scene {
         return Object.values(this.players).filter((player: ClientPlayer) => {
             return player.sessionId !== this.room.sessionId;
         });
+    }
+
+    requestNextTurn() {
+        this.room.send('ca_action', { aid: 'next-turn-request', payload: null});
     }
 
     buildMap() {
@@ -190,14 +195,15 @@ export class GameIsRunningScene extends Phaser.Scene {
 
     attachRoomEvents() {
         // remove local reference when entity is removed from the server
-        this.room.state.players.onRemove((_client: any, sessionId: any) => {
-            console.log(`${sessionId} is removed`);
+        this.room.state.players.onRemove((client: any, sessionId: any) => {
+            console.log(`${client.name} is removed`);
             const player = this.players[sessionId];
             if(player){
                 player.destroy();
             }
             delete this.clients[sessionId]
             delete this.players[sessionId]
+            this.events.emit('removed', sessionId);
         });
 
         this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string }) => {
@@ -210,7 +216,6 @@ export class GameIsRunningScene extends Phaser.Scene {
         });
 
         this.room.onMessage("sa_countdown", (message: { timeLeft: number, totalTime: number }) => {
-            console.log("adasd")
             this.events.emit('countdown', message);
         });
     }

@@ -1,8 +1,10 @@
 import { BaseGameLogicState } from "./baseGameLogicState";
 import { WorldRoom } from "../rooms/dtWorldz";
 import { TurnManager } from "../engines/gameTurn/turnManager";
+import { Player } from "../schema/mobiles/player";
 
 export class RunningGameLogicState extends BaseGameLogicState {
+    
     
     private turnManager: TurnManager;
     private preCooldownDuration: number;
@@ -19,7 +21,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
     }
     exit(): void {
         this.gameRoom.broadcast('gameIsOver', {});
-        console.log("GameLogicState: Game is over");
+        console.log("GameLogicState: Running state exiting. ");
     }
 
     enter() {
@@ -64,5 +66,14 @@ export class RunningGameLogicState extends BaseGameLogicState {
                 console.log(`Player ${player.name} tried to act on somebody's turn`);
             }
         });
+    }
+
+    requestNextTurn(mobile: Player) {
+        if(this.turnManager.getCurrentPlayer().sessionId === mobile.client.sessionId){
+            //console.log(`Next turn request is succesfully made ${mobile.name} requested next turn`);
+            this.turnManager.nextTurn();
+        } else {
+            console.log(`Player ${mobile.name} tried to request next turn on somebody's turn`);
+        }
     }
 }
