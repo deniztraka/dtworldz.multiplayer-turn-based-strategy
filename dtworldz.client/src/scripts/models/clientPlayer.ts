@@ -17,6 +17,8 @@ export class ClientPlayer {
     scene: GameIsRunningScene;
     x: number;
     y: number;
+    health: number;
+    energy: number;
     constructor(scene: GameIsRunningScene, client: any, sessionId: any, x: number, y: number) {
         this.scene = scene;
         this.x = x;
@@ -28,7 +30,6 @@ export class ClientPlayer {
         this.currentPath = [];
         this.characterSprite = scene.add.sprite(0, 0, 'char', client.charIndex).setOrigin(0.5, 1);
         this.playerNameText = scene.add.text(0, -40, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
-        this.hunger = client.hunger;
 
         // if(this.scene.localPlayer.sessionId === this.sessionId){
         //     this.characterSprite.setTint(0x00ff00);

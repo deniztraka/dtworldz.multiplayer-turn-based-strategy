@@ -4,8 +4,9 @@ import { Trait } from "./traits";
 
 export class TraitsEngine {
     static requirements: Map<Trait, { attribute: Attributes, minimumVal: number }[]> = new Map([
-        [Trait.Swimming, [{ attribute: Attributes.Dexterity, minimumVal: 10 }, { attribute: Attributes.Strength, minimumVal: 5 }]],
-        [Trait.Climbing, [{ attribute: Attributes.Strength, minimumVal: 10 }, { attribute: Attributes.Dexterity, minimumVal: 5 }]],
+        [Trait.Swimming, [{ attribute: Attributes.Dexterity, minimumVal: 20 }, { attribute: Attributes.Strength, minimumVal: 5 }]],
+        [Trait.Climbing, [{ attribute: Attributes.Strength, minimumVal: 30 }, { attribute: Attributes.Dexterity, minimumVal: 30 }]],
+        [Trait.Pathfinding, [{ attribute: Attributes.Intelligence, minimumVal: 15 }, { attribute: Attributes.Dexterity, minimumVal: 20 }]],
         // ... other requirements
     ]);
 

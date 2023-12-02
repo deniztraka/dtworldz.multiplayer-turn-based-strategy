@@ -3,6 +3,9 @@ import { TraitsEngine } from "../../../../engines/traitSystem/traitsEngine";
 import { BaseMovementStrategy } from "../../../../schema/tilemap/tile/strategies/baseMovementStrategy";
 
 export class MountainsMovement extends BaseMovementStrategy {
+    constructor() {
+        super(9);
+    }
     canMove(mobile: any) {
         let canMove = super.canMove(mobile);
         if(canMove && TraitsEngine.checkRequirements(Trait.Climbing, mobile)){

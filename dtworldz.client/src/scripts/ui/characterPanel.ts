@@ -33,15 +33,15 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             this.createRemoteCharacterPanel();
         }
 
-        this.player.client.listen("health", (currentValue: number, previousValue: any) => {
+        this.player.client.listen("_health", (currentValue: number, previousValue: any) => {
             this.healthText.setText(currentValue.toString());
         });
 
-        this.player.client.listen("hunger", (currentValue: number, previousValue: any) => {
+        this.player.client.listen("_hunger", (currentValue: number, previousValue: any) => {
             this.hungerText.setText(currentValue.toString());
         });
 
-        this.player.client.listen("energy", (currentValue: number, previousValue: any) => {
+        this.player.client.listen("_energy", (currentValue: number, previousValue: any) => {
             this.energyText.setText(currentValue.toString());
         });
     }
@@ -56,7 +56,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             x: 60, y: 40,
             width: 200,
             align: 'center',
-            text: this.scene.add.text(0, 0, this.player.client.health, {
+            text: this.scene.add.text(0, 0, this.player.client._health, {
                 fontSize: 14,
                 wordWrap: { width: 200 },
                 maxLines: 1,
@@ -75,7 +75,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             x: 130, y: 40,
             width: 200,
             align: 'center',
-            text: this.scene.add.text(0, 0, this.player.client.hunger, {
+            text: this.scene.add.text(0, 0, this.player.client._hunger, {
                 fontSize: 14,
                 wordWrap: { width: 200 },
                 maxLines: 1,
@@ -94,7 +94,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             x: 200, y: 40,
             width: 200,
             align: 'center',
-            text: this.scene.add.text(0, 0, '10', {
+            text: this.scene.add.text(0, 0, this.player.client._energy, {
                 fontSize: 14,
                 wordWrap: { width: 200 },
                 maxLines: 1,
@@ -107,44 +107,6 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             }
         }).setOrigin(0, 0).layout();
         this.add(this.energyText);
-
-        // this.add(this.scene.add.sprite(280, 25, 'playerStatusIcons', 4).setOrigin(0, 0).setScale(0.5));
-        // this.coinsText = (this.scene as any).rexUI.add.textBox({
-        //     x: 270, y: 40,
-        //     width: 200,
-        //     align: 'center',
-        //     text: this.scene.add.text(0, 0, '10', {
-        //         fontSize: 18,
-        //         wordWrap: { width: 200 },
-        //         maxLines: 1,
-        //         fontFamily: 'DTBodyFontFamily',
-        //         color: '#fffca0',
-        //     }).setAlpha(0.8),
-        //     space: {
-        //         // For innerSizer
-        //         innerLeft: 40, innerRight: 2, innerTop: 0, innerBottom: 2,
-        //     }
-        // }).setOrigin(0, 0).layout();
-        // this.add(this.coinsText);
-
-        // this.add(this.scene.add.sprite(350, 25, 'playerStatusIcons', 5).setOrigin(0, 0).setScale(0.5));
-        // this.damageText = (this.scene as any).rexUI.add.textBox({
-        //     x: 340, y: 40,
-        //     width: 200,
-        //     align: 'center',
-        //     text: this.scene.add.text(0, 0, '10', {
-        //         fontSize: 18,
-        //         wordWrap: { width: 200 },
-        //         maxLines: 1,
-        //         fontFamily: 'DTBodyFontFamily',
-        //         color: '#ffffff',
-        //     }).setAlpha(0.8),
-        //     space: {
-        //         // For innerSizer
-        //         innerLeft: 40, innerRight: 2, innerTop: 0, innerBottom: 2,
-        //     }
-        // }).setOrigin(0, 0).layout();
-        // this.add(this.damageText);
 
         this.add(this.scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(60, 60));
         this.add(this.scene.add.image(10, 6, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0));
@@ -207,23 +169,23 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
 
     }
 
-    setHealth(currentValue: number) {
-        if (this.healthText) {
-            this.healthText.setText(currentValue.toString());
-        }
-    }
+    // setHealth(currentValue: number) {
+    //     if (this.healthText) {
+    //         this.healthText.setText(currentValue.toString());
+    //     }
+    // }
 
-    setHunger(currentValue: number) {
-        if (this.hungerText) {
-            this.hungerText.setText(currentValue.toString());
-        }
-    }
+    // setHunger(currentValue: number) {
+    //     if (this.hungerText) {
+    //         this.hungerText.setText(currentValue.toString());
+    //     }
+    // }
 
-    setEnergy(currentValue: number) {
-        if (this.energyText) {
-            this.energyText.setText(currentValue.toString());
-        }
-    }
+    // setEnergy(currentValue: number) {
+    //     if (this.energyText) {
+    //         this.energyText.setText(currentValue.toString());
+    //     }
+    // }
     setRemainingTime(timeLeft: number, totalTime: number) {
         // if (this.remainingTimeBarImg) {
         //     this.remainingTimeBarImg.setDisplaySize(248 * timeLeft / totalTime, 4);
