@@ -55,6 +55,7 @@ export class CharacterDecorator {
         player._health = player.maxHealth;
         player._hunger = player.maxHunger;
         player._energy = player.maxEnergy;
+        player._speed = player.speed;
         player.title = heroTitles[player.charIndex as keyof typeof heroTitles];
     }
 }

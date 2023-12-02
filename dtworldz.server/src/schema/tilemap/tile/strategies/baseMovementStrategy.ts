@@ -8,7 +8,7 @@ export abstract class BaseMovementStrategy {
 
     energyCost: number;
     constructor(energyCost: number) {
-        this.energyCost = energyCost;
+        this.energyCost = energyCost * 2;
     }
 
     canMove(mobile: any) {

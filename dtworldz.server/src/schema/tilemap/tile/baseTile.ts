@@ -77,5 +77,9 @@ export class BaseTile extends Schema {
 
         return false;
     }
+
+    getMovementCost(mobile: any) {
+        return this.movementStrategy.energyCost;
+    }
 }
 

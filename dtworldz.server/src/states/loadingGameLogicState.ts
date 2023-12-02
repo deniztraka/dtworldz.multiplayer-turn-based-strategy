@@ -253,7 +253,6 @@ function addCharacterBehaviours(loadingLogicState: LoadingGameLogicState): Promi
         try {
             loadingLogicState.gameRoom.getPlayers().forEach(player => {
                 CharacterDecorator.decorate(player);
-                console.log(player.hungerDecay);
             });
 
 

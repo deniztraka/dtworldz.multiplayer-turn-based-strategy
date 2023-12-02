@@ -30,7 +30,6 @@ export class ClientPlayer {
         this.currentPath = [];
         this.characterSprite = scene.add.sprite(0, 0, 'char', client.charIndex).setOrigin(0.5, 1);
         this.playerNameText = scene.add.text(0, -40, this.playerName, { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
-
         // if(this.scene.localPlayer.sessionId === this.sessionId){
         //     this.characterSprite.setTint(0x00ff00);
         // }
@@ -54,6 +53,17 @@ export class ClientPlayer {
             }
         });
 
+        this.client.listen("isMoving", (currentValue: boolean, previousValue: boolean) => {
+            if(previousValue){
+                // destroy markers
+                if (this.markers) {
+                    this.markers.forEach((marker: any) => {
+                        marker.destroy();
+                    });
+                    this.markers = [];
+                }
+            }
+        });
         
     }
 
@@ -61,14 +71,15 @@ export class ClientPlayer {
         // get tile from current position
         const tile = (<GameIsRunningScene>this.scene).floorLayer.getTileAt(tilePos.x, tilePos.y);
 
-        const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
+        //const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
 
+        const duration = 1000 / this.client._speed;
 
         this.scene.tweens.add({
             targets: this.container,
             x: tile.getCenterX(),
             y: tile.getCenterY(),
-            duration: 1000 / this.client.speed,// this.client.speed,
+            duration: duration,
             onComplete: () => {
                 if (this.markers) {
                     let marker = this.markers.shift();
@@ -89,12 +100,14 @@ export class ClientPlayer {
         }
         this.markers = [];
 
-        let paths = this.currentPath.map((pathItem: IPoint, index: number) => {
-            return { x: pathItem.x, y: pathItem.y };
+        let paths = this.currentPath.map((pathItem: any, index: number) => {
+            return {pos: { x: pathItem.position.x, y: pathItem.position.y }, cost: pathItem.cost};
         });
 
+        let totalCost = 0;
+
         // draw markers
-        paths.forEach((path, index) => {
+        paths.forEach((path:any, index) => {
             // skip first and last
             if (index === 0) {
                 return;
@@ -102,14 +115,19 @@ export class ClientPlayer {
 
             const scene = (this.scene as GameIsRunningScene)
             //draw marker
-            var tile = scene.floorLayer.getTileAt(path.x, path.y);
+            var tile = scene.floorLayer.getTileAt(path.pos.x, path.pos.y);
             if (tile.index !== -1) {
-                var marker = scene.add.image(tile.getCenterX(), tile.getCenterY(), 'markerImage').setScale(2);
+                let container = this.scene.add.container(tile.getCenterX(), tile.getCenterY());
+                var marker = scene.add.sprite(0, 0, 'playerStatusIcons', 2).setScale(0.25);
                 marker.setDepth(100);
+
+                
+                var text = scene.add.text(10, 0, totalCost.toString(), { color: "#30b3ff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
+                
                 // set marker rotation to match the tile
                 if (index < this.currentPath.length - 1) {
-                    let nextItem = paths[index + 1];
-                    var nextTile = scene.floorLayer.getTileAt(nextItem.x, nextItem.y);
+                    let nextItem: any = paths[index + 1];
+                    var nextTile = scene.floorLayer.getTileAt(nextItem.pos.x, nextItem.pos.y);
                     if (nextTile.index !== -1) {
                         var radRotation = Phaser.Math.Angle.Between(tile.getCenterX(), tile.getCenterY(), nextTile.getCenterX(), nextTile.getCenterY());
                         let angle = Phaser.Math.RadToDeg(radRotation);
@@ -121,7 +139,16 @@ export class ClientPlayer {
                         }
                     }
                 }
-                this.markers.push(marker);
+
+                totalCost += path.cost;
+
+                if(totalCost > this.client._energy){
+                    marker.setTint(0xff0000);
+                    text.setColor("#ff0000");
+                }
+
+                container.add([marker, text]);
+                this.markers.push(container);
             }
         });
     }

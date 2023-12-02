@@ -4,6 +4,7 @@ import { BaseMobile } from "../../../schema/mobiles/baseMobile";
 import { Player } from "../../../schema/mobiles/player";
 import { Position } from "../../../schema/position";
 import { AtomicAction } from "./atomicAction";
+import { TilePosCost } from "../../../schema/tilemap/tile/tilePosCost";
 
 export class FindPathAction extends AtomicAction {
     constructor(mobile: BaseMobile, payload: any) {
@@ -22,12 +23,11 @@ export class FindPathAction extends AtomicAction {
             pathfindingService.findPathForPlayer(this.mobile.position, destination, this.mobile)
                 .then(path => {
 
-                    let positions = new ArraySchema<Position>();
+                    let positions = new ArraySchema<TilePosCost>();
                     for (let index = 0; index < path.length; index++) {
-                        const element = path[index];
-                        positions.push(element);
+                        const pos = path[index];
+                        positions.push(new TilePosCost(pos, worldRoom.state.getTile(pos.x, pos.y).movementStrategy.energyCost));
                     }
-
                     this.mobile.currentPath = positions;
                 })
                 .catch(error => {
