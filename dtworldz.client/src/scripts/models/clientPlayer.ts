@@ -54,7 +54,7 @@ export class ClientPlayer {
         });
 
         this.client.listen("isMoving", (currentValue: boolean, previousValue: boolean) => {
-            if(previousValue){
+            if (previousValue) {
                 // destroy markers
                 if (this.markers) {
                     this.markers.forEach((marker: any) => {
@@ -64,7 +64,7 @@ export class ClientPlayer {
                 }
             }
         });
-        
+
     }
 
     move(tilePos: { x: number, y: number }) {
@@ -101,13 +101,13 @@ export class ClientPlayer {
         this.markers = [];
 
         let paths = this.currentPath.map((pathItem: any, index: number) => {
-            return {pos: { x: pathItem.position.x, y: pathItem.position.y }, cost: pathItem.cost};
+            return { pos: { x: pathItem.position.x, y: pathItem.position.y }, cost: pathItem.cost };
         });
 
         let totalCost = 0;
 
         // draw markers
-        paths.forEach((path:any, index) => {
+        paths.forEach((path: any, index) => {
             // skip first and last
             if (index === 0) {
                 return;
@@ -121,9 +121,9 @@ export class ClientPlayer {
                 var marker = scene.add.sprite(0, 0, 'playerStatusIcons', 2).setScale(0.25);
                 marker.setDepth(100);
 
-                
-                var text = scene.add.text(10, 0, totalCost.toString(), { color: "#30b3ff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
-                
+
+                var text = scene.add.text(10, 0, totalCost.toString(), { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
+
                 // set marker rotation to match the tile
                 if (index < this.currentPath.length - 1) {
                     let nextItem: any = paths[index + 1];
@@ -142,7 +142,7 @@ export class ClientPlayer {
 
                 totalCost += path.cost;
 
-                if(totalCost > this.client._energy){
+                if (totalCost > this.client._energy) {
                     marker.setTint(0xff0000);
                     text.setColor("#ff0000");
                 }
