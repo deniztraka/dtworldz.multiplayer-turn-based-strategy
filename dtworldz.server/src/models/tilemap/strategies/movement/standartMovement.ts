@@ -2,6 +2,6 @@ import { BaseMovementStrategy } from "../../../../schema/tilemap/tile/strategies
 
 export class StandardMovement extends BaseMovementStrategy {
     constructor() {
-        super(1);
+        super(5);
     }
 }

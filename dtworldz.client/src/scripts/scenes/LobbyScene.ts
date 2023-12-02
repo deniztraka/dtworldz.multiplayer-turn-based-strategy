@@ -34,7 +34,9 @@ export class LobbyScene extends Phaser.Scene {
     isReadyImage: Phaser.GameObjects.Image;
     chatPanel: LobbyChatPanel;
     playerNameText: any;
+    currentPlayerTitle: any;
     startText: any;
+    heroTitles: any;
 
     constructor() {
         super({ key: "LobbyScene" })
@@ -45,6 +47,13 @@ export class LobbyScene extends Phaser.Scene {
     init(data: { room: Room, playerName: string }) {
 
         this.room = data.room;
+        this.heroTitles = {
+            0: 'The Tactical Guardian',
+            1: 'The Agile Scout',
+            2: 'The Energetic Ranger',
+            3: 'The Mighty Mountaineer',
+            4: 'The Wise Survivor',
+        };
         this.heroImages = {
             0: 'char0',
             1: 'char1',
@@ -86,7 +95,7 @@ export class LobbyScene extends Phaser.Scene {
                 this.addPlayerName(client);
                 this.createStartButton();
 
-                const currentPlayerContainer = this.add.container(0, 0, [this.currentPlayerImage, this.isReadyImage, this.playerNameText]);
+                const currentPlayerContainer = this.add.container(0, 0, [this.currentPlayerImage, this.isReadyImage, this.playerNameText, this.currentPlayerTitle]);
                 let anchor = new Anchor(currentPlayerContainer, {
                     left: '18%',
                     bottom: 'bottom-100',
@@ -206,7 +215,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     addPlayerName(client: any) {
-        this.playerNameText = this.add.text(0, -200, client.name, {
+        this.playerNameText = this.add.text(0, -220, client.name, {
             fontFamily: 'DTBodyFontFamily',
             fontSize: '18px',
             fixedWidth: 80,
@@ -217,7 +226,21 @@ export class LobbyScene extends Phaser.Scene {
                 top: 0,
                 bottom: 0,
             }
-        }).setOrigin(0.5, 0.5).setColor("#fff").setAlpha(1).setScale(1).setAlign('center');
+        }).setOrigin(0.5, 0.5).setColor("#fff").setAlpha(0.75).setScale(1).setAlign('center');
+
+        this.currentPlayerTitle = this.add.text(0, -200, this.heroTitles[client.charIndex], {
+            fontFamily: 'DTBodyFontFamily',
+            fontSize: '14px',
+            fixedHeight: 0,
+            color: '#f9d133',
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+            }
+        }).setOrigin(0.5, 0.5).setAlpha(0.75).setScale(1).setAlign('center');
+
         // let anchor = new Anchor(this.playerNameText, {
         //     left: '5%',
         //     bottom: 'bottom-110',
@@ -339,6 +362,7 @@ export class LobbyScene extends Phaser.Scene {
         //change charIndex between 0 and the length of heroImages
         this.localClient.charIndex = (this.localClient.charIndex + 1) % Object.keys(this.heroImages).length;
         this.currentPlayerImage.setTexture(this.heroImages[this.localClient.charIndex]);
+        this.currentPlayerTitle.setText(this.heroTitles[this.localClient.charIndex]);
         this.room.send('charIndex', { charIndex: this.localClient.charIndex });
         this.refreshPlayerList();
     }

@@ -8,6 +8,10 @@ import { ForestMovementStrategy } from "../models/tilemap/strategies/movement/fo
 import { Position } from "../schema/position";
 import { MountainsMovement } from "../models/tilemap/strategies/movement/mountainsMovement";
 import { BaseTile } from "../schema/tilemap/tile/baseTile";
+import { Player } from "../schema/mobiles/player";
+import { Attributes } from "../engines/attributeSystem/attributes";
+import { StandardMovement } from "../models/tilemap/strategies/movement/standartMovement";
+import { CharacterDecorator } from "../decorator/playerDecorator";
 
 // Define the type for a loading step
 type LoadingStep = {
@@ -21,7 +25,8 @@ const loadingSteps: LoadingStep[] = [
     { message: "Spreading biomes..", action: generateBiomes },
     { message: "Raising forests and mountains", action: generateNature },
     { message: "Finding home for players..", action: findStartingPositions },
-    { message: "Making players hungry..", action: addMovementBehaviours },
+    { message: "Prevengint characters going weird places...", action: addMovementBehaviours },
+    { message: "Making players special..", action: addCharacterBehaviours },
     // ... other steps
 ];
 
@@ -160,7 +165,7 @@ async function generateNature(gameLogicState: LoadingGameLogicState): Promise<vo
             for (let y = 0; y < gameLogicState.gameRoom.state.height; y++) {
                 for (let x = 0; x < gameLogicState.gameRoom.state.width; x++) {
                     const tile = gameLogicState.gameRoom.state.getTile(x, y);
-            
+
                     // Make sure the natureData is indexed in [y][x] order as well
                     const data = natureData[y][x];
                     if (data > 0.75) {
@@ -188,10 +193,12 @@ async function addMovementBehaviours(loadingLogicState: LoadingGameLogicState): 
             for (let x = 0; x < loadingLogicState.gameRoom.state.width; x++) {
                 for (let y = 0; y < loadingLogicState.gameRoom.state.height; y++) {
                     const tile = loadingLogicState.gameRoom.state.getTile(x, y);
-                    if (tile.nature === Natures.Forest) {
+                    if (tile.nature === Natures.None) {
+                        tile.setMovementStrategy(new StandardMovement());
+                    } else if (tile.nature === Natures.Forest) {
                         tile.setMovementStrategy(new ForestMovementStrategy());
                     } else if (tile.nature === Natures.Mountain) {
-                        tile.setMovementStrategy(new MountainsMovement(5));
+                        tile.setMovementStrategy(new MountainsMovement());
                     }
 
                 }
@@ -240,4 +247,25 @@ function findStartingPositions(loadingLogicState: LoadingGameLogicState): Promis
         }
     });
 }
+
+function addCharacterBehaviours(loadingLogicState: LoadingGameLogicState): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        try {
+            loadingLogicState.gameRoom.getPlayers().forEach(player => {
+                CharacterDecorator.decorate(player);
+                console.log(player.hungerDecay);
+            });
+
+
+
+            resolve();
+        } catch (error: any) {
+            console.log(error.message);
+            // If there's an error during the load, call reject()
+            reject(new Error("LoadingGameLogicState: Failed to set character behaviorus"));
+        }
+    });
+}
+
+
 

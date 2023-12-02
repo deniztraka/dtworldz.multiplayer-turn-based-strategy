@@ -24,6 +24,8 @@ export class BaseMobile extends Schema {
         this.position = position;
         this.speed = 1;
         this.attributes.set(Attributes.Strength, 10);
+        this.attributes.set(Attributes.Dexterity, 10);
+        this.attributes.set(Attributes.Intelligence, 10);
         this.position =  position || new Position(0, 0);
     }
 

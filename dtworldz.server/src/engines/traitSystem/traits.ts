@@ -1,6 +1,7 @@
 export enum Trait {
     Swimming,
     Climbing,
+    Pathfinding
 }
 
 export enum TraitTier {

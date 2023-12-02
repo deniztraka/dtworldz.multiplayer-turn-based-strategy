@@ -56,13 +56,12 @@ export class RunningGameLogicState extends BaseGameLogicState {
     handleTurnProcess() {
         console.log("GameLogicState: Handling turn effects");
         this.gameRoom.getPlayers().forEach((player: Player) => {
-            player.hunger -= 2;
-            player.energy = 10;
-            player.health += 2;
-        });
 
-        this.gameRoom.getPlayers().forEach((player: Player) => {
-            console.log(`Player ${player.name} has ${player.hunger} hunger`);
+            console.log(`Player ${player.name} is getting hungry: ${player.hunger} - ${player.hungerDecay}`);
+
+            player.hunger -= player.hungerDecay;
+            player.energy = player.maxEnergy
+            player.health += player.healthRegen;
         });
     }
 

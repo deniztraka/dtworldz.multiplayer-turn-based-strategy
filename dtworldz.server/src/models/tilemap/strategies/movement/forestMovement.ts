@@ -4,15 +4,15 @@ import { BaseMovementStrategy } from "../../../../schema/tilemap/tile/strategies
 
 export class ForestMovementStrategy extends BaseMovementStrategy {
     constructor() {
-        super(3);
+        super(8);
     }
 
-    // canMove(mobile: any): boolean {
-    //     let canMove = super.canMove(mobile);
-    //     if(canMove && TraitsEngine.checkRequirements(Trait..)){
-    //         return true;
-    //     }
+    canMove(mobile: any): boolean {
+        let canMove = super.canMove(mobile);
+        if(canMove && TraitsEngine.checkRequirements(Trait.Pathfinding, mobile)){
+            return true;
+        }
 
-    //     return false;
-    // }
+        return false;
+    }
 }
