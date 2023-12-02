@@ -3,12 +3,16 @@ import { Position } from "../position";
 import { BaseMobile } from "./baseMobile";
 import { Client } from "colyseus";
 import { Attributes } from "../../engines/attributeSystem/attributes";
+import { CharacterDecorator } from "../../decorator/playerDecorator";
+
+
 
 export class Player extends BaseMobile {
     @type("number") charIndex: number = Math.floor(Math.random() * 5);
-    @type("number") private _health: number = 100;
-    @type("number") private _hunger: number = 24;
-    @type("number") private _energy: number = 12;
+    @type("number") private _health: number;
+    @type("number") private _hunger: number;
+    @type("number") private _energy: number;
+    @type("string") title: string = '';
     @type("boolean") private isOwner: boolean = false;
     client: Client;
 
@@ -16,9 +20,7 @@ export class Player extends BaseMobile {
         super(name, position);
         this.client = client;
         this.sessionId = client.sessionId;
-        this._health = this.maxHealth;
-        this._hunger = this.maxHunger;
-        this._energy = this.maxEnergy;
+        CharacterDecorator.decorate(this);
     }
     setOwner(val: boolean) {
         this.isOwner = val;
@@ -88,22 +90,48 @@ export class Player extends BaseMobile {
         return Math.floor((strength * 10) + (intelligence / 2)); // Intelligence adds additional health
     }
 
-    // Intelligence could play a role in more efficient recovery.
     get healthRegen(): number {
-        const baseRegen = Math.floor(this.attributes.get(Attributes.Strength) / 10);
-        const intelligenceBonus = Math.floor(this.attributes.get(Attributes.Intelligence) / 20);
-        const hungerBonus = (this.hunger / this.maxHunger) > 0.5 ? 2 : 1;
-        return (baseRegen + intelligenceBonus) * hungerBonus;
-    }
-
-    // The existing logic already integrates Intelligence, reducing hunger decay with higher intelligence.
-    get hungerDecay(): number {
+        const strength = this.attributes.get(Attributes.Strength);
         const dexterity = this.attributes.get(Attributes.Dexterity);
         const intelligence = this.attributes.get(Attributes.Intelligence);
-        const baseDecay = 5;
-        const intelligenceEffect = 1 - (intelligence / 100);
-        return Math.max(Math.ceil(baseDecay - (dexterity / 10)) * intelligenceEffect, 1);
+    
+        const baseRegen = Math.floor(strength / 20); // Reduced strength impact
+        const intelligenceBonus = Math.floor(intelligence / 30); // Moderate intelligence impact
+        const dexterityBonus = Math.floor(dexterity / 15); // Increased dexterity impact
+    
+        // Enhancing the hunger effect on health regeneration
+        const hungerEffect = (this.hunger / this.maxHunger) * 3; // Ranges from 0 to 3
+    
+        // Calculating the final value, ensuring it's within 5-15
+        return Math.min(Math.max((baseRegen + intelligenceBonus + dexterityBonus) * hungerEffect, 5), 15);
     }
+    
+    
+
+    get hungerDecay(): number {
+        const strength = this.attributes.get(Attributes.Strength);
+        const dexterity = this.attributes.get(Attributes.Dexterity);
+        const intelligence = this.attributes.get(Attributes.Intelligence);
+    
+        // Base decay is lower to allow for a wider range.
+        const baseDecay = 5;
+    
+        // Significantly increasing the effect of dexterity; higher dexterity leads to faster hunger decay.
+        const dexterityEffect = (dexterity / 2); // More impact from dexterity
+    
+        // Adding a moderate effect of intelligence.
+        const intelligenceEffect = (intelligence / 30); 
+    
+        // Strength inversely affects hunger decay; higher strength slightly reduces hunger decay.
+        const strengthEffect = (40 - strength) / 10;
+    
+        // Ensuring the final value falls within the 5-15 range.
+        return Math.min(Math.max(Math.ceil(baseDecay + dexterityEffect + intelligenceEffect - strengthEffect), 5), 15);
+    }
+    
+    
+    
+    
 
 
 }

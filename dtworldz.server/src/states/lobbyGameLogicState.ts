@@ -24,9 +24,20 @@ export class LobbyGameLogicState extends BaseGameLogicState {
         });
 
         this.gameRoom.onMessage('charIndex', (client, message) => {
-            const player = this.gameRoom.state.players.get(client.sessionId)
+            const player = this.gameRoom.state.players.get(client.sessionId);
             player.charIndex = message.charIndex;
-            console.log(`${player.name} set itself as character ${player.charIndex}. `)
+
+            const heroTitles: { [key: string]: string } = {
+                '0': 'The Tactical Guardian',
+                '1': 'The Agile Scout',
+                '2': 'The Energetic Ranger',
+                '3': 'The Mighty Mountaineer',
+                '4': 'The Wise Survivor',
+            };
+
+            player.title = heroTitles[player.charIndex.toString() as keyof typeof heroTitles];
+
+            console.log(`${player.name} set itself as character ${player.charIndex}. `);
         });
 
         this.gameRoom.onMessage('chat', (client, message) => {

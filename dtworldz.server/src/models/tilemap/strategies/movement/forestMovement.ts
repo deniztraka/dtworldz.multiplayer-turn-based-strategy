@@ -4,7 +4,7 @@ import { BaseMovementStrategy } from "../../../../schema/tilemap/tile/strategies
 
 export class ForestMovementStrategy extends BaseMovementStrategy {
     constructor() {
-        super(5);
+        super(8);
     }
 
     canMove(mobile: any): boolean {

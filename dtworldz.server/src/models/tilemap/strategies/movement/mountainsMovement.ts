@@ -4,7 +4,7 @@ import { BaseMovementStrategy } from "../../../../schema/tilemap/tile/strategies
 
 export class MountainsMovement extends BaseMovementStrategy {
     constructor() {
-        super(9);
+        super(13);
     }
     canMove(mobile: any) {
         let canMove = super.canMove(mobile);
