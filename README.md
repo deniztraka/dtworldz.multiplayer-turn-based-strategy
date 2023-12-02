@@ -21,8 +21,8 @@ It's live and under development on: [https://dtworldz-client.onrender.com/](http
 
 ### Attributes System
 - More strength means more max health.
-- Dexterity makes the character quicker while moving but makes the character hungry quicker.
-- Intelligence provides better use of resources. It has bigger effects on health regain than the other attributes.
+- Dexterity makes the character quicker while moving but makes the character hungry quicker. Gives the character more energy.
+- Intelligence provides better use of resources. It has bigger effects on health regain than the other attributes. Gives the character more energy.
 
 ### Hunger System
 Less hungry characters will gain more health on every turn.
