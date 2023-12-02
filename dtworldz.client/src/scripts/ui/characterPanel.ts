@@ -1,4 +1,5 @@
 
+import FadeOutDestroy from "phaser3-rex-plugins/plugins/fade-out-destroy";
 import { ClientPlayer } from "../models/clientPlayer";
 import Anchor from 'phaser3-rex-plugins/plugins/anchor.js';
 
@@ -33,17 +34,9 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             this.createRemoteCharacterPanel();
         }
 
-        this.player.client.listen("_health", (currentValue: number, previousValue: any) => {
-            this.healthText.setText(currentValue.toString());
-        });
+        
 
-        this.player.client.listen("_hunger", (currentValue: number, previousValue: any) => {
-            this.hungerText.setText(currentValue.toString());
-        });
-
-        this.player.client.listen("_energy", (currentValue: number, previousValue: any) => {
-            this.energyText.setText(currentValue.toString());
-        });
+        
     }
 
 
@@ -150,6 +143,35 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             left: 'left-4',
             top: 'top'
         }).anchor();
+
+
+        this.listenProps();
+    }
+    
+    listenProps() {
+        this.player.client.listen("_health", (currentValue: number, previousValue: any) => {
+            this.healthText.setText(currentValue.toString());
+            const signText = previousValue > currentValue ? '-' + (previousValue - currentValue).toString() : '+' + (currentValue - previousValue).toString();
+            let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 75, signText + ' health', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#ff000' }).setOrigin(0.5, 0.5)
+            this.scene.add.existing(lostStatText);
+            FadeOutDestroy(lostStatText, 1000);
+        });
+
+        this.player.client.listen("_hunger", (currentValue: number, previousValue: any) => {
+            this.hungerText.setText(currentValue.toString());
+            const signText = previousValue > currentValue ? '-' + (previousValue - currentValue).toString() : '+' + (currentValue - previousValue).toString();
+            let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 50, signText + ' hunger', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#b36800' }).setOrigin(0.5, 0.5)
+            this.scene.add.existing(lostStatText);
+            FadeOutDestroy(lostStatText, 1000);
+        });
+
+        this.player.client.listen("_energy", (currentValue: number, previousValue: any) => {
+            this.energyText.setText(currentValue.toString());
+            const signText = previousValue > currentValue ? '-' + (previousValue - currentValue).toString() : '+' + (currentValue - previousValue).toString();
+            let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 25, signText + ' energy', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#3bdef3' }).setOrigin(0.5, 0.5)
+            this.scene.add.existing(lostStatText);
+            FadeOutDestroy(lostStatText, 1000);
+        });
     }
 
     createRemoteCharacterPanel() {

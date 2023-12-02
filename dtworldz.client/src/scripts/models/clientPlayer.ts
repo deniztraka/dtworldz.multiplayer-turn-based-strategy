@@ -104,7 +104,16 @@ export class ClientPlayer {
             return { pos: { x: pathItem.position.x, y: pathItem.position.y }, cost: pathItem.cost };
         });
 
+        if(paths.length === 0){
+            return;
+        }
+
         let totalCost = 0;
+
+        // if(paths.length >= 2){
+        //     totalCost = paths[1].cost;
+        // }
+        
 
         // draw markers
         paths.forEach((path: any, index) => {
@@ -120,6 +129,8 @@ export class ClientPlayer {
                 let container = this.scene.add.container(tile.getCenterX(), tile.getCenterY());
                 var marker = scene.add.sprite(0, 0, 'playerStatusIcons', 2).setScale(0.25);
                 marker.setDepth(100);
+
+                totalCost += path.cost;
 
 
                 var text = scene.add.text(10, 0, totalCost.toString(), { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
@@ -140,7 +151,7 @@ export class ClientPlayer {
                     }
                 }
 
-                totalCost += path.cost;
+                
 
                 if (totalCost > this.client._energy) {
                     marker.setTint(0xff0000);

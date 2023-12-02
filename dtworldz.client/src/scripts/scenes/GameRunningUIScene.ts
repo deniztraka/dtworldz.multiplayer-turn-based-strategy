@@ -46,7 +46,7 @@ export class GameRunningUIScene extends Phaser.Scene {
             if (this.gameScene.localPlayer.sessionId !== player.sessionId) {
                 name = player.playerName + "'s Turn";
                 if (this.nextTurnImage) {
-                    this.nextTurnImage.setAlpha(0.5);
+                    this.nextTurnImage.setAlpha(0.25);
                     this.nextTurnButton.setEnable(false);
                 }
             } else {
