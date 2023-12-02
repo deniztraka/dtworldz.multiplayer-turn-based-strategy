@@ -21,6 +21,7 @@ export class Player extends BaseMobile {
         this.client = client;
         this.sessionId = client.sessionId;
         CharacterDecorator.decorate(this);
+        //console.log(this._speed)
     }
     setOwner(val: boolean) {
         this.isOwner = val;

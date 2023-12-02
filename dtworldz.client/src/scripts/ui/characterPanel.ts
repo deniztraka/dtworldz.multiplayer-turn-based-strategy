@@ -150,12 +150,6 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             left: 'left-4',
             top: 'top'
         }).anchor();
-
-
-
-
-
-        console.log(this.player.client);
     }
 
     createRemoteCharacterPanel() {

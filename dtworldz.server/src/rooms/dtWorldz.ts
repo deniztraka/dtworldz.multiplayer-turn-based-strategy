@@ -115,8 +115,9 @@ export class WorldRoom extends Room<DTWorldzState> {
     requestNextTurn(mobile: Player) {
         console.log("Next turn requested by " + mobile.name);
         if (this.currentGameLogicState instanceof RunningGameLogicState) {
-            this.currentGameLogicState.requestNextTurn(mobile);
+            return this.currentGameLogicState.requestNextTurn(mobile);
         }
+        return false;
     }
 
     /**

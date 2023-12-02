@@ -5,27 +5,24 @@ import { TraitsEngine } from "../../engines/traitSystem/traitsEngine";
 import { Attributes } from "../../engines/attributeSystem/attributes";
 import { BaseTile } from "../tilemap/tile/baseTile";
 import { Client } from '@colyseus/core';
+import { TilePosCost } from "../tilemap/tile/tilePosCost";
 
 export class BaseMobile extends Schema {
     @type("string") sessionId: string;
     @type("string") name: string = "";
     @type("boolean") isReady: boolean = false;
-    @type("number") speed: number = 1;
+    @type("number") _speed: number=1;
     @type(Position) position: Position | undefined;
-    @type([Position]) currentPath: ArraySchema<Position>;
+    @type([TilePosCost]) currentPath: ArraySchema<TilePosCost>;
     private traits: Map<Trait, any> = new Map();
     attributes: Map<Attributes, number> = new Map();
-    private isMoving: boolean = false;
+    @type("boolean") isMoving: boolean = false;
 
     constructor(name: string, position: Position | undefined) {
         super();
-        this.currentPath = new ArraySchema<Position>();
+        this.currentPath = new ArraySchema<TilePosCost>();
         this.name = name;
         this.position = position;
-        this.speed = 1;
-        this.attributes.set(Attributes.Strength, 10);
-        this.attributes.set(Attributes.Dexterity, 10);
-        this.attributes.set(Attributes.Intelligence, 10);
         this.position =  position || new Position(0, 0);
     }
 
@@ -39,6 +36,14 @@ export class BaseMobile extends Schema {
 
     setAttribute(attribute: Attributes, value: number) {
         this.attributes.set(attribute, value);
+    }
+
+    set speed(value: number) {
+        this._speed = value;
+    }
+    get speed(): number {
+        const baseDexterity = 30;
+        return this.attributes.get(Attributes.Dexterity) / baseDexterity;
     }
 
     getAttribute(attribute: Attributes) {
