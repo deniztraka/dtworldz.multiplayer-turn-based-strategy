@@ -32,7 +32,7 @@ export class FindPathAction extends AtomicAction {
                     const client = worldRoom.getClient(this.mobile.sessionId);
                     const tile = worldRoom.state.getTile(destination.x, destination.y);
                     if(tile){
-                        worldRoom.send(client, 'sa_tile-props', { tile: tile });
+                        client.send('sa_tile-props', tile);
                     }
                 })
                 .catch(error => {

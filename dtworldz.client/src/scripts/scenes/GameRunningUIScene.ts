@@ -8,6 +8,7 @@ import CircularProgressCanvas from 'phaser3-rex-plugins/plugins/circularprogress
 import { Client } from "colyseus.js";
 import Anchor from "phaser3-rex-plugins/plugins/anchor";
 import Button from "phaser3-rex-plugins/plugins/button";
+import { ClientActionPanel } from "../ui/clientActionPanel";
 
 export class GameRunningUIScene extends Phaser.Scene {
     gameScene: GameIsRunningScene;
@@ -17,6 +18,7 @@ export class GameRunningUIScene extends Phaser.Scene {
     turnCountDownText: Phaser.GameObjects.Text;
     nextTurnImage: Phaser.GameObjects.Sprite;
     nextTurnButton: Button;
+    actionPanel: ClientActionPanel;
 
     constructor() {
         super({ key: "GameRunningUIScene" });
@@ -37,6 +39,7 @@ export class GameRunningUIScene extends Phaser.Scene {
 
         this.attachEvents();
         this.handleTurnCountDown();
+        this.actionPanel =  new ClientActionPanel(this, this.gameScene.localPlayer, 0, 0);
     }
     handleTurnCountDown() {
         const playerCount = Object.keys(this.gameScene.players).length
@@ -80,9 +83,14 @@ export class GameRunningUIScene extends Phaser.Scene {
 
         }
     }
+
+    clearActions() {
+        this.actionPanel.setActions(null);
+    }
+
     attachEvents() {
         this.gameScene.events.on('tile-props', (message: any) => {
-            console.log(message);
+            this.actionPanel.setActions(message);
         });
 
         this.gameScene.events.on('turn-start', (player: ClientPlayer) => {

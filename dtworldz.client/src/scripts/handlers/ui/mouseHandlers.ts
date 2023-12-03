@@ -18,6 +18,8 @@ export class MouseHandler {
                 this.eventEmitter.emit('tileClick', tile);
             } else {
                 this.game.localPlayer.setSelectedTile(null);
+                this.game.localPlayer.clearPath();
+                this.game.localPlayer.clearActions();
             }
         })
     }
@@ -34,10 +36,11 @@ export class MouseHandler {
             return;
         }
 
-        // same tile is selected so request move
+        // same tile is selected, clear selection
         if (alreadySelectedTile.x === tile.x && alreadySelectedTile.y === tile.y) {
-            this.game.room.send('ca_action', { aid: 'move', payload: tilePos});
             this.game.localPlayer.setSelectedTile(null);
+            this.game.localPlayer.clearPath();
+            this.game.localPlayer.clearActions();
             return;
         }
 
