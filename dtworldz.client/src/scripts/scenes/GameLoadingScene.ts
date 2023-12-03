@@ -39,6 +39,7 @@ export class GameLoadingScene extends Phaser.Scene {
         this.load.image('marker', '/assets/images/tilemaps/marker.png');
         this.load.image('target', '/assets/images/tilemaps/target.png');
         this.load.spritesheet('playerStatusIcons', '/assets/images/playerStatusIcons.png', { frameWidth: 60, frameHeight: 60 });
+        this.load.spritesheet('actionIcons', '/assets/images/actionIcons.png', { frameWidth: 60, frameHeight: 60 });
     }
 
     create() {

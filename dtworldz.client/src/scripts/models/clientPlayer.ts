@@ -3,6 +3,7 @@ import { IPoint } from "../interfaces/ipoint";
 import { GameIsRunningScene } from "../scenes/GameIsRunningScene";
 
 export class ClientPlayer {
+    
 
     private selectedTile: Phaser.Tilemaps.Tile;
     client: any;
@@ -89,6 +90,15 @@ export class ClientPlayer {
                 }
             }
         });
+    }
+
+    clearActions() {
+        this.scene.events.emit('tile-props', null);
+    }
+
+    clearPath() {
+        this.currentPath = [];
+        this.drawPath();
     }
 
     drawPath() {
