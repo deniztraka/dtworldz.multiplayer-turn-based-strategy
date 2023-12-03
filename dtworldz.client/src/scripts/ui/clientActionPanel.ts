@@ -1,8 +1,7 @@
-import Button from "phaser3-rex-plugins/plugins/button";
 import { ClientPlayer } from "../models/clientPlayer";
 import Anchor from 'phaser3-rex-plugins/plugins/anchor.js';
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components";
-import { TileActionButtonFactory } from "./TileActionButtonFactory";
+import { TileActionButtonFactory } from "./tileActionButtonFactory";
 
 
 const COLOR_PRIMARY = 0x4e342e;
