@@ -29,6 +29,11 @@ export class FindPathAction extends AtomicAction {
                         positions.push(new TilePosCost(pos, worldRoom.state.getTile(pos.x, pos.y).movementStrategy.energyCost));
                     }
                     this.mobile.currentPath = positions;
+                    const client = worldRoom.getClient(this.mobile.sessionId);
+                    const tile = worldRoom.state.getTile(destination.x, destination.y);
+                    if(tile){
+                        worldRoom.send(client, 'sa_tile-props', { tile: tile });
+                    }
                 })
                 .catch(error => {
 
