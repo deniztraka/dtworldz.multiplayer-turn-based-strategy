@@ -36,7 +36,8 @@ export class GameLoadingScene extends Phaser.Scene {
 
     preload() {
         this.load.image('plainTiles', '/assets/images/tilemaps/plainsTiles-lowRes.png');
-        this.load.image('markerImage', '/assets/images/tilemaps/marker.png');
+        this.load.image('marker', '/assets/images/tilemaps/marker.png');
+        this.load.image('target', '/assets/images/tilemaps/target.png');
         this.load.spritesheet('playerStatusIcons', '/assets/images/playerStatusIcons.png', { frameWidth: 60, frameHeight: 60 });
     }
 

@@ -127,7 +127,11 @@ export class ClientPlayer {
             var tile = scene.floorLayer.getTileAt(path.pos.x, path.pos.y);
             if (tile.index !== -1) {
                 let container = this.scene.add.container(tile.getCenterX(), tile.getCenterY());
-                var marker = scene.add.sprite(0, 0, 'playerStatusIcons', 2).setScale(0.25);
+                var markerImage = 'marker';
+                if(index === paths.length - 1){
+                    markerImage = 'target'
+                }
+                var marker = scene.add.image(0, 0, markerImage).setScale(1).setTint(0x3bdef3);
                 marker.setDepth(100);
 
                 totalCost += path.cost;

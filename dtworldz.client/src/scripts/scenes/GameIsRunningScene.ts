@@ -218,6 +218,10 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.room.onMessage("sa_countdown", (message: { timeLeft: number, totalTime: number }) => {
             this.events.emit('countdown', message);
         });
+
+        this.room.onMessage("sa_tile-props", (message: any) => {
+            this.events.emit('tile-props', message);
+        });
     }
 
     loadingUI() {

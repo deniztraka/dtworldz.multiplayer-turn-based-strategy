@@ -38,9 +38,10 @@ export class MouseHandler {
         if (alreadySelectedTile.x === tile.x && alreadySelectedTile.y === tile.y) {
             this.game.room.send('ca_action', { aid: 'move', payload: tilePos});
             this.game.localPlayer.setSelectedTile(null);
-            // new tile is selected so request path
-        } else {
-            this.game.room.send('ca_action', { aid: 'select-tile', payload: tilePos});
+            return;
         }
+
+        // new tile is selected so request path
+        this.game.room.send('ca_action', { aid: 'select-tile', payload: tilePos});
     }
 }
