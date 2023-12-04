@@ -11,6 +11,7 @@ export class GameLoadingScene extends Phaser.Scene {
     subTitleText: DTLabel;
     loadingMessage: DTLabel;
     localClient: any;
+    gameRunningScene: Phaser.Scene;
 
     constructor() {
         super({ key: "GameLoadingScene" })
@@ -46,6 +47,7 @@ export class GameLoadingScene extends Phaser.Scene {
     create() {
         this.loadingUI();
         this.attachRoomEvents();
+        this.gameRunningScene = this.scene.get('GameIsRunningScene');
     }
 
     attachRoomEvents() {
@@ -56,6 +58,15 @@ export class GameLoadingScene extends Phaser.Scene {
 
         this.room.onMessage("gameIsRunning", (payload) => {
             this.scene.start('GameIsRunningScene', { room: this.room, clients: this.clients, localClient: this.localClient });
+        });
+
+        this.room.state.tilemap.onAdd((tile: any, key: any) => {
+            
+            tile.components.onChange((change: any, key:string) => {
+                console.log(`loadingScene: tile component ${key} changed`);
+                this.gameRunningScene.events.emit('tile-component-changed', {tile: tile, key: key, change: change});
+                
+            });
         });
 
         // // remove local reference when entity is removed from the server

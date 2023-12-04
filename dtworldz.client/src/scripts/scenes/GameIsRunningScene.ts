@@ -26,10 +26,11 @@ export class GameIsRunningScene extends Phaser.Scene {
     localPlayer: ClientPlayer;
     floorLayer: Phaser.Tilemaps.TilemapLayer;
     componentsLayer: any;
+    tileComponentRegistry: any;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
-
+        this.tileComponentRegistry = new Array([]);
     }
 
     init(data: { room: Room, clients: { [sessionId: string]: any }, localClient: any }) {
@@ -57,6 +58,8 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.attachRoomEvents();
 
+        this.listenChanges();
+
         this.instantiatePlayers();
 
         this.localPlayer.playerNameText.setAlpha(0);
@@ -80,6 +83,13 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.cameras.main.setZoom(2);
 
 
+    }
+    listenChanges() {
+        console.log("listening changes from server")
+        this.events.on('tile-component-changed', (data: { tile: any, key: string, change: any }) => {
+            const components = this.tileComponentRegistry[data.tile.position.y][data.tile.position.x];
+            components.find((c: any) => c.key === data.key).image.destroy();
+        });
     }
 
     getRemotePlayers(): ClientPlayer[] {
@@ -107,6 +117,7 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         for (let y = 0; y < this.room.state.height; y++) { // Iterate over rows with 'y'
             let row = [];
+            this.tileComponentRegistry[y] = [];
             for (let x = 0; x < this.room.state.width; x++) { // Iterate over columns with 'x'
                 let tile = serverMap[y * this.room.state.width + x];
                 let tileComponents = Array.from((tile.components as any).$items.values());
@@ -115,7 +126,10 @@ export class GameIsRunningScene extends Phaser.Scene {
                         let deerTileIndexes = WorldMapHelper.getDeersTileIndexes();
                         const chosenIndex = deerTileIndexes[Math.floor(Math.random() * deerTileIndexes.length)];
                         let clientTile = this.floorLayer.getTileAt(x, y);
-                        this.add.existing(this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5));
+                        const deersComponentImage = this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5);
+                        this.add.existing(deersComponentImage);
+
+                        this.tileComponentRegistry[y][x] = [{ image: deersComponentImage, key: component.name}];
                         // console.log(`Deer:${chosenIndex} is added to ${x}, ${y} - ${clientTile.getCenterX()}, ${clientTile.getCenterY()}`);
                     }
                 });
@@ -249,6 +263,8 @@ export class GameIsRunningScene extends Phaser.Scene {
             this.events.emit('tile-props', message);
         });
 
+        
+
         this.room.onMessage('ca_action_result', (message: {aid:string, sessionId: string, payload:any}) => {
             console.log(message);
             const player = this.players[message.sessionId];
@@ -265,7 +281,6 @@ export class GameIsRunningScene extends Phaser.Scene {
 
                     if(message.payload.result){
                         console.log('hunt success');
-                        // todo: remove deeers from the tile
                         player.setSelectedTile(null);
                         player.clearPath();
                         player.clearActions();

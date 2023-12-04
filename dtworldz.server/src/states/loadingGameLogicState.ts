@@ -283,7 +283,7 @@ function addAnimals(loadingLogicState: LoadingGameLogicState): Promise<void> {
             console.log(`Adding ${animalTiles.length} animals`);
 
             animalTiles.forEach(tile => {
-                tile.addComponent(new AnimalsComponent('Deers', 10));
+                tile.addComponent(new AnimalsComponent('Deers', 10, 10));
             });
 
 

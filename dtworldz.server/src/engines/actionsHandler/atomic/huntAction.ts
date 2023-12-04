@@ -1,6 +1,7 @@
 import { WorldRoom } from "../../../rooms/dtWorldz";
 import { BaseMobile } from "../../../schema/mobiles/baseMobile";
 import { Player } from "../../../schema/mobiles/player";
+import { BaseTile } from "../../../schema/tilemap/tile/baseTile";
 import { BaseTileComponent } from "../../../schema/tilemap/tile/components/baseTileComponent";
 import { TilePosCost } from "../../../schema/tilemap/tile/tilePosCost";
 import { AtomicAction } from "./atomicAction";
