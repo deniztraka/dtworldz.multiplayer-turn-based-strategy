@@ -34,7 +34,8 @@ export class HuntAction extends AtomicAction {
                             payload: {
                                 result: huntResult,
                                 targetComponent: targetComponent.name,
-                                targetPosition: { x: targetTile.position.x, y: targetTile.position.y }
+                                targetPosition: { x: targetTile.position.x, y: targetTile.position.y },
+                                message: huntResult ? 'This was a good hunt.' : "Can't hunt here"
                             }
                         });
                 }

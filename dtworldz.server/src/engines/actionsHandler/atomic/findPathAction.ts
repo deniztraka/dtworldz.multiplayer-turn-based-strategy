@@ -36,7 +36,7 @@ export class FindPathAction extends AtomicAction {
                             sessionId: client.sessionId,
                             payload: {
                                 result: true,
-                                target: tile
+                                target: tile,
                             }
                         });
                         return;

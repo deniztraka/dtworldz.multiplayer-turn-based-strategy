@@ -48,6 +48,7 @@ export class MoveAction extends OngoingAction {
                             sessionId: (this.mobile as Player).client.sessionId,
                             payload: {
                                 result: moveResult,
+                                message: moveResult ? '' : "Can't move further",
                                 targetPosition: { x: nextTile.position.x, y: nextTile.position.y }
                             }
                         });
