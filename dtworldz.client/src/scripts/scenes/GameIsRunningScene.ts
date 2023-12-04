@@ -5,6 +5,7 @@ import { WorldMapHelper } from "../helpers/worldMapHelper";
 import { MouseHandler } from "../handlers/ui/mouseHandlers";
 import { ClientPlayer } from "../models/clientPlayer";
 import { GameRunningUIScene } from "./GameRunningUIScene";
+import { ActionResultFactory } from "../factories/actionResultFactory";
 // import { GameScene } from "./GameSceneOld";
 
 export class GameIsRunningScene extends Phaser.Scene {
@@ -85,10 +86,28 @@ export class GameIsRunningScene extends Phaser.Scene {
 
     }
     listenChanges() {
-        console.log("listening changes from server")
         this.events.on('tile-component-changed', (data: { tile: any, key: string, change: any }) => {
+            // destroy everything first
             const components = this.tileComponentRegistry[data.tile.position.y][data.tile.position.x];
-            components.find((c: any) => c.key === data.key).image.destroy();
+            components.forEach((component: any) => {
+                if (component.key === data.key) {
+                    component.image.destroy();
+                }
+            });
+
+            // then recreate
+            const serverComponents = Array.from(data.tile.components.$items.values());
+            serverComponents.forEach((component: any) => {
+                if (component.name === "Deers") {
+                    let deerTileIndexes = WorldMapHelper.getDeersTileIndexes();
+                    const chosenIndex = deerTileIndexes[Math.floor(Math.random() * deerTileIndexes.length)];
+                    let clientTile = this.floorLayer.getTileAt(data.tile.position.x, data.tile.position.y);
+                    const deersComponentImage = this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5);
+                    this.add.existing(deersComponentImage);
+
+                    this.tileComponentRegistry[data.tile.position.y][data.tile.position.x].push({ image: deersComponentImage, key: component.name });
+                }
+            });
         });
     }
 
@@ -266,39 +285,12 @@ export class GameIsRunningScene extends Phaser.Scene {
         
 
         this.room.onMessage('ca_action_result', (message: {aid:string, sessionId: string, payload:any}) => {
-            console.log(message);
             const player = this.players[message.sessionId];
-
-
-            // todo: refactor this
-            // make it factory pattern and move to a separate class
-            // create separate classes for each action result and handle them there
-            switch (message.aid) {
-                case 'hunt':
-                    // check if action result is success
-                    // if success, remove the component from the tile
-                    // if fail and if player is local player, show a message
-
-                    if(message.payload.result){
-                        console.log('hunt success');
-                        player.setSelectedTile(null);
-                        player.clearPath();
-                        player.clearActions();
-
-                    } else if (this.localPlayer.sessionId === this.room.sessionId) {
-                        console.log('hunt failed')
-                    }
-                    break;
-                case 'move':
-                    if(message.payload.result){
-                        console.log('move success')
-                        player.setSelectedTile(null);
-                        player.clearActions();
-                    } else {
-                        console.log('move failed')
-                    }
-                default:
-                    break;
+            const actionResult = ActionResultFactory.get(this, player, message);
+            if(actionResult){
+                actionResult.execute();
+            } else {
+                console.log(`action result is null for ${message.aid}`);
             }
         });
     }

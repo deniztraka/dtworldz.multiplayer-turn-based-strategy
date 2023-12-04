@@ -30,8 +30,15 @@ export class FindPathAction extends AtomicAction {
 
                     if (path.length === 0 && this.mobile.position.x === destination.x && this.mobile.position.y === destination.y) {
                         //console.log(`FindPathAction: ${this.mobile.sessionId} is trying to find path to ${destination.x}, ${destination.y} but it's already there`)
-                        client.send('sa_tile-props', tile);
-                        
+                        client.send('ca_action_result',
+                        {
+                            aid: 'select-tile',
+                            sessionId: client.sessionId,
+                            payload: {
+                                result: true,
+                                target: tile
+                            }
+                        });
                         return;
                     }
 
@@ -43,7 +50,15 @@ export class FindPathAction extends AtomicAction {
                     this.mobile.currentPath = positions;
 
                     if(tile){
-                        client.send('sa_tile-props', tile);
+                        client.send('ca_action_result',
+                        {
+                            aid: 'select-tile',
+                            sessionId: client.sessionId,
+                            payload: {
+                                result: true,
+                                target: tile
+                            }
+                        });
                     }
                 })
                 .catch(error => {

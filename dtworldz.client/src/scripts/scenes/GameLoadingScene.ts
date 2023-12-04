@@ -61,15 +61,13 @@ export class GameLoadingScene extends Phaser.Scene {
         });
 
         this.room.state.tilemap.onAdd((tile: any, key: any) => {
-            
             tile.components.onChange((change: any, key:string) => {
-                console.log(`loadingScene: tile component ${key} changed`);
                 this.gameRunningScene.events.emit('tile-component-changed', {tile: tile, key: key, change: change});
-                
             });
         });
 
-        // // remove local reference when entity is removed from the server
+        // TODO: think about what to do if a player is removed on loading screen.
+        // because this triggers also when a player is removed from the room on running screen
         // this.room.state.players.onRemove((_client: any, sessionId: any) => {
         //     console.log(`${sessionId} is removed`);
         //     const client = this.clients[sessionId]
