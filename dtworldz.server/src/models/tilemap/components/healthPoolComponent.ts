@@ -10,8 +10,8 @@ export class HealthPoolComponent extends BaseTileComponent {
         // Implement defense increase
     }
 
-    interact(mobile:any) {
-
+    interact(mobile:any): boolean {
+        return true;
         // Implement interaction specifics
     }
 }
