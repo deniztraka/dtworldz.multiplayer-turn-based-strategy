@@ -3,6 +3,7 @@ import { NextTurnRequestAction } from "./atomic/nextTurnRequestAction"
 import { BaseGameAction } from "./baseGameAction"
 import { MoveAction } from "./ongoing/moveAction"
 import { Player } from "../../schema/mobiles/player"
+import { HuntAction } from "./atomic/huntAction"
 
 export class ActionFactory {
     constructor() {
@@ -17,6 +18,8 @@ export class ActionFactory {
                 return new MoveAction(player, action.payload)
             case 'next-turn-request':
                 return new NextTurnRequestAction(player, action.payload)
+            case 'hunt':
+                return new HuntAction(player, action.payload)
         }
     }
 }

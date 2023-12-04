@@ -12,6 +12,8 @@ import { Player } from "../schema/mobiles/player";
 import { Attributes } from "../engines/attributeSystem/attributes";
 import { StandardMovement } from "../models/tilemap/strategies/movement/standartMovement";
 import { CharacterDecorator } from "../decorator/playerDecorator";
+import { Tile } from "../schema/WorldState";
+import { AnimalsComponent } from "../models/tilemap/components/animalsComponent";
 
 // Define the type for a loading step
 type LoadingStep = {
@@ -24,10 +26,11 @@ const loadingSteps: LoadingStep[] = [
     { message: "Loading worldmap...", action: loadMap },
     { message: "Spreading biomes..", action: generateBiomes },
     { message: "Raising forests and mountains", action: generateNature },
+    { message: "Animals starting to walk around", action: addAnimals },
     { message: "Finding home for players..", action: findStartingPositions },
     { message: "Prevengint characters going weird places...", action: addMovementBehaviours },
     { message: "Making players special..", action: addCharacterBehaviours },
-    // ... other steps
+    
 ];
 
 // const loadingMessages = [
@@ -262,6 +265,34 @@ function addCharacterBehaviours(loadingLogicState: LoadingGameLogicState): Promi
             console.log(error.message);
             // If there's an error during the load, call reject()
             reject(new Error("LoadingGameLogicState: Failed to set character behaviorus"));
+        }
+    });
+}
+
+function addAnimals(loadingLogicState: LoadingGameLogicState): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        try {
+            let animalTiles: BaseTile[] = [];
+            // find a randome 'Plains' tile for each player
+            loadingLogicState.gameRoom.state.tilemap.forEach(tile => {
+                if (tile.nature === Natures.None && Math.random() > 0.95) {
+                    animalTiles.push(tile);
+                }
+            });
+
+            console.log(`Adding ${animalTiles.length} animals`);
+
+            animalTiles.forEach(tile => {
+                tile.addComponent(new AnimalsComponent('Deers', 10));
+            });
+
+
+
+            resolve();
+        } catch (error: any) {
+            console.log(error.message);
+            // If there's an error during the load, call reject()
+            reject(new Error("LoadingGameLogicState: Adding animals failed"));
         }
     });
 }

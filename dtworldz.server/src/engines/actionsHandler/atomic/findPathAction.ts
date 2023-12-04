@@ -20,8 +20,20 @@ export class FindPathAction extends AtomicAction {
             // Assuming actionPayload contains the destination
             const destination = this.payload;
 
+            //console.log(`FindPathAction: ${this.mobile.sessionId} is trying to find path to ${destination.x}, ${destination.y}`)
+
             pathfindingService.findPathForPlayer(this.mobile.position, destination, this.mobile)
                 .then(path => {
+                    this.mobile.currentPath = new ArraySchema<TilePosCost>;
+                    const client = worldRoom.getClient(this.mobile.sessionId);
+                    const tile = worldRoom.state.getTile(destination.x, destination.y);
+
+                    if (path.length === 0 && this.mobile.position.x === destination.x && this.mobile.position.y === destination.y) {
+                        //console.log(`FindPathAction: ${this.mobile.sessionId} is trying to find path to ${destination.x}, ${destination.y} but it's already there`)
+                        client.send('sa_tile-props', tile);
+                        
+                        return;
+                    }
 
                     let positions = new ArraySchema<TilePosCost>();
                     for (let index = 0; index < path.length; index++) {
@@ -29,8 +41,7 @@ export class FindPathAction extends AtomicAction {
                         positions.push(new TilePosCost(pos, worldRoom.state.getTile(pos.x, pos.y).movementStrategy.energyCost));
                     }
                     this.mobile.currentPath = positions;
-                    const client = worldRoom.getClient(this.mobile.sessionId);
-                    const tile = worldRoom.state.getTile(destination.x, destination.y);
+
                     if(tile){
                         client.send('sa_tile-props', tile);
                     }
