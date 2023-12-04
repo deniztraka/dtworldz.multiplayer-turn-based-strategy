@@ -4,7 +4,7 @@ export abstract class BaseTileComponent extends Schema {
     @type("string") name: string;
     @type("boolean") isInteractable: boolean;
     @type("number") energyCost: number;
-    constructor(name:string, isInteractable: boolean, energyCost: number) {
+    constructor(name:string, isInteractable: boolean, energyCost: number = 0) {
         super();
         this.energyCost = energyCost;
         this.name = name;

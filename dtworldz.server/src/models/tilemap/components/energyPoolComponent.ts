@@ -10,8 +10,8 @@ export class EnergyPoolComponent extends BaseTileComponent {
         // Implement energy increase
     }
 
-    interact(mobile:any) {
-
+    interact(mobile:any): boolean {
+        return true;
         // Implement interaction specifics
     }
 }
