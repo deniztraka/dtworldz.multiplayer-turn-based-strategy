@@ -1,8 +1,10 @@
 import { WorldRoom } from "../../../rooms/dtWorldz";
 import { BaseMobile } from "../../../schema/mobiles/baseMobile";
 import { Player } from "../../../schema/mobiles/player";
+import { TilePosCost } from "../../../schema/tilemap/tile/tilePosCost";
 import { MathUtils } from "../../../utils/mathUtils";
 import { OngoingAction } from "./OngoingAction";
+import { ArraySchema } from "@colyseus/schema";
 
 export class MoveAction extends OngoingAction {
     private elapsedTimeSinceLastMove: number = 900; // Counter for time since last move
@@ -49,6 +51,13 @@ export class MoveAction extends OngoingAction {
                                 targetPosition: { x: nextTile.position.x, y: nextTile.position.y }
                             }
                         });
+
+                    if(!moveResult){
+                        // Stop the movement
+                        this.mobile.currentPath = new ArraySchema<TilePosCost>;
+                        this.elapsedTime = this.duration;
+                    }
+
                     //console.log(`moveResult: ${moveResult} ${this.mobile.name} ${nextTile.position.x} ${nextTile.position.y}`);
 
                     // Reset the counter after the move

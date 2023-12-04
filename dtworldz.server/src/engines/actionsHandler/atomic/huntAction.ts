@@ -26,7 +26,6 @@ export class HuntAction extends AtomicAction {
                         targetTile.removeComponent(targetComponent.name);
                     }
 
-                    console.log(`Hunt result: ${huntResult}`);
                     // Send the hunt result to the client
                     player.client.send('ca_action_result',
                         {
