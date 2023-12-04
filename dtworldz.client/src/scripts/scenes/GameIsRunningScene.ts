@@ -8,7 +8,7 @@ import { GameRunningUIScene } from "./GameRunningUIScene";
 // import { GameScene } from "./GameSceneOld";
 
 export class GameIsRunningScene extends Phaser.Scene {
-    
+
 
     room: Room | undefined;
     clients: { [sessionId: string]: any } = {};
@@ -25,6 +25,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     players: { [sessionId: string]: any } = {};
     localPlayer: ClientPlayer;
     floorLayer: Phaser.Tilemaps.TilemapLayer;
+    componentsLayer: any;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
@@ -41,13 +42,13 @@ export class GameIsRunningScene extends Phaser.Scene {
 
 
     preload() {
-        
+
     }
 
     create() {
         const scene: GameIsRunningScene = this;
 
-        
+
 
 
         this.loadingUI();
@@ -77,8 +78,8 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.events.emit('gameIsLoaded');
 
         this.cameras.main.setZoom(2);
-         
-        
+
+
     }
 
     getRemotePlayers(): ClientPlayer[] {
@@ -88,7 +89,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     }
 
     requestNextTurn() {
-        this.room.send('ca_action', { aid: 'next-turn-request', payload: null});
+        this.room.send('ca_action', { aid: 'next-turn-request', payload: null });
     }
 
     buildMap() {
@@ -97,7 +98,31 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         const natureData = WorldMapHelper.getNatureLayerData(this.room.state.tilemap, this.room.state.width, this.room.state.height);
         this.createNatureLayer(natureData);
+
+        this.createTileComponents();
     }
+
+    createTileComponents() {
+        let serverMap: { id: number, biome: number, nature: number, components: any[] }[] = Array.from(this.room.state.tilemap.$items.values());
+
+        for (let y = 0; y < this.room.state.height; y++) { // Iterate over rows with 'y'
+            let row = [];
+            for (let x = 0; x < this.room.state.width; x++) { // Iterate over columns with 'x'
+                let tile = serverMap[y * this.room.state.width + x];
+                let tileComponents = Array.from((tile.components as any).$items.values());
+                tileComponents.forEach((component: any) => {
+                    if (component.name === "Deers") {
+                        let deerTileIndexes = WorldMapHelper.getDeersTileIndexes();
+                        const chosenIndex = deerTileIndexes[Math.floor(Math.random() * deerTileIndexes.length)];
+                        let clientTile = this.floorLayer.getTileAt(x, y);
+                        this.add.existing(this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5));
+                        // console.log(`Deer:${chosenIndex} is added to ${x}, ${y} - ${clientTile.getCenterX()}, ${clientTile.getCenterY()}`);
+                    }
+                });
+            }
+        }
+    }
+
     instantiatePlayers() {
         for (const sessionId in this.clients) {
             if (Object.prototype.hasOwnProperty.call(this.clients, sessionId)) {
@@ -172,15 +197,15 @@ export class GameIsRunningScene extends Phaser.Scene {
             // Forest = 1,
             // Mountain = 2,
 
+            // todo: somewhere here, we should include biome data into account
+
             row.forEach((index, x) => {
                 if (index === 1) {
-                    // todo: somewhere here, we should include biome data into account
                     // currently it only works with Plains biome type because we only have that tileset
                     let forestTileIndexes = WorldMapHelper.getForestTileIndexes();
                     const chosenIndex = forestTileIndexes[Math.floor(Math.random() * forestTileIndexes.length)];
                     let tile = this.natureLayer.putTileAt(chosenIndex, x, y);
                 } else if (index === 2) {
-                    // todo: somewhere here, we should include biome data into account
                     // currently it only works with Plains biome type because we only have that tileset
                     let mountainTileIndexes = WorldMapHelper.getMountainTileIndexes();
                     const chosenIndex = mountainTileIndexes[Math.floor(Math.random() * mountainTileIndexes.length)];
@@ -198,7 +223,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.room.state.players.onRemove((client: any, sessionId: any) => {
             console.log(`${client.name} is removed`);
             const player = this.players[sessionId];
-            if(player){
+            if (player) {
                 player.destroy();
             }
             delete this.clients[sessionId]
@@ -220,7 +245,46 @@ export class GameIsRunningScene extends Phaser.Scene {
         });
 
         this.room.onMessage("sa_tile-props", (message: any) => {
+            
             this.events.emit('tile-props', message);
+        });
+
+        this.room.onMessage('ca_action_result', (message: {aid:string, sessionId: string, payload:any}) => {
+            console.log(message);
+            const player = this.players[message.sessionId];
+
+
+            // todo: refactor this
+            // make it factory pattern and move to a separate class
+            // create separate classes for each action result and handle them there
+            switch (message.aid) {
+                case 'hunt':
+                    // check if action result is success
+                    // if success, remove the component from the tile
+                    // if fail and if player is local player, show a message
+
+                    if(message.payload.result){
+                        console.log('hunt success');
+                        // todo: remove deeers from the tile
+                        player.setSelectedTile(null);
+                        player.clearPath();
+                        player.clearActions();
+
+                    } else if (this.localPlayer.sessionId === this.room.sessionId) {
+                        console.log('hunt failed')
+                    }
+                    break;
+                case 'move':
+                    if(message.payload.result){
+                        console.log('move success')
+                        player.setSelectedTile(null);
+                        player.clearActions();
+                    } else {
+                        console.log('move failed')
+                    }
+                default:
+                    break;
+            }
         });
     }
 

@@ -14,17 +14,30 @@ export class TileActionButtonFactory {
         if (actionPanel.player.currentPath && actionPanel.player.currentPath.length > 0) {
             const movebutton = scene.rexUI.add.label({
                 width: 60, height: 60,
-                background: scene.add.sprite(0,0, 'actionIcons', 0),
-                // text: scene.add.text(0, 0, "text", {
-                //     fontSize: 18
-                // })
+                background: scene.add.sprite(0, 0, 'actionIcons', 0),
             })
 
             buttons.push({
                 button: movebutton, callBack: () => {
                     (actionPanel.scene as any).gameScene.room.send('ca_action', { aid: 'move', payload: { x: tile.position.x, y: tile.position.y } });
-                    actionPanel.player.setSelectedTile(null);
-                    actionPanel.player.clearActions();
+                }
+            });
+        }
+
+        // if tile has animals,
+        // and if player is in this tile,
+        // add a hunt button
+        if (Object.keys(tile.components).length > 0 &&
+            Object.values(tile.components).find((c: any) => c.name === 'Deers') &&
+            tile.position.x === player.client.position.x && tile.position.y === player.client.position.y) {
+            const huntButton = scene.rexUI.add.label({
+                width: 60, height: 60,
+                background: scene.add.sprite(0, 0, 'actionIcons', 1),
+            })
+
+            buttons.push({
+                button: huntButton, callBack: () => {
+                    (actionPanel.scene as any).gameScene.room.send('ca_action', { aid: 'hunt', payload: { component: 'Deers', position: { x: tile.position.x, y: tile.position.y } } });
                 }
             });
         }

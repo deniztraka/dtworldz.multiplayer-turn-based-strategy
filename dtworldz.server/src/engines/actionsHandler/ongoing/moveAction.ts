@@ -1,5 +1,6 @@
 import { WorldRoom } from "../../../rooms/dtWorldz";
 import { BaseMobile } from "../../../schema/mobiles/baseMobile";
+import { Player } from "../../../schema/mobiles/player";
 import { MathUtils } from "../../../utils/mathUtils";
 import { OngoingAction } from "./OngoingAction";
 
@@ -15,6 +16,7 @@ export class MoveAction extends OngoingAction {
     }
 
     update(worldRoom: WorldRoom, deltaTime: number): void {
+        
         this.mobile.setMovingNow(true);
         // Update the elapsed time
         this.elapsedTimeSinceLastMove += deltaTime;
@@ -36,6 +38,17 @@ export class MoveAction extends OngoingAction {
                     const nextTile = worldRoom.state.getTile(nextStep.position.x, nextStep.position.y);
 
                     let moveResult = this.mobile.tryMove(nextTile);
+
+                    // Send the move result to the client
+                    (this.mobile as Player).client.send('ca_action_result',
+                        {
+                            aid: 'move',
+                            sessionId: (this.mobile as Player).client.sessionId,
+                            payload: {
+                                result: moveResult,
+                                targetPosition: { x: nextTile.position.x, y: nextTile.position.y }
+                            }
+                        });
                     //console.log(`moveResult: ${moveResult} ${this.mobile.name} ${nextTile.position.x} ${nextTile.position.y}`);
 
                     // Reset the counter after the move
