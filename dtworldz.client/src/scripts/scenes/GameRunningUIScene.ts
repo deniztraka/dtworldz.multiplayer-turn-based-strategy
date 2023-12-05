@@ -66,18 +66,8 @@ export class GameRunningUIScene extends Phaser.Scene {
 
 
             if (playerCount > 1) {
-                
-
                 this.gameScene.events.on('turn-countdown', (message: { timeLeft: number, totalTime: number }) => {
                     this.turnCountDownText.setText(message.timeLeft.toString());
-                    // if (this.gameScene.localPlayer.sessionId === this.currentPlayerSessionId) {
-                    //     this.localCharacterPanel.setRemainingTime(message.timeLeft, message.totalTime);
-                    // } else {
-                    //     let remoteCharacterPanel = this.remoteCharacterPanels[this.currentPlayerSessionId];
-                    //     if (remoteCharacterPanel) {
-                    //         remoteCharacterPanel.setRemainingTime(message.timeLeft, message.totalTime);
-                    //     }
-                    // }
                 });
             }
         }

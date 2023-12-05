@@ -93,6 +93,7 @@ export class ClientPlayer {
     }
 
     clearActions() {
+        // sending null tile to clear actions on player screen
         this.scene.events.emit('tile-props', null);
     }
 
