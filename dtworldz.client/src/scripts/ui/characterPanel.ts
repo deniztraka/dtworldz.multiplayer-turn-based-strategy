@@ -150,15 +150,15 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
     
     listenProps() {
         this.player.client.listen("_health", (currentValue: number, previousValue: any) => {
-            this.healthText.setText(currentValue.toString());
+            this.healthText.setText(currentValue.toFixed(0).toString());
             const signText = previousValue > currentValue ? '-' + (previousValue - currentValue).toString() : '+' + (currentValue - previousValue).toString();
-            let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 75, signText + ' health', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#ff000' }).setOrigin(0.5, 0.5)
+            let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 75, signText + ' health', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#ff0000' }).setOrigin(0.5, 0.5)
             this.scene.add.existing(lostStatText);
             FadeOutDestroy(lostStatText, 1000);
         });
 
         this.player.client.listen("_hunger", (currentValue: number, previousValue: any) => {
-            this.hungerText.setText(currentValue.toString());
+            this.hungerText.setText(currentValue.toFixed(0).toString());
             const signText = previousValue > currentValue ? '-' + (previousValue - currentValue).toString() : '+' + (currentValue - previousValue).toString();
             let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 50, signText + ' hunger', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#b36800' }).setOrigin(0.5, 0.5)
             this.scene.add.existing(lostStatText);
@@ -166,7 +166,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         });
 
         this.player.client.listen("_energy", (currentValue: number, previousValue: any) => {
-            this.energyText.setText(currentValue.toString());
+            this.energyText.setText(currentValue.toFixed(0).toString());
             const signText = previousValue > currentValue ? '-' + (previousValue - currentValue).toString() : '+' + (currentValue - previousValue).toString();
             let lostStatText = this.scene.add.text(this.scene.scale.width / 2, this.scene.scale.height / 4 + 25, signText + ' energy', { fontFamily: 'DTSubTitleFontFamily', fontSize: 18, color: '#3bdef3' }).setOrigin(0.5, 0.5)
             this.scene.add.existing(lostStatText);

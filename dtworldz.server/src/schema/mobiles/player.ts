@@ -8,12 +8,14 @@ import { CharacterDecorator } from "../../decorator/playerDecorator";
 
 
 export class Player extends BaseMobile {
+    
     @type("number") charIndex: number = Math.floor(Math.random() * 5);
     @type("number") private _health: number;
     @type("number") private _hunger: number;
     @type("number") private _energy: number;
     @type("string") title: string = '';
     @type("boolean") private isOwner: boolean = false;
+    @type("boolean") private isDead: boolean = false;
     client: Client;
 
     constructor(client: Client, name: string, position: Position | undefined) {
@@ -37,7 +39,10 @@ export class Player extends BaseMobile {
         } else if (newHealth > this.maxHealth) {
             this._health = this.maxHealth;
         } else {
-            this._health = newHealth;
+            this._health = parseFloat(newHealth.toFixed(0));
+            if(this._health <= 0) {
+                this.isDead = true;
+            }
         }
     }
 
@@ -51,7 +56,7 @@ export class Player extends BaseMobile {
         } else if (newEnergy > this.maxEnergy) {
             this._energy = this.maxEnergy;
         } else {
-            this._energy = newEnergy;
+            this._energy = parseFloat(newEnergy.toFixed(0));
         }
     }
 
@@ -65,7 +70,7 @@ export class Player extends BaseMobile {
         } else if (newhunger > this.maxHunger) {
             this._hunger = this.maxHunger;
         } else {
-            this._hunger = newhunger;
+            this._hunger = parseFloat(newhunger.toFixed(0));
         }
     }
 
@@ -73,7 +78,7 @@ export class Player extends BaseMobile {
     get maxHunger(): number {
         const strength = this.attributes.get(Attributes.Strength);
         const intelligence = this.attributes.get(Attributes.Intelligence);
-        return Math.floor((strength * 2) + (intelligence / 5)); // Intelligence adds additional max hunger
+        return Math.floor((strength / 2) + (intelligence / 5)); // Intelligence adds additional max hunger
     }
 
 
@@ -81,14 +86,14 @@ export class Player extends BaseMobile {
     get maxEnergy(): number {
         const dexterity = this.attributes.get(Attributes.Dexterity);
         const intelligence = this.attributes.get(Attributes.Intelligence);
-        return Math.floor((dexterity * 2.5) + (intelligence / 4)); // Intelligence adds to max energy
+        return Math.floor((dexterity * 1.5) + (intelligence / 4)); // Intelligence adds to max energy
     }
 
     // Intelligence might contribute to better overall health through knowledge of care and prevention.
     get maxHealth(): number {
         const strength = this.attributes.get(Attributes.Strength);
         const intelligence = this.attributes.get(Attributes.Intelligence);
-        return Math.floor((strength * 10) + (intelligence / 2)); // Intelligence adds additional health
+        return Math.floor((strength * 1.5) + (intelligence / 2)); // Intelligence adds additional health
     }
 
     get healthRegen(): number {
@@ -115,10 +120,10 @@ export class Player extends BaseMobile {
         const intelligence = this.attributes.get(Attributes.Intelligence);
     
         // Base decay is lower to allow for a wider range.
-        const baseDecay = 5;
+        const baseDecay = 3;
     
         // Significantly increasing the effect of dexterity; higher dexterity leads to faster hunger decay.
-        const dexterityEffect = (dexterity / 2); // More impact from dexterity
+        const dexterityEffect = (dexterity / 10); // More impact from dexterity
     
         // Adding a moderate effect of intelligence.
         const intelligenceEffect = (intelligence / 30); 
@@ -127,10 +132,22 @@ export class Player extends BaseMobile {
         const strengthEffect = (40 - strength) / 10;
     
         // Ensuring the final value falls within the 5-15 range.
-        return Math.min(Math.max(Math.ceil(baseDecay + dexterityEffect + intelligenceEffect - strengthEffect), 5), 15);
+        return Math.min(Math.max(Math.ceil(baseDecay + dexterityEffect + intelligenceEffect - strengthEffect), 3), 15);
     }
     
-    
+    attack(targetPlayer: Player): number {
+        const str = this.attributes.get(Attributes.Strength)
+        const int = this.attributes.get(Attributes.Intelligence)
+        let energyDrain = str/2 - int/20;
+        
+        // attack to target player
+        let damageTaken = str / 10;
+
+        targetPlayer.health -= damageTaken;
+        this.energy -= energyDrain;
+
+        return damageTaken;
+    }
     
     
 

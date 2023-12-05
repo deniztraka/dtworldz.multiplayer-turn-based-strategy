@@ -4,6 +4,7 @@ import { BaseGameAction } from "./baseGameAction"
 import { MoveAction } from "./ongoing/moveAction"
 import { Player } from "../../schema/mobiles/player"
 import { HuntAction } from "./atomic/huntAction"
+import { AttackAction } from "./atomic/attackAction"
 
 export class ActionFactory {
     constructor() {
@@ -20,6 +21,8 @@ export class ActionFactory {
                 return new NextTurnRequestAction(player, action.payload)
             case 'hunt':
                 return new HuntAction(player, action.payload)
+            case 'attack':
+                return new AttackAction(player, action.payload)
         }
     }
 }

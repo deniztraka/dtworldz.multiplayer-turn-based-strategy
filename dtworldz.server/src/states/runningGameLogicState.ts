@@ -85,7 +85,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
                 this.gameRoom.getActionManager().handleNewAction(action);
             } else {
                 console.log(`Player ${player.name} tried to act on somebody's turn`);
-                client.send('ca_action_result', { aid: actionPayload.aid, sessionId: client.sessionId, payload: { result: false } });
+                client.send('ca_action_result', { aid: actionPayload.aid, sessionId: client.sessionId, payload: { result: false, message: `It's not your time.` } });
             }
         });
     }

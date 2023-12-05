@@ -4,6 +4,7 @@ import { GameIsRunningScene } from "../scenes/GameIsRunningScene";
 
 export class ClientPlayer {
     
+    
 
     private selectedTile: Phaser.Tilemaps.Tile;
     client: any;
