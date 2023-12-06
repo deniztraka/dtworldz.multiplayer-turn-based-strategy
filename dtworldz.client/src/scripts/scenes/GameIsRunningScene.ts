@@ -90,7 +90,7 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.events.emit('gameIsLoaded');
 
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(1.8);
 
         this.localClient.listen('isDead', (isDead: boolean) => {
             if(isDead) {
