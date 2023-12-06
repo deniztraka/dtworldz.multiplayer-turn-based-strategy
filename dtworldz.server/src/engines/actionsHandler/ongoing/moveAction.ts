@@ -13,7 +13,7 @@ export class MoveAction extends OngoingAction {
     constructor(mobile: BaseMobile, payload: any) {
         super(mobile, payload, 0);
         this.duration = this.getCalculatedDuration();
-        this.moveInterval = 1000 / this.mobile.speed; // 1000 ms divided by speed
+        this.moveInterval = 1000 / (this.mobile as Player).speed; // 1000 ms divided by speed
         this.elapsedTimeSinceLastMove = this.moveInterval;
     }
 
@@ -73,6 +73,6 @@ export class MoveAction extends OngoingAction {
     }
 
     getCalculatedDuration(): number {
-        return MathUtils.getDistanceBetweenPoints(this.mobile.position.x, this.mobile.position.y, this.payload.x, this.payload.y) / this.mobile.speed * 1000;
+        return MathUtils.getDistanceBetweenPoints(this.mobile.position.x, this.mobile.position.y, this.payload.x, this.payload.y) / (this.mobile as Player).speed * 1000;
     }
 }
