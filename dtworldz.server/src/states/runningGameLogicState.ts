@@ -70,7 +70,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
                 return;
             }
 
-            console.log("just before daed chck." + isAllDead)
+            //console.log("just before daed chck." + isAllDead)
 
             
 
@@ -141,7 +141,7 @@ export class RunningGameLogicState extends BaseGameLogicState {
     }
 
     requestNextTurn(mobile: Player): boolean {
-        
+
 
         if (this.turnManager.getCurrentPlayer().sessionId === mobile.client.sessionId) {
             //console.log(`Next turn request is succesfully made ${mobile.name} requested next turn`);
