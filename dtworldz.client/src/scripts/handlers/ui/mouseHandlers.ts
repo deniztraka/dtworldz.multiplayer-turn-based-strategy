@@ -25,6 +25,14 @@ export class MouseHandler {
     }
 
     onTileClick(tile: Phaser.Tilemaps.Tile) {
+        if(this.game.localPlayer && this.game.localPlayer.client.isDead){
+            return;
+        }
+
+        if(!this.game.isGameStarted){
+            return;
+        }
+
         const alreadySelectedTile = this.game.localPlayer.getSelectedTile();
         this.game.localPlayer.setSelectedTile(tile);
 
