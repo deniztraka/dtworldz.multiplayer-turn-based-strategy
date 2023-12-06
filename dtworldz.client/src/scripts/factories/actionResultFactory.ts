@@ -1,3 +1,4 @@
+import { AttackActionResult } from "../models/actionResults/attackActionResult";
 import { HuntActionResult } from "../models/actionResults/huntActionResult";
 import { MoveActionResult } from "../models/actionResults/moveActionResult";
 import { SelectTileActionResult } from "../models/actionResults/selectTileActionResult";
@@ -14,8 +15,8 @@ export class ActionResultFactory {
                 return new MoveActionResult(scene, player, actionResult.payload);
             case 'select-tile':
                 return new SelectTileActionResult(scene, player, actionResult.payload);
-            // case 'next-turn-request':
-            //     return new NextTurnRequestActionResult(actionResult);
+            case 'attack':
+                return new AttackActionResult(scene, player, actionResult.payload);
         }
     }
 }

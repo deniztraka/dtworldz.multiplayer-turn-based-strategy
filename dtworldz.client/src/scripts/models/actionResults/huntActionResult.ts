@@ -7,10 +7,10 @@ export class HuntActionResult extends BaseActionResult {
             this.player.setSelectedTile(null);
             this.player.clearPath();
             this.player.clearActions();
-            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), "That was a good hunt.");
+            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), this.payload.message ? this.payload.message : "That was a good hunt.");
 
         } else if (this.scene.localPlayer.sessionId === this.scene.room.sessionId) {
-            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), "I ccouldn't make it.");
+            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), this.payload.message ? this.payload.message :  "I ccouldn't make it.");
         }
     }
 }

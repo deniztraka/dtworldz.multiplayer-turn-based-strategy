@@ -28,10 +28,12 @@ export class GameIsRunningScene extends Phaser.Scene {
     floorLayer: Phaser.Tilemaps.TilemapLayer;
     componentsLayer: any;
     tileComponentRegistry: any;
+    isDead: boolean = false;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
         this.tileComponentRegistry = new Array([]);
+        this.isDead = false;
     }
 
     init(data: { room: Room, clients: { [sessionId: string]: any }, localClient: any }) {
@@ -39,9 +41,14 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.clients = data.clients;
         this.mouseHandler = new MouseHandler(this);
         this.setLocalClient(this.clients);
+        
     }
 
-
+    update(time: number, delta: number): void {
+        if(this.isDead) {
+            
+        }
+    }
 
     preload() {
 
@@ -77,11 +84,29 @@ export class GameIsRunningScene extends Phaser.Scene {
         (window as any).fx = this.cameras.main.postFX.addTiltShift(0.25, 0.2, 0, 0.5, 1, 1);
 
 
-        this.cameras.main.startFollow(this.localPlayer.container, true, 1, 1);
+        this.cameras.main.startFollow(this.localPlayer.container, false, 0.25, 0.25, 0, 0);
+        
 
         this.events.emit('gameIsLoaded');
 
         this.cameras.main.setZoom(2);
+
+        this.localClient.listen('isDead', (isDead: boolean) => {
+            if(isDead) {
+                this.isDead = true;
+                this.cameras.main.stopFollow();
+            }
+        });
+
+        const cam = this.cameras.main;
+        this.input.on("pointermove", function (p:any) {
+            if (!p.isDown) return;
+
+            
+        
+            cam.scrollX -= (p.x - p.prevPosition.x) / cam.zoom;
+            cam.scrollY -= (p.y - p.prevPosition.y) / cam.zoom;
+            });
 
 
     }
@@ -267,6 +292,9 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string }) => {
             const player = this.players[message.currentPlayerSessionId];
             this.events.emit('turn-start', player);
+            this.localPlayer.setSelectedTile(null);
+            this.events.emit('tile-props', null);
+            
         });
 
         this.room.onMessage("sa_turnTimeLeft", (message: { timeLeft: number, totalTime: number }) => {
@@ -278,8 +306,9 @@ export class GameIsRunningScene extends Phaser.Scene {
         });
 
         this.room.onMessage("sa_tile-props", (message: any) => {
-            
+            this.localPlayer.setSelectedTile(null);
             this.events.emit('tile-props', message);
+            
         });
 
         

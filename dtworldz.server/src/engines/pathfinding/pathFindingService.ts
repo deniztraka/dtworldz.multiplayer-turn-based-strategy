@@ -26,20 +26,24 @@ export class DynamicPathfindingService {
                 grid[y][x] = this.worldRoom.state.tilemap[y * this.worldRoom.state.width + x].nature;
             }
         }
-
+        this.easystar.setGrid(grid);
 
         // prepare walkable data
         let walkableData: number[] = [];
         this.worldRoom.state.tilemap.forEach(tile => {
-            const isWalkable = tile.canMove(this.mobile);
-
-            if(isWalkable){
+            if(tile.canMove(this.mobile)){
                 walkableData.push(tile.nature);
             }
         });
 
-        this.easystar.setGrid(grid);
         this.easystar.setAcceptableTiles(walkableData);
+
+        // avoid player collisions
+        this.worldRoom.state.players.forEach(player => {
+            if(this.mobile.sessionId !== player.sessionId){
+                this.easystar.avoidAdditionalPoint(player.position.x, player.position.y);
+            }
+        });
     }
 
     async findPathForPlayer(start: Position, end: Position, player: BaseMobile): Promise<Position[]> {

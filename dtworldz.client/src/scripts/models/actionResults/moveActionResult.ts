@@ -7,7 +7,7 @@ export class MoveActionResult extends BaseActionResult {
             this.player.setSelectedTile(null);
             this.player.clearActions();
         } else {
-            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), 'I am not able to move further.');
+            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), this.payload.message ? this.payload.message : 'I am not able to move further.');
         }
     }
 }

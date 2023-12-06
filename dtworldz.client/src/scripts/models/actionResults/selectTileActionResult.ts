@@ -8,7 +8,7 @@ export class SelectTileActionResult extends BaseActionResult {
             // console.log(this.payload.target);
             this.scene.events.emit('tile-props', this.payload.target);
         } else {
-            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), 'Something wrong with it.');
+            PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), this.payload.message ? this.payload.message : 'Something wrong with it.');
         }
     }
 }

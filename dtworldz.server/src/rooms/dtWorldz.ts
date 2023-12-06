@@ -152,6 +152,17 @@ export class WorldRoom extends Room<DTWorldzState> {
         return this.state.players;
     }
 
+    getPlayersExcept(sessionId: string) {
+        let players: Player[] = [];
+        this.state.players.forEach(player => {
+            if(player.sessionId !== sessionId){
+                players.push(player);
+            }
+        });
+
+        return players;
+    }
+
     getActionFactory() {
         return this.actionFactory
     }

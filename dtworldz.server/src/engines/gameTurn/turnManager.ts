@@ -9,7 +9,7 @@ export class TurnManager {
     private gameRoom: WorldRoom;
     private lastBroadcastTime: number;
 
-    constructor(gameRoom: WorldRoom, turnDuration = 10000) {
+    constructor(gameRoom: WorldRoom, turnDuration = 60000) {
         this.gameRoom = gameRoom;
         this.currentPlayerIndex = 0;
         this.turnDuration = turnDuration;
