@@ -13,9 +13,13 @@ export class Player extends BaseMobile {
     @type("number") private _health: number;
     @type("number") private _hunger: number;
     @type("number") private _energy: number;
+    @type("number") _speed: number;
     @type("string") title: string = '';
     @type("boolean") private isOwner: boolean = false;
-    @type("boolean") private isDead: boolean = false;
+    @type("boolean") isDead: boolean = false;
+    
+    private _deadBroadCasted: boolean = false;
+
     client: Client;
 
     constructor(client: Client, name: string, position: Position | undefined) {
@@ -25,8 +29,35 @@ export class Player extends BaseMobile {
         CharacterDecorator.decorate(this);
         //console.log(this._speed)
     }
+
     setOwner(val: boolean) {
         this.isOwner = val;
+    }
+
+    get isDeadBroadCasted(): boolean {
+        return this._deadBroadCasted;
+    }
+
+    set isDeadBroadCasted(val: boolean) {
+        this._deadBroadCasted = val;
+    }
+
+    set speed(value: number) {
+        this._speed = value;
+    }
+    get speed(): number {
+        const dexterity = this.attributes.get(Attributes.Dexterity)
+
+        // Base Speed (bs)
+        const bs = 0.5; // means 0.5 tiles per second
+
+        // Dexterity Speed Modifier (dsm)
+        const dsm = dexterity / 10; //This modifier represents the additional speed a character gains from their dexterity.
+
+        // Hunger Speed Modifier (HSM)
+        const hsm = (this.hunger / this.maxHunger) * 0.5;
+
+        return bs + dsm + hsm;
     }
 
     get health(): number {
@@ -34,15 +65,17 @@ export class Player extends BaseMobile {
     }
 
     set health(newHealth: number) {
+        if(newHealth <= 0) {
+            this.isDead = true;
+        }
+
         if (newHealth < 0) {
             this._health = 0;
         } else if (newHealth > this.maxHealth) {
             this._health = this.maxHealth;
         } else {
             this._health = parseFloat(newHealth.toFixed(0));
-            if(this._health <= 0) {
-                this.isDead = true;
-            }
+            
         }
     }
 
@@ -58,6 +91,11 @@ export class Player extends BaseMobile {
         } else {
             this._energy = parseFloat(newEnergy.toFixed(0));
         }
+    }
+
+    get hungerDamage(): number {
+        
+        return 10;
     }
 
     get hunger(): number {
@@ -78,73 +116,63 @@ export class Player extends BaseMobile {
     get maxHunger(): number {
         const strength = this.attributes.get(Attributes.Strength);
         const intelligence = this.attributes.get(Attributes.Intelligence);
-        return Math.floor((strength / 2) + (intelligence / 5)); // Intelligence adds additional max hunger
+        return Math.floor(8 * (strength + intelligence * 0.75)); // Intelligence adds additional max hunger
     }
 
 
-    // Intelligence could contribute to better energy management or mental stamina.
     get maxEnergy(): number {
         const dexterity = this.attributes.get(Attributes.Dexterity);
-        const intelligence = this.attributes.get(Attributes.Intelligence);
-        return Math.floor((dexterity * 1.5) + (intelligence / 4)); // Intelligence adds to max energy
+        return Math.floor(12 * dexterity); // Intelligence adds to max energy
     }
 
-    // Intelligence might contribute to better overall health through knowledge of care and prevention.
     get maxHealth(): number {
         const strength = this.attributes.get(Attributes.Strength);
-        const intelligence = this.attributes.get(Attributes.Intelligence);
-        return Math.floor((strength * 1.5) + (intelligence / 2)); // Intelligence adds additional health
+        return Math.floor(10 * strength);
     }
 
     get healthRegen(): number {
-        const strength = this.attributes.get(Attributes.Strength);
-        const dexterity = this.attributes.get(Attributes.Dexterity);
-        const intelligence = this.attributes.get(Attributes.Intelligence);
-    
-        const baseRegen = Math.floor(strength / 20); // Reduced strength impact
-        const intelligenceBonus = Math.floor(intelligence / 30); // Moderate intelligence impact
-        const dexterityBonus = Math.floor(dexterity / 15); // Increased dexterity impact
-    
-        // Enhancing the hunger effect on health regeneration
-        const hungerEffect = (this.hunger / this.maxHunger) * 3; // Ranges from 0 to 3
-    
-        // Calculating the final value, ensuring it's within 5-15
-        return Math.min(Math.max((baseRegen + intelligenceBonus + dexterityBonus) * hungerEffect, 5), 15);
+        const baseHealthRegen = 2;
+
+        return Math.floor(baseHealthRegen + (0.2 * this.hunger));
     }
     
     
 
     get hungerDecay(): number {
-        const strength = this.attributes.get(Attributes.Strength);
+        const baseHungerDecay = 5;
         const dexterity = this.attributes.get(Attributes.Dexterity);
-        const intelligence = this.attributes.get(Attributes.Intelligence);
-    
-        // Base decay is lower to allow for a wider range.
-        const baseDecay = 3;
-    
-        // Significantly increasing the effect of dexterity; higher dexterity leads to faster hunger decay.
-        const dexterityEffect = (dexterity / 10); // More impact from dexterity
-    
-        // Adding a moderate effect of intelligence.
-        const intelligenceEffect = (intelligence / 30); 
-    
-        // Strength inversely affects hunger decay; higher strength slightly reduces hunger decay.
-        const strengthEffect = (40 - strength) / 10;
     
         // Ensuring the final value falls within the 5-15 range.
-        return Math.min(Math.max(Math.ceil(baseDecay + dexterityEffect + intelligenceEffect - strengthEffect), 3), 15);
+        return Math.floor(baseHungerDecay + (0.1 * dexterity));
+    }
+
+    get attackingEnergyDrain(): number {
+        const dexterity = this.attributes.get(Attributes.Dexterity);
+
+        // Base Energy Drain (BED)
+        const bed = 10;
+
+        // Weapon/Ability Intensity Modifier (WIM)
+        // Light Attack (e.g., a quick jab): WIM = 5
+        // Medium Attack (e.g., a standard swing): WIM = 10
+        // Heavy Attack (e.g., a charged hit): WIM = 15
+        const wim = 15;
+
+        // Dexterity Efficiency (DE)
+        const de = dexterity / 10
+
+        return Math.floor(bed + wim - de);
     }
     
     attack(targetPlayer: Player): number {
-        const str = this.attributes.get(Attributes.Strength)
-        const int = this.attributes.get(Attributes.Intelligence)
-        let energyDrain = str/2 - int/20;
-        
+        const baseWeaponDamage = 5;
+        const strength = this.attributes.get(Attributes.Strength);
+
         // attack to target player
-        let damageTaken = str / 10;
+        let damageTaken = baseWeaponDamage + (strength * 1.5)
 
         targetPlayer.health -= damageTaken;
-        this.energy -= energyDrain;
+        this.energy -= this.attackingEnergyDrain;
 
         return damageTaken;
     }

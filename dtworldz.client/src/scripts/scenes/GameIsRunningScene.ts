@@ -29,6 +29,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     componentsLayer: any;
     tileComponentRegistry: any;
     isDead: boolean = false;
+    isGameStarted: boolean;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
@@ -93,7 +94,6 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.localClient.listen('isDead', (isDead: boolean) => {
             if(isDead) {
-                this.isDead = true;
                 this.cameras.main.stopFollow();
             }
         });
@@ -102,8 +102,6 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.input.on("pointermove", function (p:any) {
             if (!p.isDown) return;
 
-            
-        
             cam.scrollX -= (p.x - p.prevPosition.x) / cam.zoom;
             cam.scrollY -= (p.y - p.prevPosition.y) / cam.zoom;
             });
@@ -302,12 +300,23 @@ export class GameIsRunningScene extends Phaser.Scene {
         });
 
         this.room.onMessage("sa_countdown", (message: { timeLeft: number, totalTime: number }) => {
+            if(message.timeLeft == 0) {
+                this.isGameStarted = true;
+            }
             this.events.emit('countdown', message);
         });
 
         this.room.onMessage("sa_tile-props", (message: any) => {
             this.localPlayer.setSelectedTile(null);
             this.events.emit('tile-props', message);
+            
+        });
+
+        this.room.onMessage("sa_playerDead", (message: {sessionId:string}) => {
+            const player = this.players[message.sessionId] as ClientPlayer;
+            console.log(`${player.playerName} is dead`);
+            player.characterSprite.setTexture('graveStone');
+            
             
         });
 

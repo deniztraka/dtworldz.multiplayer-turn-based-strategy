@@ -11,7 +11,6 @@ export class BaseMobile extends Schema {
     @type("string") sessionId: string;
     @type("string") name: string = "";
     @type("boolean") isReady: boolean = false;
-    @type("number") _speed: number=1;
     @type(Position) position: Position | undefined;
     @type([TilePosCost]) currentPath: ArraySchema<TilePosCost>;
     private traits: Map<Trait, any> = new Map();
@@ -36,14 +35,6 @@ export class BaseMobile extends Schema {
 
     setAttribute(attribute: Attributes, value: number) {
         this.attributes.set(attribute, value);
-    }
-
-    set speed(value: number) {
-        this._speed = value;
-    }
-    get speed(): number {
-        const baseDexterity = 30;
-        return this.attributes.get(Attributes.Dexterity) / baseDexterity;
     }
 
     getAttribute(attribute: Attributes) {
