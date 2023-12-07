@@ -22,9 +22,9 @@ export class CharacterDecorator {
             // The Agile Scout
             // Play Style: Fast and agile, adept at navigating Forests and Water.
             case 1:
-                player.attributes.set(Attributes.Strength, 5);
-                player.attributes.set(Attributes.Dexterity, 8);
-                player.attributes.set(Attributes.Intelligence, 2);
+                player.attributes.set(Attributes.Strength, 4);
+                player.attributes.set(Attributes.Dexterity, 5);
+                player.attributes.set(Attributes.Intelligence, 8);
                 break;
 
             // The Energetic Ranger
