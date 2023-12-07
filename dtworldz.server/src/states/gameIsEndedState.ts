@@ -16,7 +16,7 @@ export class GameIsEndedState extends BaseGameLogicState {
 
     enter() {
         console.log("GameIsEndedState: Game is ended.");
-        this.gameRoom.broadcast('endGame');
+        this.gameRoom.broadcast('sa_end-game');
         this.gameRoom.disconnect();
     }
 

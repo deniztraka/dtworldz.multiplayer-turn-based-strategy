@@ -30,6 +30,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     tileComponentRegistry: any;
     isDead: boolean = false;
     isGameStarted: boolean;
+    turnCount: number;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
@@ -137,6 +138,12 @@ export class GameIsRunningScene extends Phaser.Scene {
     getRemotePlayers(): ClientPlayer[] {
         return Object.values(this.players).filter((player: ClientPlayer) => {
             return player.sessionId !== this.room.sessionId;
+        });
+    }
+
+    getRemoteAlivePlayers(): ClientPlayer[] {
+        return Object.values(this.players).filter((player: ClientPlayer) => {
+            return player.sessionId !== this.room.sessionId && !player.client.isDead;
         });
     }
 
@@ -287,7 +294,8 @@ export class GameIsRunningScene extends Phaser.Scene {
             this.events.emit('removed', sessionId);
         });
 
-        this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string }) => {
+        this.room.onMessage("sa_turn-start", (message: { currentPlayerSessionId: string, turnCount: number }) => {
+            this.turnCount = message.turnCount;
             const player = this.players[message.currentPlayerSessionId];
             this.events.emit('turn-start', player);
             this.localPlayer.setSelectedTile(null);
@@ -330,6 +338,10 @@ export class GameIsRunningScene extends Phaser.Scene {
             } else {
                 console.log(`action result is null for ${message.aid}`);
             }
+        });
+
+        this.room.onMessage("sa_end-game", () => {
+            this.events.emit('end-game');
         });
     }
 

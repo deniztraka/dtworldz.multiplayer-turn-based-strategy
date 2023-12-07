@@ -40,7 +40,7 @@ export class DynamicPathfindingService {
 
         // avoid player collisions
         this.worldRoom.state.players.forEach(player => {
-            if(this.mobile.sessionId !== player.sessionId){
+            if(this.mobile.sessionId !== player.sessionId && !player.isDead){
                 this.easystar.avoidAdditionalPoint(player.position.x, player.position.y);
             }
         });

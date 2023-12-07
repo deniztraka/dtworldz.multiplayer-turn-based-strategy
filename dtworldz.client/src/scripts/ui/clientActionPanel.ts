@@ -67,10 +67,11 @@ export class ClientActionPanel extends Phaser.GameObjects.Container {
                 event.stopPropagation();
             })
             .on('button.out', function (button: any, index: any, pointer: any, event: any) {
-                //button.getElement('background').setStrokeStyle();
+                button.setAlpha(0.75);
             })
             .on('button.over', function (button: any, index: any, pointer: any, event: any) {
                 //button.getElement('background').setStrokeStyle(2, 0xffffff);
+                button.setAlpha(1);
 
             })
         this.add(this.actionButtons);
