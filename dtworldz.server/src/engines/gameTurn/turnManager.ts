@@ -12,6 +12,7 @@ export class TurnManager {
     private gameRoom: WorldRoom;
     private lastBroadcastTime: number;
     skipTurnList: any;
+    private turnCount:number;
 
     constructor(gameRoom: WorldRoom, turnDuration = 60000) {
         this.gameRoom = gameRoom;
@@ -20,14 +21,15 @@ export class TurnManager {
         this.elapsedTime = 0;
         this.lastBroadcastTime = 0;
         this.skipTurnList = [];
+        this.turnCount = 0;
     }
 
     startTurn() {
         this.elapsedTime = 0;
         this.lastBroadcastTime = 0;
-
+        this.turnCount++;
         //console.log(`Turn started for player: ${this.getCurrentPlayer().name}`);
-        this.gameRoom.broadcast('sa_turn-start', { currentPlayerSessionId: this.getCurrentPlayer().client.sessionId });
+        this.gameRoom.broadcast('sa_turn-start', { currentPlayerSessionId: this.getCurrentPlayer().client.sessionId, turnCount: this.turnCount });
     }
 
     update(deltaTime: number) {

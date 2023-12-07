@@ -41,12 +41,13 @@ export class GameRunningUIScene extends Phaser.Scene {
         this.handleTurnCountDown();
         this.actionPanel =  new ClientActionPanel(this, this.gameScene.localPlayer, 0, 0);
     }
+
     handleTurnCountDown() {
         const playerCount = Object.keys(this.gameScene.players).length
 
         if (playerCount !== 0) {
             this.turnCountDownText = this.add.text(0, 0, '', { fontFamily: 'DTSubTitleFontFamily', fontSize: 20, color: '#eeeeee' }).setOrigin(1, 1).setDepth(1000).setAlpha(1).setStroke('#000000', 4);
-            this.nextTurnImage = this.add.sprite(0, 0, 'playerStatusIcons', 3).setOrigin(1, 1).setScale(1);
+            this.nextTurnImage = this.add.sprite(0, 0, 'actionIcons', 3).setOrigin(0.5, 0.5).setScale(1).setAlpha(0.75);
             new Anchor(this.nextTurnImage, { right: 'right-10', bottom: 'bottom-30' });
             new Anchor(this.turnCountDownText, { right: 'right-10', bottom: 'bottom-10' });
 
@@ -58,10 +59,21 @@ export class GameRunningUIScene extends Phaser.Scene {
             })
                 .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
                     scene.gameScene.requestNextTurn();
+                    // rotate nextTurnImage 360 degree with tween
+                    scene.tweens.add({
+                        targets: scene.nextTurnImage,
+                        angle: 360,
+                        duration: 500,
+                        ease: 'Linear',
+                        repeat: 0,
+                        onComplete: () => {
+                            scene.nextTurnImage.setAngle(0);
+                        }
+                    });
                 }).on('over', function (button: any, gameObject: any, pointer: any, event: any) {
-
+                    scene.nextTurnImage.setAlpha(1);
                 }).on('out', function (button: any, gameObject: any, pointer: any, event: any) {
-
+                    scene.nextTurnImage.setAlpha(0.75);
                 })
 
 
@@ -88,7 +100,7 @@ export class GameRunningUIScene extends Phaser.Scene {
             this.events.emit('turn-start', player);
             this.currentPlayerSessionId = player.sessionId;
 
-            let name = "Your Turn!";
+            let name = "This is your turn!";
             if (this.gameScene.localPlayer.sessionId !== player.sessionId) {
                 name = player.playerName + "'s Turn";
                 if (this.nextTurnImage) {
@@ -102,8 +114,15 @@ export class GameRunningUIScene extends Phaser.Scene {
                 }
             }
 
-            if (this.gameScene.getRemotePlayers().length === 0) {
+            if (this.gameScene.getRemotePlayers().length === 0 && this.gameScene.turnCount === 1) {
                 name = 'You are alone on your journey...';
+            }
+
+            this.createRemoteCharacterPanels(player);
+
+            if ((this.gameScene.getRemoteAlivePlayers().length === 0 && this.gameScene.turnCount !== 1) ||
+                this.gameScene.localPlayer.client.isDead) {
+                return;
             }
 
             let turnText = this.add.text(this.scale.width / 2, this.scale.height / 4, name, { fontFamily: 'DTSubTitleFontFamily', fontSize: 26, color: '#eeeeee' }).setOrigin(0.5, 0.5).setDepth(1000).setAlpha(0).setStroke('#000000', 4);
@@ -111,16 +130,18 @@ export class GameRunningUIScene extends Phaser.Scene {
             this.tweens.add({
                 targets: turnText,
                 alpha: 1,
-                duration: 3000,
+                duration: 2000,
                 ease: 'Linear',
                 repeat: 0,
                 onComplete: () => {
-                    FadeOutDestroy(turnText, 1000);
+                    FadeOutDestroy(turnText, 500);
                 }
             });
 
-            this.createRemoteCharacterPanels(player);
+            
         })
+
+
 
         this.gameScene.events.on('countdown', (message: { timeLeft: number }) => {
             let countDownText = this.add.text(this.scale.width / 2, this.scale.height / 4, message.timeLeft.toString(), { fontFamily: 'DTSubTitleFontFamily', fontSize: 26, color: '#eeeeee' }).setOrigin(0.5, 0.5).setDepth(1000).setAlpha(0).setStroke('#000000', 4);
@@ -146,6 +167,21 @@ export class GameRunningUIScene extends Phaser.Scene {
                 remoteCharacterPanel.destroy();
                 delete this.remoteCharacterPanels[sessionId]
             }
+        });
+
+        this.gameScene.events.on('end-game', (message: any) => {
+            let endGameText = this.add.text(this.scale.width / 2, this.scale.height / 4, 'Game Is Ended', { fontFamily: 'DTSubTitleFontFamily', fontSize: 26, color: '#eeeeee' }).setOrigin(0.5, 0.5).setDepth(1000).setAlpha(0).setStroke('#000000', 4);
+            this.add.existing(endGameText);
+            this.tweens.add({
+                targets: endGameText,
+                alpha: 1,
+                duration: 10000,
+                ease: 'Linear',
+                repeat: 0,
+                onComplete: () => {
+                    FadeOutDestroy(endGameText, 500);
+                }
+            });
         });
     }
 
