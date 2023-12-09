@@ -6,7 +6,7 @@ import Anchor from 'phaser3-rex-plugins/plugins/anchor';
 
 export class LobbyChatButton extends DTLabel {
     button: Button;
-    isOpen: any = true;
+    isOpen: any = false;
 
     constructor(scene: any, x: number, y: number, text: string, callback?: Function, anchorConfig?: any) {
         super(scene, x, y, text, {
@@ -16,10 +16,10 @@ export class LobbyChatButton extends DTLabel {
             }, 0x000000).setAlpha(0.75).setStrokeStyle(4, 0x000000),
             
         });
-        this.isOpen = true;
+        this.isOpen = false;
         const self = this;
         (this.getElement('text') as any).setStroke('#111111', 1);
-        (self.getElement('text') as any).setColor('#ff0000');
+        (self.getElement('text') as any).setColor('#00ff00');
         this.button = new Button(this, {
             enable: true,
             mode: 1,              // 0|'press'|1|'release'
