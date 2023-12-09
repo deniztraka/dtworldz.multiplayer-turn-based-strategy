@@ -5,7 +5,7 @@ export class LobbyChatEntry {
     textBox: any;
     entryWidth: number;
     constructor(scene: any, owner: string, text: string, x: number, y: number) {
-        this.entryWidth = 600;
+        this.entryWidth = 560;
        
         this.textBox = scene.rexUI.add.textBox({
             x: x, y: y,
