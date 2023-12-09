@@ -4,6 +4,7 @@ import { TextEdit, Edit } from 'phaser3-rex-plugins/plugins/textedit';
 
 
 export class LobbyChatPanel {
+    
     scene: LobbyScene;
     scrollablePanel: any;
     panel: any;
@@ -16,8 +17,8 @@ export class LobbyChatPanel {
         this.entries = [];
         let self = this;
 
-        this.height = 200;
-        this.width = 350;
+        this.height = 260;
+        this.width = 640;
 
         let initialText = 'write something...';
         let chatInputField = scene.add.text(0, 0, initialText, {
@@ -66,7 +67,7 @@ export class LobbyChatPanel {
 
         this.scrollablePanel = (scene as any).rexUI.add.scrollablePanel({
             x: this.scene.scale.width/2,
-            y: this.scene.scale.height/2 - 50,
+            y: this.scene.scale.height/2 - 130,
             height: this.height,
             width: this.width,
 
@@ -75,7 +76,7 @@ export class LobbyChatPanel {
             background: (scene as any).rexUI.add.roundRectangle({
                 color: 0x000000,
                 radius: 3
-            }).setAlpha(0.25),
+            }).setAlpha(0.25).setOrigin(0.5, 1),
 
             panel: {
                 child: this.createChatPanel(),
@@ -96,7 +97,7 @@ export class LobbyChatPanel {
             footer: chatInputField,
 
             space: { left: 0, right: 0, top: 0, bottom: 0, panel: 3, header: 5, footer: 5 }
-        }).layout()
+        }).layout().setDepth(1000)
 
         // Add empty entry maxentries times
         for (let i = 0; i < this.maxEntries; i++) {
@@ -146,5 +147,9 @@ export class LobbyChatPanel {
             space: { item: 10, top: 0, bottom: 0 }
         })
         return this.panel;
+    }
+
+    toggle() {
+        this.scrollablePanel.setVisible(!this.scrollablePanel.visible);
     }
 }

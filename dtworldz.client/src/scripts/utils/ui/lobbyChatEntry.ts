@@ -1,11 +1,11 @@
-const fontSize = 12
+const fontSize = 16
 
 
 export class LobbyChatEntry {
     textBox: any;
     entryWidth: number;
     constructor(scene: any, owner: string, text: string, x: number, y: number) {
-        this.entryWidth = 337;
+        this.entryWidth = 600;
        
         this.textBox = scene.rexUI.add.textBox({
             x: x, y: y,
@@ -52,6 +52,6 @@ export class LobbyChatEntry {
                 icon: 10, text: 10,
             }
         })
-            .layout().start(text, 10);
+            .layout().start(text, 10).setDepth(1001);
     }
 }

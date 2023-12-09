@@ -13,7 +13,7 @@ export class Player extends BaseMobile {
     @type("number") private _health: number;
     @type("number") private _hunger: number;
     @type("number") private _energy: number;
-    @type("number") _speed: number;
+    @type("number") private _speed: number;
     @type("string") title: string = '';
     @type("boolean") private isOwner: boolean = false;
     @type("boolean") isDead: boolean = false;
@@ -27,7 +27,6 @@ export class Player extends BaseMobile {
         this.client = client;
         this.sessionId = client.sessionId;
         CharacterDecorator.decorate(this);
-        //console.log(this._speed)
     }
 
     setOwner(val: boolean) {

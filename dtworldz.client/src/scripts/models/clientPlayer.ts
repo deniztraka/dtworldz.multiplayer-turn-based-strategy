@@ -38,6 +38,7 @@ export class ClientPlayer {
 
 
         this.container.add([this.characterSprite, this.playerNameText]);
+        this.container.setScale(2);
 
         this.listenServerUpdates();
     }
@@ -72,8 +73,6 @@ export class ClientPlayer {
     move(tilePos: { x: number, y: number }) {
         // get tile from current position
         const tile = (<GameIsRunningScene>this.scene).floorLayer.getTileAt(tilePos.x, tilePos.y);
-
-        //const distance = Phaser.Math.Distance.Between(this.x, this.y, tile.getCenterX(), tile.getCenterY());
 
         const duration = 1000 / this.client._speed;
 
