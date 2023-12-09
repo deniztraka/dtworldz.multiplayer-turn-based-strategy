@@ -115,6 +115,8 @@ export class LobbyChatPanel {
                 editor.close();
             }
          });
+
+         this.scrollablePanel.setVisible(false);
     }
 
     sendChatMessage(message: string) {

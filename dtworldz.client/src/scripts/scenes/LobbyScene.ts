@@ -214,7 +214,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     createChatButton() {
-        this.chatButton = new LobbyChatButton(this, 0, 0, 'Close Chat', this.onChatButtonClicked.bind(this),
+        this.chatButton = new LobbyChatButton(this, 0, 0, 'Open Chat', this.onChatButtonClicked.bind(this),
             { centerX: 'center+240', bottom: 'bottom-440' }).setScale(1);
     }
 
