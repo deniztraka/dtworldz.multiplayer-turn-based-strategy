@@ -218,17 +218,17 @@ export class GameIsRunningScene extends Phaser.Scene {
         const mapDefinition = new Phaser.Tilemaps.MapData({
             width: this.room.state.width,
             height: this.room.state.height,
-            tileWidth: 64,
-            tileHeight: 32,
+            tileWidth: 128,
+            tileHeight: 64,
             orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
             format: Phaser.Tilemaps.Formats.ARRAY_2D
         });
 
         this.tileMap = new Phaser.Tilemaps.Tilemap(this, mapDefinition);
 
-        this.floorTileSet = this.tileMap.addTilesetImage('floorTileSet', 'plainTiles', 64, 64, 0, 0);
+        this.floorTileSet = this.tileMap.addTilesetImage('floorTileSet', 'plainTiles', 128, 128, 0, 0);
 
-        this.floorLayer = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width / 2, this.scale.height / 2 - 200 + 16);
+        this.floorLayer = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width / 2, this.scale.height / 2 - 200 + 32);
 
 
         let y = 0;

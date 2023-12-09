@@ -196,7 +196,7 @@ export class GameRunningUIScene extends Phaser.Scene {
 
         let index = 0;
         remotePlayers.forEach((player: any, index: number) => {
-            let y = index * 60 + 70;
+            let y = index * 60 + 100;
             this.remoteCharacterPanels[player.sessionId] = new CharacterPanel(this, player, 0, y, false);
             if (currentPlayer.sessionId === player.sessionId) {
                 this.remoteCharacterPanels[player.sessionId].setAlpha(1);

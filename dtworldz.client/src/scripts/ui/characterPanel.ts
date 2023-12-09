@@ -34,9 +34,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             this.createRemoteCharacterPanel();
         }
 
-        
-
-        
+        this.setScale(1.5);
     }
 
 
