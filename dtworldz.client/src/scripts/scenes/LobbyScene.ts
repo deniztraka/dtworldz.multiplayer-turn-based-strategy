@@ -201,7 +201,7 @@ export class LobbyScene extends Phaser.Scene {
 
     addPlayerName(client: any) {
         new DTLabel(this, 0, 0, client.name, {}, {
-            centerX: 'center-240',
+            centerX: 'center-200',
             bottom: 'bottom-110',
         });
     }
@@ -215,7 +215,7 @@ export class LobbyScene extends Phaser.Scene {
 
     createChatButton() {
         this.chatButton = new LobbyChatButton(this, 0, 0, 'Open Chat', this.onChatButtonClicked.bind(this),
-            { centerX: 'center+240', bottom: 'bottom-440' }).setScale(1);
+            { centerX: 'center+210', bottom: 'bottom-440' }).setScale(1);
     }
 
     onChatButtonClicked() {
@@ -228,19 +228,19 @@ export class LobbyScene extends Phaser.Scene {
         }
         this.startGame = false;
         this.startButton = new DTButton(this, 0, 0, 'Start', this.onStartClicked.bind(this),
-            { centerX: 'center+270', bottom: 'bottom-50' }).setEnabled(false).setScale(1.25);
+            { centerX: 'center+230', bottom: 'bottom-50' }).setEnabled(false).setScale(1.25);
     }
 
     addChangeCharacterButton(client: any) {
         let scene: any = this;
 
-        let changeCharacterButton = new DTButton(this, 0, 0, 'Change Character', this.setCharacterPanel.bind(this), { centerX: 'center-170', bottom: 'bottom-50' }).setScale(1.25)
+        let changeCharacterButton = new DTButton(this, 0, 0, 'Change Hero', this.setCharacterPanel.bind(this), { centerX: 'center-180', bottom: 'bottom-50' }).setScale(1.25)
     }
 
     addReadyButton(client: any) {
         let scene: any = this;
 
-        let readyButton = new LobbyReadyButton(this, 0, 0, 'Not Ready', scene.setPlayerReady.bind(this), { centerX: 'center+95', bottom: 'bottom-50' }).setScale(1.25)
+        let readyButton = new LobbyReadyButton(this, 0, 0, 'Not Ready', scene.setPlayerReady.bind(this), { centerX: 'center+50', bottom: 'bottom-50' }).setScale(1.25)
 
     }
 

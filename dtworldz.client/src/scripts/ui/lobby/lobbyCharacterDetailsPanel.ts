@@ -25,7 +25,7 @@ export class LobbyCharacterDetailsPanel {
     createPanel() {
         this.panel = this.rex.add.fixWidthSizer({
             x: 0, y: 0,
-            width: 640, height: 300,
+            width: 580, height: 300,
             orientation: 'x',
             space: {
                 left: 10,
@@ -41,7 +41,7 @@ export class LobbyCharacterDetailsPanel {
 
         let leftPanel = this.rex.add.fixWidthSizer({
             x: 0, y: 0,
-            width: 140, height: 300,
+            width: 100, height: 300,
             orientation: 'x',
             space: {
                 left: 10,
@@ -57,7 +57,7 @@ export class LobbyCharacterDetailsPanel {
 
         let rightPanel = this.rex.add.fixWidthSizer({
             x: 0, y: 0,
-            width: 470, height: 300,
+            width: 300, height: 300,
             orientation: 'y',
             space: {
                 left: 10,
@@ -73,7 +73,7 @@ export class LobbyCharacterDetailsPanel {
 
         let rightPanelBottom = this.rex.add.fixWidthSizer({
             x: 0, y: 0,
-            width: 450, height: 50,
+            width: 200, height: 50,
             orientation: 'x',
             space: {
                 left: 10,
@@ -103,7 +103,7 @@ export class LobbyCharacterDetailsPanel {
             orientation: 1,
             text: this.scene.add.text(0, 0, this.character.description, {
                 wordWrap: {
-                    width: 400,
+                    width: 340,
                 },
                 fontFamily: 'DTBodyFontFamily',
                 fontSize: '20px',

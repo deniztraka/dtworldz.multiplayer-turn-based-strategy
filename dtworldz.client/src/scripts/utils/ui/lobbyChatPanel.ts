@@ -18,7 +18,7 @@ export class LobbyChatPanel {
         let self = this;
 
         this.height = 260;
-        this.width = 640;
+        this.width = 560;
 
         let initialText = 'write something...';
         let chatInputField = scene.add.text(0, 0, initialText, {
