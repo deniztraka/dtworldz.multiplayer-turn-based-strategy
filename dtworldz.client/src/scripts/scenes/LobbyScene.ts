@@ -1,12 +1,15 @@
 import Phaser from "phaser";
 import { Room } from "colyseus.js";
 import { DTLabel } from "../utils/ui/dtLabel";
-import TextStyles from './../utils/ui/textStyles';
 import Button from 'phaser3-rex-plugins/plugins/button.js';
 import { LobbyClient } from "../models/lobbyClient";
 import { LobbyChatPanel } from "../utils/ui/lobbyChatPanel";
 import Anchor from 'phaser3-rex-plugins/plugins/anchor.js';
 import { DTButton } from "../utils/ui/dtButton";
+import { LobbyCharacterDetailsPanel } from "../ui/lobby/lobbyCharacterDetailsPanel";
+import { LobbyReadyButton } from "../ui/lobby/lobbyReadyButton";
+import { LobbyChatButton } from "../ui/lobby/lobbyChatButton";
+
 
 export class LobbyScene extends Phaser.Scene {
     room: Room | undefined;
@@ -37,34 +40,24 @@ export class LobbyScene extends Phaser.Scene {
     currentPlayerTitle: any;
     startText: any;
     heroTitles: any;
+    characters: any;
+    localCharacterDetailsPanel: LobbyCharacterDetailsPanel;
+    chatButton: LobbyChatButton;
 
     constructor() {
         super({ key: "LobbyScene" })
         this.localClient = {};
-
     }
 
-    init(data: { room: Room, playerName: string }) {
-
+    async init(data: { room: Room, playerName: string, characters: any }) {
+        this.characters = data.characters;
         this.room = data.room;
-        this.heroTitles = {
-            0: 'The Tactical Guardian',
-            1: 'The Agile Scout',
-            2: 'The Energetic Ranger',
-            3: 'The Mighty Mountaineer',
-            4: 'The Wise Survivor',
-        };
-        this.heroImages = {
-            0: 'char0',
-            1: 'char1',
-            2: 'char2',
-            3: 'char3',
-            4: 'char4',
-        };
         this.localClient = {
             name: data.playerName,
             isReady: false,
         };
+
+
     }
 
     preload() {
@@ -73,7 +66,7 @@ export class LobbyScene extends Phaser.Scene {
             url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
             sceneKey: 'rexUI'
         });
-        
+
     }
 
     create() {
@@ -90,17 +83,13 @@ export class LobbyScene extends Phaser.Scene {
             if (this.room.sessionId === sessionId) {
                 this.localClient = client;
 
+                this.addCharacterDetailsPanel(this.localClient);
+
+                this.addPlayerName(client);
                 this.addChangeCharacterButton(client);
                 this.addReadyButton(client);
-                this.addPlayerName(client);
-                this.createStartButton();
-
-                const currentPlayerContainer = this.add.container(0, 0, [this.currentPlayerImage, this.isReadyImage, this.playerNameText, this.currentPlayerTitle]);
-                let anchor = new Anchor(currentPlayerContainer, {
-                    left: '18%',
-                    bottom: 'bottom-100',
-                }).anchor();
-
+                this.createStartButton()
+                this.createChatButton();
 
                 this.chatPanel = new LobbyChatPanel(this);
             }
@@ -143,7 +132,7 @@ export class LobbyScene extends Phaser.Scene {
             })
         });
 
-       
+
 
         // remove local reference when entity is removed from the server
         this.room.state.players.onRemove((_client: any, sessionId: any) => {
@@ -159,6 +148,9 @@ export class LobbyScene extends Phaser.Scene {
         });
 
 
+    }
+    addCharacterDetailsPanel(localClient: any) {
+        this.localCharacterDetailsPanel = new LobbyCharacterDetailsPanel(this, this.characters[localClient.charIndex]);
     }
 
     attachClientEvents(client: any, sessionId: any) {
@@ -176,22 +168,13 @@ export class LobbyScene extends Phaser.Scene {
         this.createRoomIdButton();
     }
 
-    createStartButton() {
-        if (!this.clients[this.room.sessionId].isOwner) {
-            return;
-        }
-        /** Start Button **/
-        this.startGame = false;
-
-        this.startButton = new DTButton(this, 0, 0, 'START', this.onStartClicked.bind(this),
-            { centerX: 'center', bottom: 'bottom-30' }).setEnabled(false).setScale(1);
-    }
+    
 
     createRoomIdButton() {
         let scene: any = this;
         this.roomIdText = new DTLabel(this, 0, 0, this.room.id, {}, {
             centerX: 'center',
-            bottom: 'bottom',
+            bottom: 'bottom-10',
         }).setScale(1);
 
 
@@ -210,77 +193,55 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     createBackground() {
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
-            .setOrigin(0.5, 0.5)
+        new Anchor(this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
+            .setOrigin(0.5, 0.5).setAlpha(0.75), { centerY: 'center', centerX: 'center' })
+        new Anchor(this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo')
+            .setOrigin(0.5, 0.5).setScale(1.5).setTint(0xbdced6), { top: '5%', centerX: 'center' })
     }
 
     addPlayerName(client: any) {
-        this.playerNameText = this.add.text(0, -220, client.name, {
-            fontFamily: 'DTBodyFontFamily',
-            fontSize: '18px',
-            fixedWidth: 80,
-            fixedHeight: 0,
-            padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-            }
-        }).setOrigin(0.5, 0.5).setColor("#fff").setAlpha(0.75).setScale(1).setAlign('center');
+        new DTLabel(this, 0, 0, client.name, {}, {
+            centerX: 'center-240',
+            bottom: 'bottom-110',
+        });
+    }
 
-        this.currentPlayerTitle = this.add.text(0, -200, this.heroTitles[client.charIndex], {
-            fontFamily: 'DTBodyFontFamily',
-            fontSize: '14px',
-            fixedHeight: 0,
-            color: '#f9d133',
-            padding: {
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-            }
-        }).setOrigin(0.5, 0.5).setAlpha(0.75).setScale(1).setAlign('center');
+    setCharacterPanel() {
+        this.localClient.charIndex = (this.localClient.charIndex + 1) % Object.keys(this.characters).length;
+        this.localCharacterDetailsPanel.setCharacter(this.characters[this.localClient.charIndex]);
+        this.room.send('charIndex', { charIndex: this.localClient.charIndex });
+        this.refreshPlayerList();
+    }
 
-        // let anchor = new Anchor(this.playerNameText, {
-        //     left: '5%',
-        //     bottom: 'bottom-110',
-        // }).anchor();
+    createChatButton() {
+        this.chatButton = new LobbyChatButton(this, 0, 0, 'Close Chat', this.onChatButtonClicked.bind(this),
+            { centerX: 'center+240', bottom: 'bottom-440' }).setScale(1);
+    }
+
+    onChatButtonClicked() {
+        this.chatPanel.toggle();
+    }
+
+    createStartButton() {
+        if (!this.clients[this.room.sessionId].isOwner) {
+            return;
+        }
+        this.startGame = false;
+        this.startButton = new DTButton(this, 0, 0, 'Start', this.onStartClicked.bind(this),
+            { centerX: 'center+270', bottom: 'bottom-50' }).setEnabled(false).setScale(1.25);
     }
 
     addChangeCharacterButton(client: any) {
         let scene: any = this;
-        this.currentPlayerImage = this.add.image(0, 0, this.heroImages[client.charIndex]).setOrigin(0.5, 1).setScale(0.75);
 
-        let button = new Button(this.currentPlayerImage, {
-            clickInterval: 100,
-            mode: 1
-        })
-            .on('click', function (button: any, gameObject: any, pointer: any, event: any) {
-                scene.setPlayerCharacter();
-            })
-
-        // let anchor = new Anchor(this.currentPlayerImage, {
-        //     left: '5%+0',
-        //     bottom: 'bottom-80',
-        // }).anchor();
+        let changeCharacterButton = new DTButton(this, 0, 0, 'Change Character', this.setCharacterPanel.bind(this), { centerX: 'center-170', bottom: 'bottom-50' }).setScale(1.25)
     }
 
     addReadyButton(client: any) {
         let scene: any = this;
-        const anchorPlayer = this.currentPlayerImage.getBounds();
-        this.isReadyImage = this.add.image(0, 25, client.isReady ? 'ready' : 'notready').setAlpha(0.8).setOrigin(0.5, 0.5).setScale(0.4);
-        let isReadyButton = new Button(this.isReadyImage, {
-            clickInterval: 100,
-            mode: 1
-        }).on('click', function (button: any, gameObject: any, pointer: any, event: any) {
-            scene.setPlayerReady()
-        })
 
+        let readyButton = new LobbyReadyButton(this, 0, 0, 'Not Ready', scene.setPlayerReady.bind(this), { centerX: 'center+95', bottom: 'bottom-50' }).setScale(1.25)
 
-        // let anchor = new Anchor(this.isReadyImage, {
-        //     left: '15%',
-        //     bottom: 'bottom-50',
-        // }).anchor();
     }
 
     copyRoomIdToClipboard() {
@@ -299,7 +260,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     refreshPlayerList() {
-        let offset = 125;
+        const offsetX = 50;
         const clientPositions = this.calculateClientPositions();
 
         for (let index = 0; index < this.lobbyClientList.length; index++) {
@@ -319,7 +280,7 @@ export class LobbyScene extends Phaser.Scene {
                 }
 
                 const clientPosition = clientPositions[counter];
-                const lobbyClient = new LobbyClient(this, client, clientPosition, 0)
+                const lobbyClient = new LobbyClient(this, client, clientPosition + offsetX, 0)
 
                 this.lobbyClientList.push(lobbyClient);
                 characterContainer.add(lobbyClient);
@@ -328,13 +289,13 @@ export class LobbyScene extends Phaser.Scene {
         }
 
         let anchor = new Anchor(characterContainer, {
-            left: '75%',
-            centerY: 'bottom-100'
+            centerX: 'center',
+            centerY: 'center',
         }).anchor();
     }
 
     calculateClientPositions() {
-        const clientWidth = 48;
+        const clientWidth = 100;
         const screenWidth = this.cameras.main.getBounds().width;
         const clientCount = Object.keys(this.clients).length - 1;
         const totalClientsWidth = clientCount * clientWidth;
@@ -353,17 +314,12 @@ export class LobbyScene extends Phaser.Scene {
 
     setPlayerReady() {
         this.localClient.isReady = !this.localClient.isReady;
-        this.isReadyImage.setTexture(this.localClient.isReady ? 'ready' : 'notready');
+        // this.isReadyImage.setTexture(this.localClient.isReady ? 'ready' : 'notready');
         this.room.send('isReady', { isReady: this.localClient.isReady });
         this.refreshPlayerList();
     }
 
     setPlayerCharacter() {
-        //change charIndex between 0 and the length of heroImages
-        this.localClient.charIndex = (this.localClient.charIndex + 1) % Object.keys(this.heroImages).length;
-        this.currentPlayerImage.setTexture(this.heroImages[this.localClient.charIndex]);
-        this.currentPlayerTitle.setText(this.heroTitles[this.localClient.charIndex]);
-        this.room.send('charIndex', { charIndex: this.localClient.charIndex });
-        this.refreshPlayerList();
+       
     }
 }

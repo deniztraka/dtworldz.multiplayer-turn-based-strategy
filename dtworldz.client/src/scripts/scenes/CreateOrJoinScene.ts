@@ -1,21 +1,19 @@
 import Phaser from "phaser";
 
-
 import { Room, Client } from "colyseus.js";
-import { BACKEND_URL } from "../../backend";
+import { BACKEND_URL, API_URL } from "../../backend";
 import { DTLabel } from "../utils/ui/dtLabel";
-import TextStyles from './../utils/ui/textStyles';
 import { DTTextInput } from "../utils/ui/dtTextInput";
-import { TextEdit } from 'phaser3-rex-plugins/plugins/textedit';
-import Button from 'phaser3-rex-plugins/plugins/button';
 import { DTButton } from "../utils/ui/dtButton";
 import Anchor from "phaser3-rex-plugins/plugins/anchor";
+import wretch from "wretch"
 
 export class CreateOrJoinScene extends Phaser.Scene {
     room: Room | undefined;
     nickNameText: any;
     errorText: DTLabel;
     roomId: any;
+    api: any;
 
 
     constructor() {
@@ -24,6 +22,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
     preload() {
         this.load.image('loginBackground', '/assets/images/bg.png');
+        this.load.image('logo', '/assets/images/logo.png');
         this.load.image('frame', '/assets/images/frame.png');
         this.load.image('buttonFrame', '/assets/images/buttonFrame-lowRes.png');
         this.load.image('ready', '/assets/images/ready.png');
@@ -58,7 +57,11 @@ export class CreateOrJoinScene extends Phaser.Scene {
         url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rextexteditplugin.min.js';
         this.load.plugin('rextexteditplugin', url, true);
 
-
+        // Instantiate and configure wretch
+        this.api =
+        wretch(API_URL, { mode: "cors" })
+        .errorType("json")
+        .resolve(r => r.json())
 
     }
 
@@ -71,47 +74,50 @@ export class CreateOrJoinScene extends Phaser.Scene {
         this.createNickNameInput();
         this.createButtons();
 
-        this.errorText = new DTLabel(this, 0, 0, "       ", null, { centerX: 'center', bottom: '60%'})
+        this.errorText = new DTLabel(this, 0, 0, "       ", null, { centerX: 'center', bottom: '60%' })
             .setColor("#ffffff");
     }
 
     createButtons() {
-        const joinButton = new DTButton(this, 0, 0, "JOIN", () => {
+        const joinButton = new DTButton(this, 0, 0, " JOIN ", () => {
             this.onJoinClicked();
-        }, { bottom: '72%', centerX: 'center' }).setScale(1);
+        }, { bottom: '72%', centerX: 'center' }).setScale(1.5);
 
         const createButton = new DTButton(this, 0, 0, "CREATE", () => {
             this.onCreateClicked();
-        }, { bottom: '65%', centerX: 'center' }).setScale(1);
+        }, { bottom: '65%', centerX: 'center' }).setScale(1.5);
     }
 
     createBackground() {
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
-            .setOrigin(0.5, 0.5)
+
+        new Anchor(this.add.image(this.scale.width / 2, this.scale.height / 2, 'loginBackground')
+            .setOrigin(0.5, 0.5).setAlpha(0.75), { centerY: 'center', centerX: 'center' })
+            new Anchor(this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo')
+            .setOrigin(0.5, 0.5).setScale(1.5).setTint(0xbdced6), { top: '5%', centerX: 'center' })
     }
 
     createNickNameInput() {
         const scene: any = this;
-        this.nickNameText = new DTTextInput(this, 0,0, "your name?", {}, {
+        this.nickNameText = new DTTextInput(this, 0, 0, "your name?", {}, {
             centerX: 'center', centerY: 'center'
-        }).setScale(1)
+        }).setScale(1.5)
 
-        scene.input.keyboard.on('keydown', function (event: any) {
-            if (event.key === "Enter") {
-                if (scene.validateNickName()) {
-                    scene.onCreateClicked();
-                } else {
-
-                    // @ts-ignore: Unreachable code error
-                    editor.open();
-                }
-            } else if (event.key === "Escape") {
-                scene.validateNickName()
-                // @ts-ignore: Unreachable code error
-                editor.close();
-            }
-        });
-        return;
+        // scene.input.keyboard.on('keydown', function (event: any) {
+        //     if (event.key === "Enter") {
+        //         if (scene.validateNickName()) {
+        //             scene.onCreateClicked();
+        //         } else {
+        //             console.log("invalid name")
+        //             // @ts-ignore: Unreachable code error
+        //             scene.nickNameText.openEditor();
+        //         }
+        //     } else if (event.key === "Escape") {
+        //         scene.validateNickName()
+        //         // @ts-ignore: Unreachable code error
+        //         scene.nickNameText.closeEditor();
+        //     }
+        // });
+        // return;
     }
 
     async onCreateClicked() {
@@ -156,14 +162,20 @@ export class CreateOrJoinScene extends Phaser.Scene {
         const client = new Client(BACKEND_URL);
 
         try {
+            const characters = await this.api.get("/characters");
+
+            if(characters.length === 0) {
+                return;
+            }
+
             // if room id is provided, join the room
             if (roomId) {
                 this.room = await client.joinById(roomId, { clientName: clientName });
             } else {
                 this.room = await client.create("dtworldz", { clientName: clientName, maxPlayers: 5 });
             }
-
-            this.scene.start('LobbyScene', { room: this.room, playerName: clientName });
+            
+            this.scene.start('LobbyScene', { room: this.room, playerName: clientName, characters: characters });
 
         } catch (e: any) {
             // couldn't connect
@@ -194,30 +206,30 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
 var CreateDialog = function (scene: any) {
 
-    const dialogwidth = 180;
-    const dialogheight = 120;
+    const dialogwidth = 320;
+    const dialogheight = 360;
 
 
 
 
     var dialog = scene.rexUI.add.dialog({
         background: scene.add.container(0, 0, [
-            scene.rexUI.add.roundRectangle(0, 0, dialogwidth, dialogheight, 1, 0x000000).setAlpha(0.5),
-            scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(dialogwidth, dialogheight)
+            scene.rexUI.add.roundRectangle(0, 0, dialogwidth - 10, dialogheight - 10, 1, 0x000000).setAlpha(0.5).setStrokeStyle(2, 0x999999),
+            // scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(dialogwidth, dialogheight)
         ]),
 
         title: scene.add.container(0, 0, [
-            scene.rexUI.add.roundRectangle(0, -30, dialogwidth, 50, 1, 0x000000).setAlpha(0.75),
-            scene.add.image(0, -30, 'frame').setOrigin(0.5, 0.5).setDisplaySize(dialogwidth, 50),
-            scene.add.text(0, -30, 'Join A Room', {
-                fontSize: '18px',
+            // scene.rexUI.add.roundRectangle(0, 0, dialogwidth- 10, 50, 1, 0x000000).setAlpha(0.75).setOrigin(0.5, 0.5),
+            // scene.add.image(0, 0, 'frame').setOrigin(0.5, 0.5).setDisplaySize(dialogwidth, 50).setOrigin(0.5, 0.5),
+            scene.add.text(0, 0, 'Join A Room', {
+                fontSize: '28px',
                 fontFamily: "DTSubTitleFontFamily",
                 color: '#bdced4',
                 align: 'center',
             }).setOrigin(0.5, 0.5)
         ]),
 
-        content: new DTTextInput(scene, 0, 0, "enter room id", {
+        content: new DTTextInput(scene, 0, 0, "room id", {
             background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, {
                 x: 1,
                 y: 1
@@ -230,8 +242,8 @@ var CreateDialog = function (scene: any) {
         ],
 
         space: {
-            title: 0,
-            content: 20,
+            title: 100,
+            content: 100,
             action: 0,
 
             left: 20,
@@ -259,7 +271,7 @@ var CreateDialog = function (scene: any) {
 }
 
 var CreateLabel = function (scene: any, text: string) {
-    
+
     return scene.rexUI.add.label({
         // width: 40,
         // height: 40,

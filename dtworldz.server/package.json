@@ -36,9 +36,10 @@
     "color": "^4.2.3",
     "colyseus": "^0.15.9",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "easystarjs": "^0.4.4",
     "express": "^4.16.4",
-    "simplex-noise": "^4.0.1",
-    "rimraf": "^2.7.1"
+    "rimraf": "^2.7.1",
+    "simplex-noise": "^4.0.1"
   }
 }

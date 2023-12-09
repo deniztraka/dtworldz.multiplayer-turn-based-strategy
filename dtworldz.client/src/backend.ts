@@ -6,3 +6,7 @@ export const BACKEND_URL = (window.location.href.indexOf("localhost") === -1)
     : "ws://localhost:2594"
 
 export const BACKEND_HTTP_URL = BACKEND_URL.replace("ws", "http").replace("s:/", "http");
+
+export const API_URL = (window.location.href.indexOf("localhost") === -1)
+ ? `https://dtworldz-server.onrender.com:80/api`
+    : "http://localhost:2594/api"
