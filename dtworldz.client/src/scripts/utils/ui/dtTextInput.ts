@@ -6,18 +6,19 @@ import Anchor from 'phaser3-rex-plugins/plugins/anchor';
 
 export class DTTextInput extends DTLabel {
     currentScale: number;
+    editor: TextEdit;
     constructor(scene: any, x: number, y: number, text: string, config?: any, anchorConfig?: any) {
         let options = {
             x: x,
             y: y,
-           fixedWidth: 150,
-           fixedHeight: 30,
-           background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, {
+            fixedWidth: 150,
+            fixedHeight: 30,
+            background: scene.rexUI.add.roundRectangle(0, 0, 0, 0, {
                 x: 10,
                 y: 10
             }, 0x000000).setAlpha(0.5).setStrokeStyle(2, 0x000000),
             padding: { left: 10, right: 10, top: 5, bottom: 5, },
-           ...config,
+            ...config,
         };
 
 
@@ -39,7 +40,7 @@ export class DTTextInput extends DTLabel {
 
                 //trim if more than 10 chars
                 if (textObject.text.length > 10) {
-                    textObject.text = textObject.text.substring(0, 12);
+                    textObject.text = textObject.text.substring(0, 10);
                 }
 
                 //remove spaces
@@ -59,14 +60,14 @@ export class DTTextInput extends DTLabel {
             },
         };
 
-        
+
         this.layout();
 
         // @ts-ignore: Unreachable code error
-        var editor = new TextEdit(this.getElement('text'), editorConfig);
+        this.editor = new TextEdit(this.getElement('text'), editorConfig);
         scene.add.existing(this);
 
-        if(anchorConfig){
+        if (anchorConfig) {
             new Anchor(this, anchorConfig);
         }
     }
@@ -77,5 +78,17 @@ export class DTTextInput extends DTLabel {
         this.currentScale = scale;
         // this.layout();
         return this;
+    }
+
+    openEditor() {
+        if (this.editor) {
+            this.editor.open();
+        }
+    }
+
+    closeEditor() {
+        if (this.editor) {
+            this.editor.close();
+        }
     }
 }

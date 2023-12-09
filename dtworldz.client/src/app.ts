@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-
 import { LobbyScene } from "./scripts/scenes/LobbyScene";
 import { CreateOrJoinScene } from "./scripts/scenes/CreateOrJoinScene";
 import { GameLoadingScene } from "./scripts/scenes/GameLoadingScene";
@@ -17,6 +16,9 @@ const config: Phaser.Types.Core.GameConfig = {
         mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
 
+        width: 1920,
+        height: 1080,
+
         // Minimum size
         min: {
             width: 640,
@@ -28,8 +30,8 @@ const config: Phaser.Types.Core.GameConfig = {
 
         // Maximum size
         max: {
-            width: 1280,
-            height: 720
+            width: 1920,
+            height: 1080
         },
         // Or set maximum size like these
         // maxWidth: 1600,

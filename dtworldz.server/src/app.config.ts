@@ -2,6 +2,8 @@ import config from "@colyseus/tools";
 import { monitor } from "@colyseus/monitor";
 import { Server } from "colyseus";
 
+import characters from "./../data/characters";
+
 /**
  * Import your Room files
  */
@@ -35,6 +37,8 @@ export default config({
         app.get("/", (req, res) => {
             res.send("It's time to kick ass and chew bubblegum!");
         });
+
+        app.get("/api/characters", (req, res) => res.json(characters));
 
         // these latency methods are for development purpose only.
         app.get("/latency", (req, res) => res.json(latencySimulationMs));

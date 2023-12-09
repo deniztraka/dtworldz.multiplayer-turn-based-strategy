@@ -22,6 +22,7 @@
     "colyseus.js": "^0.15.9",
     "easystarjs": "^0.4.4",
     "phaser": "^3.70.0",
-    "phaser3-rex-plugins": "^1.60.7"
+    "phaser3-rex-plugins": "^1.60.7",
+    "wretch": "^2.7.1"
   }
 }
