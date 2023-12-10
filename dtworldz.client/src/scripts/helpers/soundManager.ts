@@ -1,24 +1,29 @@
 export class SoundManager {
+    
     scene: any;
     constructor(scene: any) {
         this.scene = scene;
 
     }
 
-    addSound(key: string, volume: number = 1, loop: boolean = false, maxDistance: number = 10000, follow: any = undefined) {
-        this.scene.sound.add(key,
+    stop(key:string){
+        this.scene.sound.stopByKey(key);
+    }
+
+    play(key: string, sourceX: any, sourceY: any, maxDistance: 10000, volume: 1) {
+        this.scene.sound.play(key,
             {
                 mute: false,
                 volume: volume,
                 rate: 1,
                 detune: 0,
                 seek: 0,
-                loop: loop,
+                loop: false,
                 delay: 0,
                 // source of the spatial sound
                 source: {
-                    x: 0,
-                    y: 0,
+                    x: sourceX,
+                    y: sourceY,
                     z: 0,
                     panningModel: 'equalpower',
                     distanceModel: 'inverse',
@@ -31,8 +36,16 @@ export class SoundManager {
                     coneInnerAngle: 360,
                     coneOuterAngle: 0,
                     coneOuterGain: 0,
-                    follow: follow
+                    follow: undefined
                 }
-            });
+            }
+        );
+    }
+
+    setListenerPosition(x: any, y: any) {
+        
+            this.scene.sound.setListenerPosition(x, y);
+        
+    
     }
 }

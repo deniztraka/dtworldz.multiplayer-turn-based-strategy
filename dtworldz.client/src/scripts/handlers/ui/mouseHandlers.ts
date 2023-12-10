@@ -12,6 +12,10 @@ export class MouseHandler {
 
     init() {
         this.game.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
+
+            //this.game.soundManager.play('attack', pointer.worldX, pointer.worldY - 32, 10000, 1);
+
+
             const { worldX, worldY } = pointer
             var tile = this.game.floorLayer.getIsoTileAtWorldXY(worldX , worldY - 32);
             if (tile) {

@@ -42,9 +42,6 @@ export class ClientPlayer {
         this.container.add([this.characterSprite, this.playerNameText]);
         this.container.setScale(1);
 
-        this.soundManager = new SoundManager(this.scene);
-        this.soundManager.addSound('step', 0.1, false, 10000, this.container);
-
         this.listenServerUpdates();
     }
 
@@ -81,7 +78,9 @@ export class ClientPlayer {
 
         const duration = 1000 / this.client._speed;
 
-        this.scene.sound.play('step');
+        this.scene.soundManager.play('step', this.container.x, this.container.y, 10000);
+
+        
 
         this.scene.tweens.add({
             targets: this.container,
@@ -89,7 +88,7 @@ export class ClientPlayer {
             y: tile.getCenterY(),
             duration: duration - 100,
             onComplete: () => {
-                this.scene.sound.stopByKey('step');
+                this.scene.soundManager.stop('step');
                 if (this.markers) {
                     let marker = this.markers.shift();
                     if (marker) {
