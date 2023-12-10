@@ -8,6 +8,7 @@ export class HuntActionResult extends BaseActionResult {
             this.player.clearPath();
             this.player.clearActions();
             PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), this.payload.message ? this.payload.message : "That was a good hunt.");
+            this.scene.sound.play('hitAnimal', { volume: 1 });
 
         } else if (this.scene.localPlayer.sessionId === this.scene.room.sessionId) {
             PopUpMessageHandler.create(this.scene.scene.get('GameRunningUIScene'), this.payload.message ? this.payload.message :  "I ccouldn't make it.");

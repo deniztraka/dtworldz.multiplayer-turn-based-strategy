@@ -54,11 +54,15 @@ export class GameIsRunningScene extends Phaser.Scene {
 
     preload() {
 
+        this.load.audio('step', '/assets/audio/walk.mp3');
+        this.load.audio('hitAnimal', '/assets/audio/hitAnimal.wav');
+        this.load.audio('attack', '/assets/audio/attack.mp3');
+
     }
 
     create() {
         const scene: GameIsRunningScene = this;
-
+        this.sound.stopByKey('darkwoods');
 
 
 

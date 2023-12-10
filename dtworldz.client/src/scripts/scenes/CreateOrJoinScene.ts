@@ -21,6 +21,9 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     preload() {
+        this.load.audio('button', '/assets/audio/button.mp3');
+        this.load.audio('darkwoods', '/assets/audio/darkwds1.mp3');
+
         this.load.image('loginBackground', '/assets/images/bg.png');
         this.load.image('logo', '/assets/images/logo.png');
         this.load.image('frame', '/assets/images/frame.png');
@@ -67,6 +70,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
 
     create() {
         this.createUI();
+        this.sound.play('darkwoods', { loop: true, volume: 0.1 });
     }
 
     createUI() {
@@ -121,6 +125,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     async onCreateClicked() {
+        this.sound.play('button');
 
         if (!this.validateNickName()) {
             return;
@@ -130,6 +135,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
     }
 
     onJoinClicked() {
+        this.sound.play('button');
         let self = this;
         if (!this.validateNickName()) {
             return;
@@ -259,7 +265,9 @@ var CreateDialog = function (scene: any) {
         expand: {
             content: false,  // Content is a pure text object
         }
-    })
+    }).on('button.click', function (button: { text: string; }, index: any, pointer: any, event: any) {
+        scene.sound.play('button');
+    }       )
         .on('button.over', function (button: { getElement: (arg0: string) => { (): any; new(): any; setStrokeStyle: { (arg0: number, arg1: number): void; new(): any; }; }; }, groupName: any, index: any, pointer: any, event: any) {
             // button.getElement('background').setStrokeStyle(1, 0xffffff);
         })

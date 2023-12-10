@@ -76,12 +76,15 @@ export class ClientPlayer {
 
         const duration = 1000 / this.client._speed;
 
+        this.scene.sound.play('step', { volume: 0.1 });
+
         this.scene.tweens.add({
             targets: this.container,
             x: tile.getCenterX(),
             y: tile.getCenterY(),
-            duration: duration,
+            duration: duration - 100,
             onComplete: () => {
+                this.scene.sound.stopByKey('step');
                 if (this.markers) {
                     let marker = this.markers.shift();
                     if (marker) {
