@@ -6,6 +6,7 @@ import { MouseHandler } from "../handlers/ui/mouseHandlers";
 import { ClientPlayer } from "../models/clientPlayer";
 import { GameRunningUIScene } from "./GameRunningUIScene";
 import { ActionResultFactory } from "../factories/actionResultFactory";
+import { SoundManager } from "../helpers/soundManager";
 // import { GameScene } from "./GameSceneOld";
 
 export class GameIsRunningScene extends Phaser.Scene {
@@ -31,6 +32,7 @@ export class GameIsRunningScene extends Phaser.Scene {
     isDead: boolean = false;
     isGameStarted: boolean;
     turnCount: number;
+    soundManager: any;
 
     constructor() {
         super({ key: "GameIsRunningScene" })
@@ -43,6 +45,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.clients = data.clients;
         this.mouseHandler = new MouseHandler(this);
         this.setLocalClient(this.clients);
+        this.soundManager = new SoundManager(this);
         
     }
 
@@ -50,6 +53,8 @@ export class GameIsRunningScene extends Phaser.Scene {
         if(this.isDead) {
             
         }
+       
+        this.soundManager.setListenerPosition(this.localPlayer.container.x, this.localPlayer.container.y);
     }
 
     preload() {
@@ -57,6 +62,7 @@ export class GameIsRunningScene extends Phaser.Scene {
         this.load.audio('step', '/assets/audio/walk.mp3');
         this.load.audio('hitAnimal', '/assets/audio/hitAnimal.wav');
         this.load.audio('attack', '/assets/audio/attack.mp3');
+        this.load.audio('dead', '/assets/audio/dead.wav');
 
     }
 
@@ -328,8 +334,7 @@ export class GameIsRunningScene extends Phaser.Scene {
             const player = this.players[message.sessionId] as ClientPlayer;
             console.log(`${player.playerName} is dead`);
             player.characterSprite.setTexture('graveStone');
-            
-            
+            this.soundManager.play('dead', player.container.x, player.container.y, 10000);
         });
 
         

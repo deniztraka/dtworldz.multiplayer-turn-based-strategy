@@ -12,6 +12,40 @@ export class MouseHandler {
 
     init() {
         this.game.input.on(Phaser.Input.Events.POINTER_UP, (pointer: Phaser.Input.Pointer) => {
+
+            //console.log(MathUtils.getDistanceBetweenPoints({ x: pointer.worldX, y: pointer.worldY }, { x: this.game.localPlayer.container.x, y: this.game.localPlayer.container.y })    );
+
+            this.game.soundManager.play('attack', pointer.worldX, pointer.worldY - 32, 10000, 1);
+
+            // this.game.sound.play('attack', {
+            //     mute: false,
+            //     volume: 1,
+            //     rate: 1,
+            //     detune: 0,
+            //     seek: 0,
+            //     loop: false,
+            //     delay: 0,
+            //     // source of the spatial sound
+            //     source: {
+            //         x: pointer.worldX,
+            //         y: pointer.worldY - 32,
+            //         z: 0,
+            //         panningModel: 'equalpower',
+            //         distanceModel: 'inverse',
+            //         orientationX: 0,
+            //         orientationY: 0,
+            //         orientationZ: -1,
+            //         refDistance: 1,
+            //         maxDistance: 10000,
+            //         rolloffFactor: 1,
+            //         coneInnerAngle: 360,
+            //         coneOuterAngle: 0,
+            //         coneOuterGain: 0,
+            //         follow: undefined
+            //     }
+            // });
+
+
             const { worldX, worldY } = pointer
             var tile = this.game.floorLayer.getIsoTileAtWorldXY(worldX , worldY - 32);
             if (tile) {
