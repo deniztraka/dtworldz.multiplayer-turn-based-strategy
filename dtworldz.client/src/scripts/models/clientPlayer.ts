@@ -1,6 +1,7 @@
 import { Game } from "phaser";
 import { IPoint } from "../interfaces/ipoint";
 import { GameIsRunningScene } from "../scenes/GameIsRunningScene";
+import { SoundManager } from "../helpers/soundManager";
 
 export class ClientPlayer {
     
@@ -21,6 +22,7 @@ export class ClientPlayer {
     y: number;
     health: number;
     energy: number;
+    soundManager: SoundManager;
     constructor(scene: GameIsRunningScene, client: any, sessionId: any, x: number, y: number) {
         this.scene = scene;
         this.x = x;
@@ -39,6 +41,9 @@ export class ClientPlayer {
 
         this.container.add([this.characterSprite, this.playerNameText]);
         this.container.setScale(1);
+
+        this.soundManager = new SoundManager(this.scene);
+        this.soundManager.addSound('step', 0.1, false, 10000, this.container);
 
         this.listenServerUpdates();
     }
@@ -76,7 +81,7 @@ export class ClientPlayer {
 
         const duration = 1000 / this.client._speed;
 
-        this.scene.sound.play('step', { volume: 0.1 });
+        this.scene.sound.play('step');
 
         this.scene.tweens.add({
             targets: this.container,
