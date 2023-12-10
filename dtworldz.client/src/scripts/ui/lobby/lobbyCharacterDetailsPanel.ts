@@ -57,7 +57,7 @@ export class LobbyCharacterDetailsPanel {
 
         let rightPanel = this.rex.add.fixWidthSizer({
             x: 0, y: 0,
-            width: 300, height: 300,
+            width: 410, height: 300,
             orientation: 'y',
             space: {
                 left: 10,
@@ -113,7 +113,7 @@ export class LobbyCharacterDetailsPanel {
         });
 
         this.characterImage = this.scene.add.image(0, 0, this.character.image).setOrigin(0.5, 0.5).setScale(1).setAlpha(1);
-        this.statsText = this.scene.add.text(0, 0, `STR: ${this.character.stats.str} | DEX: ${this.character.stats.dex} | INT: ${this.character.stats.int}`, {
+        this.statsText = this.scene.add.text(0, 0, `STR:${this.character.stats.str} | DEX:${this.character.stats.dex} | INT:${this.character.stats.int}`, {
             fontFamily: 'DTBodyFontFamily',
             fontSize: '20px',
             color: '#999999',
@@ -151,7 +151,7 @@ export class LobbyCharacterDetailsPanel {
         this.title.setText(this.character.title);
         this.description.getElement('text').setText(this.character.description);
         this.characterImage.setTexture(this.character.image);
-        this.statsText.setText(`STR: ${this.character.stats.str} | DEX: ${this.character.stats.dex} | INT: ${this.character.stats.int}`);
+        this.statsText.setText(`STR:${this.character.stats.str} | DEX:${this.character.stats.dex} | INT:${this.character.stats.int}`);
         this.panel.layout();
     }
 }
