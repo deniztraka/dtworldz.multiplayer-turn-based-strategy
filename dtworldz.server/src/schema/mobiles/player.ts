@@ -48,7 +48,7 @@ export class Player extends BaseMobile {
         const bs = 0.5; // means 0.5 tiles per second
 
         // Dexterity Speed Modifier (dsm)
-        const dsm = dexterity / 10; //This modifier represents the additional speed a character gains from their dexterity.
+        const dsm = dexterity / 5; //This modifier represents the additional speed a character gains from their dexterity.
 
         // Hunger Speed Modifier (HSM)
         const hsm = (this.hunger / this.maxHunger) * 0.5;

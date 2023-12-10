@@ -126,7 +126,7 @@ export class GameIsRunningScene extends Phaser.Scene {
                     let deerTileIndexes = WorldMapHelper.getDeersTileIndexes();
                     const chosenIndex = deerTileIndexes[Math.floor(Math.random() * deerTileIndexes.length)];
                     let clientTile = this.floorLayer.getTileAt(data.tile.position.x, data.tile.position.y);
-                    const deersComponentImage = this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5);
+                    const deersComponentImage = this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5).setScale(1.5);
                     this.add.existing(deersComponentImage);
 
                     this.tileComponentRegistry[data.tile.position.y][data.tile.position.x].push({ image: deersComponentImage, key: component.name });
@@ -175,7 +175,7 @@ export class GameIsRunningScene extends Phaser.Scene {
                         let deerTileIndexes = WorldMapHelper.getDeersTileIndexes();
                         const chosenIndex = deerTileIndexes[Math.floor(Math.random() * deerTileIndexes.length)];
                         let clientTile = this.floorLayer.getTileAt(x, y);
-                        const deersComponentImage = this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5);
+                        const deersComponentImage = this.add.sprite(clientTile.getCenterX(), clientTile.getCenterY(), 'tileComponents', chosenIndex).setOrigin(0.5, 0.5).setScale(1.5);
                         this.add.existing(deersComponentImage);
 
                         this.tileComponentRegistry[y][x] = [{ image: deersComponentImage, key: component.name}];
