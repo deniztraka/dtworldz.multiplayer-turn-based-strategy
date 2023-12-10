@@ -228,7 +228,7 @@ export class GameIsRunningScene extends Phaser.Scene {
 
         this.floorTileSet = this.tileMap.addTilesetImage('floorTileSet', 'plainTiles', 128, 128, 0, 0);
 
-        this.floorLayer = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width / 2, this.scale.height / 2 - 200 + 32);
+        this.floorLayer = this.tileMap.createBlankLayer('floorLayer', this.floorTileSet, this.scale.width / 2, this.scale.height / 2 - 200);
 
 
         let y = 0;
