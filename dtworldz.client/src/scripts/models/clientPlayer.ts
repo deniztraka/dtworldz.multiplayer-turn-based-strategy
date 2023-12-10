@@ -38,7 +38,7 @@ export class ClientPlayer {
 
 
         this.container.add([this.characterSprite, this.playerNameText]);
-        this.container.setScale(2);
+        this.container.setScale(1);
 
         this.listenServerUpdates();
     }
@@ -142,7 +142,7 @@ export class ClientPlayer {
                 if(index === paths.length - 1){
                     markerImage = 'target'
                 }
-                var marker = scene.add.image(0, 0, markerImage).setScale(1).setTint(0x3bdef3);
+                var marker = scene.add.image(0, 0, markerImage).setScale(1).setTint(0x3bdef3).setScale(1.5);
                 marker.setDepth(100);
 
                 totalCost += path.cost;

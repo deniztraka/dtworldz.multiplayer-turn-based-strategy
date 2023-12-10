@@ -42,7 +42,7 @@ export class CreateOrJoinScene extends Phaser.Scene {
         this.load.image('mainCharFrameBG', '/assets/images/mainCharFrameBG.png');
         this.load.image('characterPanelBarBG', '/assets/images/characterPanelBarBG.png');
         this.load.image('characterPanelBar', '/assets/images/characterPanelBar.png');
-        this.load.spritesheet('char', '/assets/images/characters/charsSheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('char', '/assets/images/characters/charsSheet.png', { frameWidth: 32, frameHeight: 64 });
 
         this.load.scenePlugin({
             key: 'rexuiplugin',

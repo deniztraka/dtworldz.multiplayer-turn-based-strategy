@@ -20,11 +20,13 @@ export class CharacterDecorator {
         player.attributes.set(Attributes.Dexterity, character.stats.dex);
         player.attributes.set(Attributes.Intelligence, character.stats.int);
 
-        player.speed = player.speed;
+        
 
         player.health = player.maxHealth;
         player.hunger = player.maxHunger;
         player.energy = player.maxEnergy;
+
+        player._speed = player.speed;
         player.title = character.title;
     }
 }

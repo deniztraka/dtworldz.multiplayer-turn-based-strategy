@@ -171,9 +171,9 @@ async function generateNature(gameLogicState: LoadingGameLogicState): Promise<vo
 
                     // Make sure the natureData is indexed in [y][x] order as well
                     const data = natureData[y][x];
-                    if (data > 0.75) {
+                    if (data > 0.8) {
                         tile.setNature(Natures.Mountain);
-                    } else if (data > 0.6) {
+                    } else if (data > 0.7) {
                         tile.setNature(Natures.Forest);
                     }
                     // Include an 'else' if you need to handle other nature types or a default case
