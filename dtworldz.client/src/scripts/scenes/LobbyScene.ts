@@ -207,6 +207,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     setCharacterPanel() {
+        this.sound.play('button');
         this.localClient.charIndex = (this.localClient.charIndex + 1) % Object.keys(this.characters).length;
         this.localCharacterDetailsPanel.setCharacter(this.characters[this.localClient.charIndex]);
         this.room.send('charIndex', { charIndex: this.localClient.charIndex });
@@ -219,6 +220,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     onChatButtonClicked() {
+        this.sound.play('button');
         this.chatPanel.toggle();
     }
 
@@ -245,6 +247,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     copyRoomIdToClipboard() {
+        this.sound.play('button');
         navigator.clipboard.writeText(this.room.id)
             .then(() => {
                 console.log('RoomId copied to clipboard');
@@ -255,6 +258,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     onStartClicked() {
+        this.sound.play('button');
         this.startGame = !this.startGame;
         this.room.send('startGame', { startGame: this.startGame });
     }
@@ -313,6 +317,7 @@ export class LobbyScene extends Phaser.Scene {
     }
 
     setPlayerReady() {
+        this.sound.play('button');
         this.localClient.isReady = !this.localClient.isReady;
         // this.isReadyImage.setTexture(this.localClient.isReady ? 'ready' : 'notready');
         this.room.send('isReady', { isReady: this.localClient.isReady });

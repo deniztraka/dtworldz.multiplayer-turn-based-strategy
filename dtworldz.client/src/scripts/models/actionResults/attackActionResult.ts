@@ -17,6 +17,7 @@ export class AttackActionResult extends BaseActionResult {
 
             //this.scene.add.existing(this.scene.add.text(targetPlayer.container.x, targetPlayer.container.y, this.payload.damage, { fontFamily: 'Arial', fontSize: 12, color: '#ff0000' }));
 
+            this.scene.sound.play('attack', { volume: 1 });
 
             this.scene.tweens.add({
                 targets: this.player.container,
