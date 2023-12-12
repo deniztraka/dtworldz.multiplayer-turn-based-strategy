@@ -47,7 +47,7 @@ export class GameRunningUIScene extends Phaser.Scene {
 
         if (playerCount !== 0) {
             this.turnCountDownText = this.add.text(0, 0, '', { fontFamily: 'DTSubTitleFontFamily', fontSize: 20, color: '#eeeeee' }).setOrigin(1, 1).setDepth(1000).setAlpha(1).setStroke('#000000', 4);
-            this.nextTurnImage = this.add.sprite(0, 0, 'actionIcons', 3).setOrigin(0.5, 0.5).setScale(1.5).setAlpha(0.75);
+            this.nextTurnImage = this.add.sprite(0, 0, 'actionIcons', 3).setOrigin(0.5, 0.5).setScale(1.25).setAlpha(0.75);
             new Anchor(this.nextTurnImage, { right: 'right-10', bottom: 'bottom-30' });
             new Anchor(this.turnCountDownText, { right: 'right-10', bottom: 'bottom-10' });
 
