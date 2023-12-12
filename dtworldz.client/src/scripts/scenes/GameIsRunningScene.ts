@@ -96,12 +96,12 @@ export class GameIsRunningScene extends Phaser.Scene {
         (window as any).fx = this.cameras.main.postFX.addTiltShift(0.25, 0.2, 0, 0.5, 1, 1);
 
 
-        this.cameras.main.startFollow(this.localPlayer.container, false, 0.25, 0.25, 0, 0);
+        this.cameras.main.startFollow(this.localPlayer.container, false, 0.75, 0.75, 0, 0);
         
 
         this.events.emit('gameIsLoaded');
 
-        this.cameras.main.setZoom(1.8);
+        //this.cameras.main.setZoom(1);
 
         this.localClient.listen('isDead', (isDead: boolean) => {
             if(isDead) {

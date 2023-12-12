@@ -15,7 +15,7 @@ export class TileActionButtonFactory {
             const movebutton = scene.rexUI.add.label({
                 width: 60, height: 60,
                 background: scene.add.sprite(0, 0, 'actionIcons', 0),
-            }).setAlpha(0.75).setScale(1.5);
+            }).setAlpha(0.75).setScale(1.25);
 
             buttons.push({
                 button: movebutton, callBack: () => {
@@ -33,7 +33,7 @@ export class TileActionButtonFactory {
             const huntButton = scene.rexUI.add.label({
                 width: 60, height: 60,
                 background: scene.add.sprite(0, 0, 'actionIcons', 1),
-            }).setAlpha(0.75).setScale(1.5);
+            }).setAlpha(0.75).setScale(1.25);
 
             buttons.push({
                 button: huntButton, callBack: () => {
@@ -56,7 +56,7 @@ export class TileActionButtonFactory {
                 const attackButton = scene.rexUI.add.label({
                     width: 60, height: 60,
                     background: scene.add.sprite(0, 0, 'actionIcons', 2),
-                }).setAlpha(0.75).setScale(1.5);
+                }).setAlpha(0.75).setScale(1.25);
 
                 buttons.push({
                     button: attackButton, callBack: () => {

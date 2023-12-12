@@ -34,7 +34,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             this.createRemoteCharacterPanel();
         }
 
-        this.setScale(1.5);
+        this.setScale(1.25);
     }
 
 
@@ -42,7 +42,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         // this.remainingTimeBarImg = this.scene.add.image(0, -60, 'characterPanelBarBG').setOrigin(0, 1).setTint(0xffffff).setAlpha(1).setDisplaySize(248, 4);
         // this.add(this.remainingTimeBarImg);
         this.add((this.scene as any).rexUI.add.roundRectangle(0, 0, 300, 60, 2, 0x000000).setOrigin(0, 0).setAlpha(0.5));
-        this.add(this.scene.add.sprite(70, 60, 'playerStatusIcons', 0).setOrigin(0, 1).setScale(0.35));
+        this.add(this.scene.add.sprite(70, 55, 'playerStatusIcons', 0).setOrigin(0, 1).setScale(0.35));
         this.healthText = (this.scene as any).rexUI.add.textBox({
             x: 60, y: 40,
             width: 200,
@@ -61,7 +61,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         }).setOrigin(0, 0).layout();
         this.add(this.healthText);
 
-        this.add(this.scene.add.sprite(140, 60, 'playerStatusIcons', 1).setOrigin(0, 1).setScale(0.35));
+        this.add(this.scene.add.sprite(140, 55, 'playerStatusIcons', 1).setOrigin(0, 1).setScale(0.35));
         this.hungerText = (this.scene as any).rexUI.add.textBox({
             x: 130, y: 40,
             width: 200,
@@ -80,7 +80,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         }).setOrigin(0, 0).layout();
         this.add(this.hungerText);
 
-        this.add(this.scene.add.sprite(210, 60, 'playerStatusIcons', 2).setOrigin(0, 1).setScale(0.35));
+        this.add(this.scene.add.sprite(210, 55, 'playerStatusIcons', 2).setOrigin(0, 1).setScale(0.35));
         this.energyText = (this.scene as any).rexUI.add.textBox({
             x: 200, y: 40,
             width: 200,
@@ -99,16 +99,16 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
         }).setOrigin(0, 0).layout();
         this.add(this.energyText);
 
-        this.add(this.scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(60, 60));
-        this.add(this.scene.add.image(10, 6, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0));
-        this.add(this.scene.add.image(0, 0, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(60, 60));
+        this.add(this.scene.add.image(0, 0, 'mainCharFrameBG').setOrigin(0, 0).setDisplaySize(60, 65));
+        this.add(this.scene.add.image(10, 9, 'charIcon' + this.player.client.charIndex).setOrigin(0, 0));
+        this.add(this.scene.add.image(0, 0, 'mainCharFrame').setOrigin(0, 0).setDisplaySize(60, 65));
 
         this.add((this.scene as any).rexUI.add.textBox({
             x: 0, y: 10,
             width: 200,
             align: 'center',
             text: this.scene.add.text(0, 0, this.player.playerName, {
-                fontSize: 18,
+                fontSize: 16,
                 wordWrap: { width: 200 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily',
@@ -125,7 +125,7 @@ export class CharacterPanel extends Phaser.GameObjects.Container {
             width: 300,
             align: 'center',
             text: this.scene.add.text(0, 0, this.player.client.title, {
-                fontSize: 14,
+                fontSize: 12,
                 wordWrap: { width: 300 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily',

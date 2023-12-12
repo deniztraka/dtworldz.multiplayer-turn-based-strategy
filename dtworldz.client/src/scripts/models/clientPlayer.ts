@@ -149,13 +149,13 @@ export class ClientPlayer {
                 if(index === paths.length - 1){
                     markerImage = 'target'
                 }
-                var marker = scene.add.image(0, 0, markerImage).setScale(1).setTint(0x3bdef3).setScale(1.5);
+                var marker = scene.add.image(0, 0, markerImage).setScale(1).setTint(0x3bdef3).setScale(2);
                 marker.setDepth(100);
 
                 totalCost += path.cost;
 
 
-                var text = scene.add.text(10, 0, totalCost.toString(), { color: "#ffffff", fontSize: "8px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
+                var text = scene.add.text(10, 0, totalCost.toString(), { color: "#ffffff", fontSize: "18px", fontFamily: 'DTBodyTextFamily', padding: { left: 0, right: 0, top: 0, bottom: 0, } }).setOrigin(0.5, 0.5);
 
                 // set marker rotation to match the tile
                 if (index < this.currentPath.length - 1) {
