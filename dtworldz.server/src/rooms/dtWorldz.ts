@@ -8,7 +8,6 @@ import * as http from 'http';
 import { ActionFactory } from "../engines/actionsHandler/actionFactory";
 import { DynamicPathfindingService } from "../engines/pathfinding/pathFindingService";
 import { BaseMobile } from "../schema/mobiles/baseMobile";
-import { TurnManager } from "../engines/gameTurn/turnManager";
 import { RunningGameLogicState } from "../states/runningGameLogicState";
 
 export class WorldRoom extends Room<DTWorldzState> {

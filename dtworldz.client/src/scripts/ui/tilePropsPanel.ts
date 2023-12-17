@@ -8,7 +8,7 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
     bg: any;
     constructor(scene: any, x: number, y: number) {
         super(scene, x, y);
-        this.bg = scene.rexUI.add.roundRectangle(0, 0, 250, 75, 0, 0x000000).setAlpha(0).setOrigin(0, 1);
+        this.bg = scene.rexUI.add.roundRectangle(0, 0, 250, 75, 5, 0x000000).setAlpha(0).setOrigin(0.5, 1);
 
         this.biomeText = (this.scene as any).rexUI.add.textBox({
             x: 10, y: -60,
@@ -25,7 +25,7 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
                 // For innerSizer
                 innerLeft: 0, innerRight: 2, innerTop: 0, innerBottom: 2,
             }
-        }).setOrigin(0, 0).layout();
+        }).setOrigin(0.5, 0).layout();
 
         this.natureText = (this.scene as any).rexUI.add.textBox({
             x: 10, y: -40,
@@ -42,7 +42,7 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
                 // For innerSizer
                 innerLeft: 0, innerRight: 2, innerTop: 0, innerBottom: 2,
             }
-        }).setOrigin(0, 0).layout();
+        }).setOrigin(0.5, 0).layout();
 
         this.componentsText = (this.scene as any).rexUI.add.textBox({
             x: 10, y: -20,
@@ -59,7 +59,7 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
                 // For innerSizer
                 innerLeft: 0, innerRight: 2, innerTop: 0, innerBottom: 2,
             }
-        }).setOrigin(0, 0).layout();
+        }).setOrigin(0.5, 0).layout();
 
         this.add(this.bg);
         this.add(this.biomeText);
@@ -67,7 +67,7 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
         this.add(this.componentsText);
 
         scene.add.existing(this);
-        new Anchor(this, { left: 'left+10', bottom: 'bottom-10' });
+        new Anchor(this, { centerX: 'center', bottom: 'bottom-10' });
     }
 
     setTile(tile: any) {
