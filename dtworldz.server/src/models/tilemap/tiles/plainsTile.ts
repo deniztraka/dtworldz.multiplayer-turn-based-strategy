@@ -5,6 +5,6 @@ import { Biomes } from "./Biomes";
 
 export class PlainsTile extends BaseTile {
     constructor(pos: Position) {
-        super(1, pos, Biomes.Plains,  new StandardMovement());
+        super('Plains', 1, pos, Biomes.Plains,  new StandardMovement());
     }
 }
