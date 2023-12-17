@@ -9,6 +9,7 @@ import { Client } from "colyseus.js";
 import Anchor from "phaser3-rex-plugins/plugins/anchor";
 import Button from "phaser3-rex-plugins/plugins/button";
 import { ClientActionPanel } from "../ui/clientActionPanel";
+import { TilePropsPanel } from "../ui/tilePropsPanel";
 
 export class GameRunningUIScene extends Phaser.Scene {
     gameScene: GameIsRunningScene;
@@ -19,6 +20,7 @@ export class GameRunningUIScene extends Phaser.Scene {
     nextTurnImage: Phaser.GameObjects.Sprite;
     nextTurnButton: Button;
     actionPanel: ClientActionPanel;
+    tilePropsPanel: TilePropsPanel;
 
     constructor() {
         super({ key: "GameRunningUIScene" });
@@ -40,6 +42,7 @@ export class GameRunningUIScene extends Phaser.Scene {
         this.attachEvents();
         this.handleTurnCountDown();
         this.actionPanel =  new ClientActionPanel(this, this.gameScene.localPlayer, 0, 0);
+        this.tilePropsPanel = new TilePropsPanel(this, 0, 0);
     }
 
     handleTurnCountDown() {
@@ -92,6 +95,7 @@ export class GameRunningUIScene extends Phaser.Scene {
     attachEvents() {
         this.gameScene.events.on('tile-props', (message: any) => {
             this.actionPanel.setActions(message);
+            this.tilePropsPanel.setTile(message);
         });
 
         this.gameScene.events.on('turn-start', (player: ClientPlayer) => {

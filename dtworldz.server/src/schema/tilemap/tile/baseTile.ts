@@ -5,16 +5,18 @@ import { Natures } from "../../../models/tilemap/tiles/Natures";
 import { Position } from "../../position";
 
 export class BaseTile extends Schema {
-
+    @type("string") name: string;
     @type("number") id: number;
     @type("number") biome: number; // plains, snow, desert, swamp, lava
     @type("number") nature: Natures; // forest, mountains, hills, lake, river
+    @type("string") natureDisplayName: string; // forest, mountains, hills, lake, river
     @type(Position) position: Position;
     @type({ map: BaseTileComponent }) components = new MapSchema<BaseTileComponent>();
     movementStrategy: BaseMovementStrategy;
 
-    constructor(id: number, position: Position, biome: number, movementStrategy: BaseMovementStrategy) {
+    constructor(name: string, id: number, position: Position, biome: number, movementStrategy: BaseMovementStrategy) {
         super();
+        this.name = name;
         this.id = id;
         this.biome = biome;
         this.movementStrategy = movementStrategy;
@@ -27,6 +29,27 @@ export class BaseTile extends Schema {
             this.nature = nature;
         } else {
             throw new Error('Tile already has nature. Cannot set nature twice.');
+        }
+
+        switch (nature) {
+            case Natures.Forest:
+                this.natureDisplayName = 'Forest';
+                break;
+            case Natures.Mountain:
+                this.natureDisplayName = 'Mountain';
+                break;
+            case Natures.Lake:
+                this.natureDisplayName = 'Lake';
+                break;
+            case Natures.River:
+                this.natureDisplayName = 'River';
+                break;
+            // case Natures.None:
+            //     this.natureDisplayName = '';
+                break;
+            default:
+                this.natureDisplayName = '';
+                break;
         }
     }
 
@@ -70,7 +93,7 @@ export class BaseTile extends Schema {
     }
 
     tryMove(mobile: any) {
-        if(this.movementStrategy.canMove(mobile)){
+        if (this.movementStrategy.canMove(mobile)) {
             this.movementStrategy.move(mobile, this);
             return true;
         }
