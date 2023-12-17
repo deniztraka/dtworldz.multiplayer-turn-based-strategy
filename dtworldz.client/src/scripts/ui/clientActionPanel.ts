@@ -21,7 +21,7 @@ export class ClientActionPanel extends Phaser.GameObjects.Container {
         this.player = player;
         this.actionButtonCallbacks = [];
         scene.add.existing(this);
-        new Anchor(this, { centerX: 'center', bottom: 'bottom-50' });
+        new Anchor(this, { centerX: 'center', bottom: 'bottom-100' });
     }
 
     setActions(tile: any) {
