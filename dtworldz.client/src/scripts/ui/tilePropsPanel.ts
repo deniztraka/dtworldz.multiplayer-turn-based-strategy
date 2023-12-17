@@ -8,15 +8,15 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
     bg: any;
     constructor(scene: any, x: number, y: number) {
         super(scene, x, y);
-        this.bg = scene.rexUI.add.roundRectangle(0, 0, 300, 75, 0, 0x000000).setAlpha(0).setOrigin(0, 1);
+        this.bg = scene.rexUI.add.roundRectangle(0, 0, 250, 75, 0, 0x000000).setAlpha(0).setOrigin(0, 1);
 
         this.biomeText = (this.scene as any).rexUI.add.textBox({
             x: 10, y: -60,
-            width: 300,
+            width: 250,
             align: 'center',
             text: this.scene.add.text(0, 0, '', {
                 fontSize: 18,
-                wordWrap: { width: 300 },
+                wordWrap: { width: 250 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily',
                 color: '#eeeeee',
@@ -29,11 +29,11 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
 
         this.natureText = (this.scene as any).rexUI.add.textBox({
             x: 10, y: -40,
-            width: 300,
+            width: 250,
             align: 'center',
             text: this.scene.add.text(0, 0, '', {
                 fontSize: 18,
-                wordWrap: { width: 300 },
+                wordWrap: { width: 250 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily',
                 color: '#eeeeee',
@@ -46,11 +46,11 @@ export class TilePropsPanel extends Phaser.GameObjects.Container {
 
         this.componentsText = (this.scene as any).rexUI.add.textBox({
             x: 10, y: -20,
-            width: 300,
+            width: 250,
             align: 'center',
             text: this.scene.add.text(0, 0, '', {
                 fontSize: 16,
-                wordWrap: { width: 300 },
+                wordWrap: { width: 250 },
                 maxLines: 1,
                 fontFamily: 'DTBodyFontFamily',
                 color: '#eeeeee',
