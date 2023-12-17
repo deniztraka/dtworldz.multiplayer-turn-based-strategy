@@ -10,7 +10,12 @@ export class SoundManager {
         this.scene.sound.stopByKey(key);
     }
 
-    play(key: string, sourceX: any, sourceY: any, maxDistance: 10000, volume: 1) {
+    play(key: string, sourceX: number, sourceY: number, maxDistance: 10000, volume: 1) {
+        if(sourceX == undefined || sourceY == undefined){
+            sourceX =this.scene.scale.width/2;
+            sourceY = this.scene.scale.height/2;
+        }
+
         this.scene.sound.play(key,
             {
                 mute: false,

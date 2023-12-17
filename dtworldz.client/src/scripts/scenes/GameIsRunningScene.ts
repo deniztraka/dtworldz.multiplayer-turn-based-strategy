@@ -310,6 +310,7 @@ export class GameIsRunningScene extends Phaser.Scene {
             this.events.emit('turn-start', player);
             this.localPlayer.setSelectedTile(null);
             this.events.emit('tile-props', null);
+            this.soundManager.play('button', player.container.x, player.container.y, 10000, 1);
             
         });
 

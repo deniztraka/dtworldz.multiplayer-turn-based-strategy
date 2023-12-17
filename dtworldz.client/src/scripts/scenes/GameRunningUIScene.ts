@@ -10,6 +10,7 @@ import Anchor from "phaser3-rex-plugins/plugins/anchor";
 import Button from "phaser3-rex-plugins/plugins/button";
 import { ClientActionPanel } from "../ui/clientActionPanel";
 import { TilePropsPanel } from "../ui/tilePropsPanel";
+import SoundManager from "phaser3-rex-plugins/plugins/utils/audio/soundmanager/SoundManager";
 
 export class GameRunningUIScene extends Phaser.Scene {
     gameScene: GameIsRunningScene;

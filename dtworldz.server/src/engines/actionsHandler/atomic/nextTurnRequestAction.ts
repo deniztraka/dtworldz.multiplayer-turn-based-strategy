@@ -16,6 +16,17 @@ export class NextTurnRequestAction extends AtomicAction {
             if(nextTurnResult){
                 this.mobile.setMovingNow(false);
                 this.mobile.currentPath = new ArraySchema<TilePosCost>();
+                //Send the hunt result to the client
+                // const player = (this.mobile as Player);
+                // player.client.send('ca_next-turn-result',
+                // {
+                //     aid: 'next-turn-result',
+                //     sessionId: player.client.sessionId,
+                //     payload: {
+                //         result: true,
+                //         message: "Day " + worldRoom.getTurnManager().turnCount + " started."
+                //     }
+                // });
             }
         }
     }
