@@ -44,6 +44,13 @@ export class DynamicPathfindingService {
                 this.easystar.avoidAdditionalPoint(player.position.x, player.position.y);
             }
         });
+
+        // set tile costs
+        this.worldRoom.state.tilemap.forEach(tile => {
+            if(tile.canMove(this.mobile)){
+                this.easystar.setTileCost(tile.nature, tile.movementStrategy.energyCost);
+            }
+        });
     }
 
     async findPathForPlayer(start: Position, end: Position, player: BaseMobile): Promise<Position[]> {
