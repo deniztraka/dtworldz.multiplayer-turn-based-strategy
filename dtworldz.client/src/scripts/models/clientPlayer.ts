@@ -97,6 +97,30 @@ export class ClientPlayer {
                 }
             }
         });
+
+        this.playWalkingAnimation(duration);
+
+        
+    }
+    playWalkingAnimation(duration: number) {
+        const walkingTween = this.scene.tweens.add({
+            targets: this.characterSprite,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+            duration: (duration-50)/2,
+            y: { start: -2, to: 2 }, // Moves up and down
+            angle: { start: -2, to: 2 } // Rotates back and forth
+        });
+
+        walkingTween.setCallback('onComplete', () => {
+            this.characterSprite.setAngle(0);
+            this.characterSprite.setY(0);
+        });
+
+        this.scene.time.delayedCall(duration, () => {
+            walkingTween.stop();
+        });
     }
 
     clearActions() {
